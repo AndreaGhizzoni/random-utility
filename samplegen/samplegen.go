@@ -2,7 +2,8 @@ package samplegen
 
 import (
 	"math/rand"
-	"time"
+
+	"github.com/AndreaGhizzoni/Random/randutil"
 )
 
 type SampleGenerator struct {
@@ -11,7 +12,7 @@ type SampleGenerator struct {
 }
 
 func New() *SampleGenerator {
-	s := rand.NewSource(time.Now().UnixNano())
+	s := rand.New(randutil.NewTimeSeed())
 	return &SampleGenerator{
 		rand: rand.New(s),
 	}
