@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/AndreaGhizzoni/Random/randutil"
+	"github.com/AndreaGhizzoni/zenium/randutil"
 )
 
 // TODO add doc
