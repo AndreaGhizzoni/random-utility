@@ -25,7 +25,7 @@ func (s *SampleGenerator) Matrix(rows, cols int64, min, max int64) ([][]int64, e
 	return nil, nil
 }
 
-func (s *SampleGenetator) Bound(min, max int64, width int64) (int64, int64) {
+func (s *SampleGenerator) Bound(min, max int64, width int64) (int64, int64) {
 	return -1, -1
 }
 
