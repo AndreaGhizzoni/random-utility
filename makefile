@@ -1,7 +1,6 @@
-# default option to make 
-default : test
+install:
+	go install
 
-#go test ./... -test.v=true -bench=.
 test: pkgRandutil pkgSampleGen
 
 pkgRandutil:
