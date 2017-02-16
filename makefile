@@ -5,15 +5,15 @@ default : test
 test: pkgRandutil pkgSampleGen
 
 pkgRandutil:
-	cd randutil; \
-	go test -test.v=true > ../randutil.test; \
-	go test -bench=. > ../randutil.bench ;\
+	cd randutil ;\
+	go test -test.v=true > ../randutil.test ;\
+	go test -bench=. -benchmem > ../randutil.bench ;\
 	cd ..
 
 pkgSampleGen:
-	cd randutil; \
-	go test -test.v=true > ../randutil.test; \
-	go test -bench=. > ../randutil.bench ;\
+	cd samplegen ;\
+	go test -test.v=true > ../samplegen.test ;\
+	go test -bench=. -benchmem > ../samplegen.bench ;\
 	cd ..
 
 
