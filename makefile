@@ -1,7 +1,7 @@
 install:
 	go install
 
-test: pkgRandutil pkgSampleGen
+test: pkgRandutil pkgSampleGen pkgOut
 
 pkgRandutil:
 	cd randutil ;\
@@ -15,4 +15,9 @@ pkgSampleGen:
 	go test -bench=. -benchmem > ../samplegen.bench ;\
 	cd ..
 
+pkgOut:
+	cd out;\
+	go test -test.v=true > ../out.test ;\
+	go test -bench=. -benchmem > ../out.bench ;\
+	cd ..
 
