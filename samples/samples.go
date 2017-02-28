@@ -1,4 +1,4 @@
-package samplegen
+package samples
 
 import (
 	"fmt"
@@ -8,13 +8,13 @@ import (
 )
 
 // TODO add doc
-type SampleGenerator struct {
+type Generator struct {
 	r *rand.Rand
 }
 
 // TODO add doc
-func New() *SampleGenerator {
-	return &SampleGenerator{
+func New() *Generator {
+	return &Generator{
 		r: rand.New(randutil.NewTimeSeed()),
 	}
 }
@@ -34,7 +34,7 @@ func checkBound(min, max int64) error {
 }
 
 // TODO add doc
-func (s *SampleGenerator) Slice(len int64, min, max int64) ([]int64, error) {
+func (s *Generator) Slice(len int64, min, max int64) ([]int64, error) {
 	err := checkLen(len)
 	if err != nil {
 		return nil, err
@@ -60,16 +60,16 @@ func (s *SampleGenerator) Slice(len int64, min, max int64) ([]int64, error) {
 }
 
 // TODO add doc
-func (s *SampleGenerator) Matrix(rows, cols int64, min, max int64) ([][]int64, error) {
+func (s *Generator) Matrix(rows, cols int64, min, max int64) ([][]int64, error) {
 	return nil, nil
 }
 
 // TODO add doc
-func (s *SampleGenerator) Bound(min, max int64, width int64) (int64, int64) {
+func (s *Generator) Bound(min, max int64, width int64) (int64, int64) {
 	return -1, -1
 }
 
 // TODO add doc
-func (s *SampleGenerator) OrderedSlice(len int64, min, max int64) ([]int64, error) {
+func (s *Generator) OrderedSlice(len int64, min, max int64) ([]int64, error) {
 	return nil, nil
 }
