@@ -38,13 +38,11 @@ func checkBound(min, max int64) error {
 // min <= X < max.
 // If len <= 0 or min > max return a error.
 func (g *Generator) Slice(len int64, min, max int64) ([]int64, error) {
-	err := checkLen(len)
-	if err != nil {
+	if err := checkLen(len); err != nil {
 		return nil, err
 	}
 
-	err = checkBound(min, max)
-	if err != nil {
+	if err := checkBound(min, max); err != nil {
 		return nil, err
 	}
 
@@ -61,9 +59,25 @@ func (g *Generator) Slice(len int64, min, max int64) ([]int64, error) {
 	return perm, nil
 }
 
-// TODO add doc
-func (g *Generator) Matrix(rows, cols int64, min, max int64) ([][]int64, error) {
-	return nil, nil
+// This function generate a matrix with r rows and c cols. The number X in it
+// are min <= X < max.
+// If r <= 0 or c <= 0 or min > max, this function return an error
+func (g *Generator) Matrix(r, c int64, min, max int64) ([][]int64, error) {
+	if err := checkLen(r); err != nil {
+		return nil, err
+	}
+
+	matrix := make([][]int64, r)
+	var i int64 = 0
+	for ; i < r; i++ {
+		perm, e := g.Slice(c, min, max)
+		if e != nil {
+			return nil, e
+		}
+		matrix[i] = perm
+	}
+
+	return matrix, nil
 }
 
 // TODO add doc
