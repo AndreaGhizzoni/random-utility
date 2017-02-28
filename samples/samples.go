@@ -37,7 +37,7 @@ func checkBound(min, max int64) error {
 // This function generate a slice of len length, with random numbers X where
 // min <= X < max.
 // If len <= 0 or min > max return a error.
-func (g *Generator) Slice(len int64, min, max int64) ([]int64, error) {
+func (g *Generator) Slice(len, min, max int64) ([]int64, error) {
 	if err := checkLen(len); err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (g *Generator) Slice(len int64, min, max int64) ([]int64, error) {
 // This function generate a matrix with r rows and c cols. The number X in it
 // are min <= X < max.
 // If r <= 0 or c <= 0 or min > max, this function return an error
-func (g *Generator) Matrix(r, c int64, min, max int64) ([][]int64, error) {
+func (g *Generator) Matrix(r, c, min, max int64) ([][]int64, error) {
 	if err := checkLen(r); err != nil {
 		return nil, err
 	}
@@ -81,11 +81,11 @@ func (g *Generator) Matrix(r, c int64, min, max int64) ([][]int64, error) {
 }
 
 // TODO add doc
-func (g *Generator) Bound(min, max int64, width int64) (int64, int64) {
+func (g *Generator) Bound(min, max, width int64) (int64, int64) {
 	return -1, -1
 }
 
 // TODO add doc
-func (g *Generator) OrderedSlice(len int64, min, max int64) ([]int64, error) {
+func (g *Generator) OrderedSlice(len, min, max int64) ([]int64, error) {
 	return nil, nil
 }
