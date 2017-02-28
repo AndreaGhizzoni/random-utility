@@ -37,11 +37,10 @@ func TestCreateNegativeRandomSlice(t *testing.T) {
 func testCreateRandomSlice(min, max, actualLength int64, t *testing.T) {
 	gen := New()
 	randomSlice, err := gen.Slice(actualLength, min, max)
-	t.Logf("random slice generated: %v", randomSlice)
-
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Logf("random slice generated: %v", randomSlice)
 
 	// check slice length
 	lenRandomSlice := int64(len(randomSlice))
@@ -64,14 +63,12 @@ func TestArgumentSlice(t *testing.T) {
 	gen := New()
 
 	// this must fail: length < 0
-	_, err1 := gen.Slice(-1, 1, 10)
-	if err1 == nil {
+	if _, err := gen.Slice(-1, 1, 10); err == nil {
 		t.Fatal("With negative length, Slice() needs to return (_, nil)")
 	}
 
 	// this must fail: min > max
-	_, err2 := gen.Slice(10, 10, 1)
-	if err2 == nil {
+	if _, err := gen.Slice(10, 10, 1); err == nil {
 		t.Fatal("With min > max as argument, Slice() needs to return " +
 			"(_, nil)")
 	}
