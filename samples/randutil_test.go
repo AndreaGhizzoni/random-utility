@@ -32,7 +32,7 @@ func testSingleRandom(r *rand.Rand, min, max int64, t *testing.T) {
 	t.Logf("Int64[%d,%d] = %d ", min, max, random)
 
 	// random number must be in range min <= X < max
-	if random <= min || random > max {
+	if random < min || random >= max {
 		t.Fatalf("bounds not respected: min=%d, max=%d", min, max)
 	}
 }
