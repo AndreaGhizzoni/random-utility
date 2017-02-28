@@ -1,4 +1,4 @@
-package randutil
+package samples
 
 import (
 	"math/rand"

@@ -1,4 +1,4 @@
-package randutil
+package samples
 
 import (
 	"math/rand"
@@ -11,7 +11,7 @@ func TestGetInt64(t *testing.T) {
 	var max int64 = 100
 
 	r := rand.New(NewTimeSeed())
-	random, err := Int64(r, min, max)
+	random, err := getInt64(r,min, max)
 
 	t.Logf("Int64[%d,%d] = %d ", min, max, random)
 
@@ -32,7 +32,7 @@ func TestIncrementalInt64(t *testing.T) {
 	times := 20
 
 	r := rand.New(NewTimeSeed())
-	random, err := Int64(r, min, max)
+	random, err := getInt64(r, min, max)
 
 	for i := 0; i < times; i++ {
 		t.Logf("Int64[%d,%d] = %d ", min, max, random)
@@ -47,22 +47,20 @@ func TestIncrementalInt64(t *testing.T) {
 		}
 
 		max *= factor
-		random, err = Int64(r, min, max)
+		random, err = getInt64(r, min, max)
 	}
 }
 
 // This function test the creation of random int64 with incorrect input data.
 func TestArgumentsInt64(t *testing.T) {
-	_, err := Int64(nil, 10, 100)
 	// this must fail with nil random generator
-	if err == nil {
+	if _, err := getInt64(nil, 10, 100); err == nil {
 		t.Fatal("With nil as Rand struct, Int64() needs to return " +
 			"(_, nil)")
 	}
 
 	// this must fail with min > max
-	_, err = Int64(rand.New(NewTimeSeed()), 10, 5)
-	if err == nil {
+	if _, err := getInt64(rand.New(NewTimeSeed()), 10, 5); err == nil {
 		t.Fatal("With min > max as arguments, Int64() needs to return " +
 			"(_, nil)")
 	}
@@ -72,6 +70,6 @@ func TestArgumentsInt64(t *testing.T) {
 func BenchmarkInt64(b *testing.B) {
 	r := rand.New(NewTimeSeed())
 	for i := 0; i < b.N; i++ {
-		Int64(r, 10, 100)
+		getInt64(r, 10, 100)
 	}
 }

@@ -52,7 +52,7 @@ func (g *Generator) Slice(len int64, min, max int64) ([]int64, error) {
 	perm := make([]int64, len)
 	var i int64 = 0
 	for ; i < len; i++ {
-		intRandom, e := randutil.Int64(g.r, min, max)
+		intRandom, e := getInt64(g.r, min, max)
 		if e != nil {
 			return nil, e
 		}
