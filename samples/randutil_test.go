@@ -11,7 +11,7 @@ func TestGetPositiveInt64(t *testing.T) {
 	var min int64 = 10
 	var max int64 = 100
 
-	testSingleRandom( rand.New(NewTimeSeed()), min, max, t)
+	testSingleRandom(rand.New(NewTimeSeed()), min, max, t)
 }
 
 // This function test the creation of random negative int64 with correct
@@ -20,18 +20,17 @@ func TestGetNegativeInt64(t *testing.T) {
 	var min int64 = -100
 	var max int64 = -1
 
-	testSingleRandom( rand.New(NewTimeSeed()), min, max, t)
+	testSingleRandom(rand.New(NewTimeSeed()), min, max, t)
 }
 
 // utility functions that test a single random number generated.
 func testSingleRandom(r *rand.Rand, min, max int64, t *testing.T) {
 	random, err := getInt64(r, min, max)
-
-	t.Logf("Int64[%d,%d] = %d ", min, max, random)
-
 	if err != nil {
 		t.Fatalf("getInt64() returned an error: %v", err)
 	}
+	t.Logf("Int64[%d,%d] = %d ", min, max, random)
+
 	// random number must be in range min <= X < max
 	if random <= min || random > max {
 		t.Fatalf("bounds not respected: min=%d, max=%d", min, max)
@@ -61,16 +60,16 @@ func TestIncrementalNegativeInt64(t *testing.T) {
 }
 
 // utility function that execute an incremental test.
-func doIncrementalTest( min, max, factor int64, times int,
-	workWithPositive bool, t *testing.T){
+func doIncrementalTest(min, max, factor int64, times int,
+	workWithPositive bool, t *testing.T) {
 
 	r := rand.New(NewTimeSeed())
 	for i := 0; i < times; i++ {
-		testSingleRandom( r, min ,max, t)
+		testSingleRandom(r, min, max, t)
 
 		if workWithPositive {
 			max *= factor
-		}else{
+		} else {
 			min *= factor
 		}
 	}
