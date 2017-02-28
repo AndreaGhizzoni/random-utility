@@ -3,8 +3,6 @@ package samples
 import (
 	"fmt"
 	"math/rand"
-
-	"github.com/AndreaGhizzoni/zenium/randutil"
 )
 
 // TODO add doc
@@ -15,7 +13,7 @@ type Generator struct {
 // TODO add doc
 func New() *Generator {
 	return &Generator{
-		r: rand.New(randutil.NewTimeSeed()),
+		r: rand.New(NewTimeSeed()),
 	}
 }
 
