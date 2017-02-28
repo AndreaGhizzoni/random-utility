@@ -1,8 +1,6 @@
 package samples
 
-import (
-	"testing"
-)
+import "testing"
 
 // This function tests a creation of random slice of with correct input data.
 func TestCreateRandomSlice(t *testing.T) {
@@ -10,7 +8,7 @@ func TestCreateRandomSlice(t *testing.T) {
 	var min int64 = -100
 	var max int64 = 100
 
-	testCreateRandomSlice(min, max, actualLength, t)
+	testRandomSlice(min, max, actualLength, t)
 }
 
 // This function tests a creation of random slice of positive numbers with
@@ -20,7 +18,7 @@ func TestCreatePositiveRandomSlice(t *testing.T) {
 	var min int64 = 10
 	var max int64 = 100
 
-	testCreateRandomSlice(min, max, actualLength, t)
+	testRandomSlice(min, max, actualLength, t)
 }
 
 // This function tests a creation of random slice of negative numbers with
@@ -30,11 +28,11 @@ func TestCreateNegativeRandomSlice(t *testing.T) {
 	var min int64 = -100
 	var max int64 = -1
 
-	testCreateRandomSlice(min, max, actualLength, t)
+	testRandomSlice(min, max, actualLength, t)
 }
 
 // utility functions to create and check a generated slice.
-func testCreateRandomSlice(min, max, actualLength int64, t *testing.T) {
+func testRandomSlice(min, max, actualLength int64, t *testing.T) {
 	gen := New()
 	randomSlice, err := gen.Slice(actualLength, min, max)
 	if err != nil {
@@ -45,8 +43,7 @@ func testCreateRandomSlice(min, max, actualLength int64, t *testing.T) {
 	// check slice length
 	lenRandomSlice := int64(len(randomSlice))
 	if lenRandomSlice != actualLength {
-		t.Fatalf("length mismatch: %d != %d",
-			lenRandomSlice, actualLength)
+		t.Fatalf("length mismatch: %d != %d", lenRandomSlice, actualLength)
 	}
 
 	// check if the generate random data are in bounds
