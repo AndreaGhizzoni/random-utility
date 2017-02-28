@@ -5,12 +5,13 @@ import (
 	"math/rand"
 )
 
-// TODO add doc
+// This is the generator of random numbers.
 type Generator struct {
 	r *rand.Rand
 }
 
-// TODO add doc
+// This method returns a new instance of Generator type.
+// This generator is initialized with current time as seed.
 func New() *Generator {
 	return &Generator{
 		r: rand.New(NewTimeSeed()),
