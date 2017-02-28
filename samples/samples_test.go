@@ -4,12 +4,37 @@ import (
 	"testing"
 )
 
-// This function tests a creation of random slice with correct input data.
+// This function tests a creation of random slice of with correct input data.
 func TestCreateRandomSlice(t *testing.T) {
+	var actualLength int64 = 10
+	var min int64 = -100
+	var max int64 = 100
+
+	testCreateRandomSlice(min, max, actualLength, t)
+}
+
+// This function tests a creation of random slice of positive numbers with
+// correct input data.
+func TestCreatePositiveRandomSlice(t *testing.T) {
 	var actualLength int64 = 10
 	var min int64 = 10
 	var max int64 = 100
 
+	testCreateRandomSlice(min, max, actualLength, t)
+}
+
+// This function tests a creation of random slice of negative numbers with
+// correct input data.
+func TestCreateNegativeRandomSlice(t *testing.T) {
+	var actualLength int64 = 10
+	var min int64 = -100
+	var max int64 = -1
+
+	testCreateRandomSlice(min, max, actualLength, t)
+}
+
+// utility functions to create and check a generated slice.
+func testCreateRandomSlice(min, max, actualLength int64, t *testing.T) {
 	gen := New()
 	randomSlice, err := gen.Slice(actualLength, min, max)
 	t.Logf("random slice generated: %v", randomSlice)
