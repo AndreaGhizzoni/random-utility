@@ -5,7 +5,7 @@ specifid below.
 ## Structure of data files
 All generated data fils will be in the following format:
 
-### Vectors
+### Random Slice (aka Vectors)
 ```bash
 ./$GOPATH/bin/zenium -generate rslice -l 50 -o vector.txt -m 1 -M 10
 ```
