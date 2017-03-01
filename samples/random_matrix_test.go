@@ -2,6 +2,7 @@ package samples
 
 import "testing"
 
+// This function tests a creation of random matrix of with correct input data.
 func TestCreateRandomMatrix(t *testing.T) {
 	var rows int64 = 10
 	var cols int64 = 10
@@ -11,6 +12,8 @@ func TestCreateRandomMatrix(t *testing.T) {
 	testRandomMatrix(rows, cols, min, max, t)
 }
 
+// This function tests a creation of random matrix of positive numbers with
+// correct input data.
 func TestCreatePositiveRandomMatrix(t *testing.T) {
 	var rows int64 = 10
 	var cols int64 = 10
@@ -20,6 +23,8 @@ func TestCreatePositiveRandomMatrix(t *testing.T) {
 	testRandomMatrix(rows, cols, min, max, t)
 }
 
+// This function tests a creation of random matrix of negative numbers with
+// correct input data.
 func TestCreateNegativeRandomMatrix(t *testing.T) {
 	var rows int64 = 10
 	var cols int64 = 10
@@ -29,6 +34,7 @@ func TestCreateNegativeRandomMatrix(t *testing.T) {
 	testRandomMatrix(rows, cols, min, max, t)
 }
 
+// utility functions to create and check a generated matrix.
 func testRandomMatrix(r, c, min, max int64, t *testing.T) {
 	gen := New()
 	matrix, err := gen.Matrix(r, c, min, max)
@@ -59,6 +65,7 @@ func testRandomMatrix(r, c, min, max int64, t *testing.T) {
 	}
 }
 
+// This function tests the creation of random matrix with incorrect input data.
 func TestArgumentMatrix(t *testing.T) {
 	gen := New()
 
