@@ -2,11 +2,17 @@
 Zenium it'a a utility program to generate random data files in the format 
 specifid below.
 
+
 ## Get this project
 ```bash
 cd $GOPATH/src
 go get github.com/AndreaGhizzoni/zenium
-cd github.com/AndreaGhizzoni/zenium
+```
+
+## Build application
+```bash
+go install github.com/AndreaGhizzoni/zenium
+../bin/zenium
 ```
 
 ## Structure of data files
