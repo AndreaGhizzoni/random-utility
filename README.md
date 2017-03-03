@@ -59,3 +59,5 @@ that all the elements of matrix: columns separated by space and rows by new line
 - [x] Matrix
 - [ ] Ordered Slice
 - [ ] Bound
+- [ ] Complete -output|-o flag
+- [ ] Multiple generation with a single command
