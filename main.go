@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"math"
+	"github.com/AndreaGhizzoni/zenium/samples"
 	"os"
 )
 
@@ -30,30 +30,68 @@ var (
 )
 
 func init() {
-	flag.StringVar(&sampleGeneration, "-generate", "", generateUsage)
+	flag.StringVar(&sampleGeneration, "generate", "", generateUsage)
 	flag.StringVar(&sampleGeneration, "g", "", generateUsage)
 
-	flag.StringVar(&out, "-output", "", outUsage)
+	flag.StringVar(&out, "output", "", outUsage)
 	flag.StringVar(&out, "o", "", outUsage)
 
-	flag.Int64Var(&m, "-min", 0, minUsage)
-	flag.Int64Var(&m, "m", 0, minUsage)
-	flag.Int64Var(&M, "-max", math.MaxInt64, maxUsage)
-	flag.Int64Var(&M, "M", math.MaxInt64, maxUsage)
+	flag.Int64Var(&m, "min", -922337203685477580, minUsage)
+	flag.Int64Var(&m, "m", -922337203685477580, minUsage)
+	flag.Int64Var(&M, "max", 922337203685477580, maxUsage)
+	flag.Int64Var(&M, "M", 922337203685477580, maxUsage)
 
-	flag.Int64Var(&cols, "-columns", 0, colsUsage)
+	flag.Int64Var(&cols, "columns", 0, colsUsage)
 	flag.Int64Var(&cols, "c", 0, colsUsage)
-	flag.Int64Var(&cols, "-length", 0, lengthUsage)
+	flag.Int64Var(&cols, "length", 0, lengthUsage)
 	flag.Int64Var(&cols, "l", 0, lengthUsage)
 
-	flag.Int64Var(&rows, "-rows", 0, rowsUsage)
+	flag.Int64Var(&rows, "rows", 0, rowsUsage)
 	flag.Int64Var(&rows, "r", 0, rowsUsage)
+}
+
+// utility function to print a message and helper, than exit 1
+func printDefaults(msg string) {
+	if msg != "" {
+		fmt.Println(msg)
+	}
+	flag.PrintDefaults()
+	os.Exit(1)
 }
 
 func main() {
 	flag.Parse()
 	if flag.NFlag() == 0 {
-		fmt.Printf(helpHeader, os.Args[0])
-		flag.PrintDefaults()
+		printDefaults(fmt.Sprintf(helpHeader, os.Args[0]))
+	}
+
+	if sampleGeneration == "" {
+		printDefaults("What to generate missinig: check --generate|-g " +
+			"argument.")
+	}
+
+	gen := samples.New()
+	switch sampleGeneration {
+	case "rslice":
+		s, err := gen.Slice(cols, m, M)
+		if err != nil {
+			printDefaults(err.Error())
+		}
+		fmt.Println(s) // TODO change this when output package is ready
+	case "oslice":
+		// TODO change this when output package is ready
+		fmt.Println("Not implemented yet :P")
+	case "matrix":
+		m, err := gen.Matrix(rows, cols, m, M)
+		if err != nil {
+			printDefaults(err.Error())
+		}
+		fmt.Println(m) // TODO change this when output package is ready
+	case "bound":
+		// TODO change this when output package is ready
+		fmt.Println("Not implemented yet :P")
+	default:
+		printDefaults("What to generate not recognized. Check --generate|-g " +
+			"argument.")
 	}
 }
