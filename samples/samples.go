@@ -18,10 +18,12 @@ func New() *Generator {
 	}
 }
 
-// utility method to check if len <= 0
-func checkLen(len int64) error {
-	if len <= 0 {
-		return fmt.Errorf("length (%d) must be grater then zero.", len)
+// utility method to check if dimension given is <= 0
+// dim is the dimension to check and msg is a string to put before the error
+// message string
+func checkDimension(dim int64, msg string) error {
+	if dim <= 0 {
+		return fmt.Errorf(msg+" given is invalid: %d <= 0.", dim)
 	}
 	return nil
 }
@@ -29,7 +31,7 @@ func checkLen(len int64) error {
 // utility method to check if min > max
 func checkBound(min, max int64) error {
 	if min > max {
-		return fmt.Errorf("bounds malformed: %d > %d", min, max)
+		return fmt.Errorf("Bounds malformed: (min) %d > %d (max)", min, max)
 	}
 	return nil
 }
@@ -38,7 +40,7 @@ func checkBound(min, max int64) error {
 // min <= X < max.
 // If len <= 0 or min > max return a error.
 func (g *Generator) Slice(len, min, max int64) ([]int64, error) {
-	if err := checkLen(len); err != nil {
+	if err := checkDimension(len, "Slice length"); err != nil {
 		return nil, err
 	}
 
@@ -63,7 +65,15 @@ func (g *Generator) Slice(len, min, max int64) ([]int64, error) {
 // are min <= X < max.
 // If r <= 0 or c <= 0 or min > max, this function return an error
 func (g *Generator) Matrix(r, c, min, max int64) ([][]int64, error) {
-	if err := checkLen(r); err != nil {
+	// check rows dimension
+	if err := checkDimension(r, "Matrix rows"); err != nil {
+		return nil, err
+	}
+
+	// check columns too because, in case of error in matrix generation, the
+	// following error message will be displayed: "Slice length given ...", and
+	// is this method do not generate a slice, but a matrix.
+	if err := checkDimension(c, "Matrix columns"); err != nil {
 		return nil, err
 	}
 
