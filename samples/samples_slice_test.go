@@ -5,57 +5,50 @@ import (
 	"testing"
 )
 
-// This function tests a creation of random slice of with correct input data.
-func TestCreateRandomSlice(t *testing.T) {
-	var actualLength int64 = 10
-	var min int64 = -100
-	var max int64 = 100
+func TestCreationRandomSlice(t *testing.T) {
+	var tableTest = []struct {
+		length int64
+		min    int64
+		max    int64
+	}{
+		{1, 1, 10},
+		{10, 1, 10},
+		{20, 1, 10},
+		{1, -10, -1},
+		{10, -10, -1},
+		{20, -10, -1},
+		{1, -100, 100},
+		{10, -1000, 1000},
+		{20, -10000, 10000},
+		{20, -100000, 100000},
+		{20, -1000000, 1000000},
+		{20, -10000000, 10000000},
+	}
 
-	testRandomSlice(min, max, actualLength, t)
-}
-
-// This function tests a creation of random slice of positive numbers with
-// correct input data.
-func TestCreatePositiveRandomSlice(t *testing.T) {
-	var actualLength int64 = 10
-	var min int64 = 10
-	var max int64 = 100
-
-	testRandomSlice(min, max, actualLength, t)
-}
-
-// This function tests a creation of random slice of negative numbers with
-// correct input data.
-func TestCreateNegativeRandomSlice(t *testing.T) {
-	var actualLength int64 = 10
-	var min int64 = -100
-	var max int64 = -1
-
-	testRandomSlice(min, max, actualLength, t)
-}
-
-// utility functions to create and check a generated slice.
-func testRandomSlice(min, max, actualLength int64, t *testing.T) {
 	gen := samples.New()
-	randomSlice, err := gen.Slice(actualLength, min, max)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("random slice generated: %v", randomSlice)
-
-	// check slice length
-	lenRandomSlice := int64(len(randomSlice))
-	if lenRandomSlice != actualLength {
-		t.Fatalf("length mismatch: %d != %d", lenRandomSlice, actualLength)
-	}
-
-	// check if the generate random data are in bounds
-	for i, e := range randomSlice {
-		if e < min || e >= max {
-			t.Fatalf("randomSlice[%d]=%d is out of bound (%d, %d)",
-				i, e, min, max)
+	for _, tt := range tableTest {
+		rSlice, err := gen.Slice(tt.length, tt.min, tt.max)
+		if err != nil {
+			t.Fatal(err)
 		}
+		t.Logf("rslice generated: %v", rSlice)
+
+		// check slice length
+		actual := int64(len(rSlice))
+		if tt.length != actual {
+			t.Fatalf("length mismatch: actual %d != expected %d", actual,
+				tt.length)
+		}
+
+        // check if the generate random data are in bounds
+        for i, e := range rSlice {
+            if e < tt.min || e >= tt.max {
+                t.Fatalf("randomSlice[%d]=%d is out of bound (%d, %d)",
+                    i, e, tt.min, tt.max)
+            }
+        }
 	}
+
 }
 
 // This function tests the creation of random slice with incorrect input data.
