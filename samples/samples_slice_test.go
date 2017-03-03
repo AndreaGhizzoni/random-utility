@@ -40,15 +40,14 @@ func TestCreationRandomSlice(t *testing.T) {
 				tt.length)
 		}
 
-        // check if the generate random data are in bounds
-        for i, e := range rSlice {
-            if e < tt.min || e >= tt.max {
-                t.Fatalf("randomSlice[%d]=%d is out of bound (%d, %d)",
-                    i, e, tt.min, tt.max)
-            }
-        }
+		// check if the generate random data are in bounds
+		for i, e := range rSlice {
+			if e < tt.min || e >= tt.max {
+				t.Fatalf("randomSlice[%d]=%d is out of bound (%d, %d)",
+					i, e, tt.min, tt.max)
+			}
+		}
 	}
-
 }
 
 // This function tests the creation of random slice with incorrect input data.
