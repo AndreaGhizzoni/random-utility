@@ -1,6 +1,9 @@
-package samples
+package samples_test
 
-import "testing"
+import (
+	"github.com/AndreaGhizzoni/zenium/samples"
+	"testing"
+)
 
 // This function tests a creation of random slice of with correct input data.
 func TestCreateRandomSlice(t *testing.T) {
@@ -33,7 +36,7 @@ func TestCreateNegativeRandomSlice(t *testing.T) {
 
 // utility functions to create and check a generated slice.
 func testRandomSlice(min, max, actualLength int64, t *testing.T) {
-	gen := New()
+	gen := samples.New()
 	randomSlice, err := gen.Slice(actualLength, min, max)
 	if err != nil {
 		t.Fatal(err)
@@ -57,7 +60,7 @@ func testRandomSlice(min, max, actualLength int64, t *testing.T) {
 
 // This function tests the creation of random slice with incorrect input data.
 func TestArgumentSlice(t *testing.T) {
-	gen := New()
+	gen := samples.New()
 
 	// this must fail: length < 0
 	if _, err := gen.Slice(-1, 1, 10); err == nil {
@@ -73,7 +76,7 @@ func TestArgumentSlice(t *testing.T) {
 
 // benchmark random slice generator
 func BenchmarkGenerateSlice(b *testing.B) {
-	gen := New()
+	gen := samples.New()
 	for i := 0; i < b.N; i++ {
 		gen.Slice(100, 1, 10)
 	}

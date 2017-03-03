@@ -1,6 +1,9 @@
-package samples
+package samples_test
 
-import "testing"
+import (
+	"github.com/AndreaGhizzoni/zenium/samples"
+	"testing"
+)
 
 // This function tests a creation of random matrix of with correct input data.
 func TestCreateRandomMatrix(t *testing.T) {
@@ -36,7 +39,7 @@ func TestCreateNegativeRandomMatrix(t *testing.T) {
 
 // utility functions to create and check a generated matrix.
 func testRandomMatrix(r, c, min, max int64, t *testing.T) {
-	gen := New()
+	gen := samples.New()
 	matrix, err := gen.Matrix(r, c, min, max)
 	if err != nil {
 		t.Fatal(err)
@@ -67,7 +70,7 @@ func testRandomMatrix(r, c, min, max int64, t *testing.T) {
 
 // This function tests the creation of random matrix with incorrect input data.
 func TestArgumentMatrix(t *testing.T) {
-	gen := New()
+	gen := samples.New()
 
 	// this must fail, rows < 0
 	if _, err := gen.Matrix(-1, 1, 1, 10); err == nil {
@@ -87,7 +90,7 @@ func TestArgumentMatrix(t *testing.T) {
 
 // benchmark random matrix generator
 func BenchmarkGenerateMatrix(b *testing.B) {
-	gen := New()
+	gen := samples.New()
 	for i := 0; i < b.N; i++ {
 		gen.Matrix(10, 10, -10, 10)
 	}
