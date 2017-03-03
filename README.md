@@ -1,7 +1,5 @@
 # Project Zenium
-Zenium it'a a utility program to generate random data files in the format 
-specifid below.
-
+Zenium it'a a utility program to generate random data files.
 
 ## Get this project
 ```bash
@@ -15,8 +13,11 @@ go install github.com/AndreaGhizzoni/zenium
 ../bin/zenium
 ```
 
+Keep in mind that this project is still WORK IN PROGRESS, so changes will be
+made.
+
 ## Structure of data files
-All generated data fils will be in the following format:
+All generated data files will be in the following format:
 
 ### Random Slice (aka Vectors)
 ```bash
