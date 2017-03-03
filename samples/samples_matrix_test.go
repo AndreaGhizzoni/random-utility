@@ -5,64 +5,59 @@ import (
 	"testing"
 )
 
-// This function tests a creation of random matrix of with correct input data.
-func TestCreateRandomMatrix(t *testing.T) {
-	var rows int64 = 10
-	var cols int64 = 10
-	var min int64 = -100
-	var max int64 = 100
+func TestCreationRandomMatrix(t *testing.T) {
+	var tableTest = []struct {
+		r   int64
+		c   int64
+		min int64
+		max int64
+	}{
+		{1, 1, 1, 10},
+		{10, 10, 1, 10},
+		{20, 20, 1, 10},
+		{1, 1, -10, -1},
+		{10, 10, -10, -1},
+		{20, 20, -10, -1},
+		{1, 1, -100, 100},
+		{10, 10, -1000, 1000},
+		{20, 20, -10000, 10000},
+		{20, 20, -100000, 100000},
+		{20, 20, -1000000, 1000000},
+		{20, 20, -10000000, 10000000},
+		{1, 20, -10000, 10000},
+		{20, 1, -100000, 100000},
+		{20, 5, -1000000, 1000000},
+		{5, 20, -10000000, 10000000},
+	}
 
-	testRandomMatrix(rows, cols, min, max, t)
-}
-
-// This function tests a creation of random matrix of positive numbers with
-// correct input data.
-func TestCreatePositiveRandomMatrix(t *testing.T) {
-	var rows int64 = 10
-	var cols int64 = 10
-	var min int64 = 1
-	var max int64 = 100
-
-	testRandomMatrix(rows, cols, min, max, t)
-}
-
-// This function tests a creation of random matrix of negative numbers with
-// correct input data.
-func TestCreateNegativeRandomMatrix(t *testing.T) {
-	var rows int64 = 10
-	var cols int64 = 10
-	var min int64 = -100
-	var max int64 = -1
-
-	testRandomMatrix(rows, cols, min, max, t)
-}
-
-// utility functions to create and check a generated matrix.
-func testRandomMatrix(r, c, min, max int64, t *testing.T) {
 	gen := samples.New()
-	matrix, err := gen.Matrix(r, c, min, max)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("random matrix generated: %v", matrix)
+	for _, tt := range tableTest {
+		matrix, err := gen.Matrix(tt.r, tt.c, tt.min, tt.max)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Logf("random matrix generated: %v", matrix)
 
-	// check rows of generated matrix
-	rows := int64(len(matrix))
-	if rows != r {
-		t.Fatalf("rows length mismatch: %d != %d", rows, r)
-	}
+		// check rows of generated matrix
+		actualRows := int64(len(matrix))
+		if actualRows != tt.r {
+			t.Fatalf("rows length mismatch: actual %d != expected %d",
+				actualRows, tt.r)
+		}
 
-	// check cols of generated matrix
-	cols := int64(len(matrix[0]))
-	if cols != c {
-		t.Fatalf("cols length mismatch: %d != %d", cols, c)
-	}
+		// check cols of generated matrix
+		actualCols := int64(len(matrix[0]))
+		if actualCols != tt.c {
+			t.Fatalf("cols length mismatch: actual %d != expected %d",
+				actualCols, tt.c)
+		}
 
-	for i, slice := range matrix {
-		for j, e := range slice {
-			if e < min || e >= max {
-				t.Fatalf("matrix[%d][%d]=%d is out of bound (%d, %d)",
-					i, j, e, min, max)
+		for i, slice := range matrix {
+			for j, e := range slice {
+				if e < tt.min || e >= tt.max {
+					t.Fatalf("matrix[%d][%d]=%d is out of bound (%d, %d)",
+						i, j, e, tt.min, tt.max)
+				}
 			}
 		}
 	}
