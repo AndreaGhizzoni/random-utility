@@ -61,16 +61,19 @@ func printDefaults(msg string) {
 
 func main() {
 	flag.Parse()
+	// no flag set, print defaults
 	if flag.NFlag() == 0 {
 		printDefaults(fmt.Sprintf(helpHeader, os.Args[0]))
 	}
 
+	// missing -g|-generate cli flag
 	if sampleGeneration == "" {
 		printDefaults("What to generate missinig: check --generate|-g " +
 			"argument.")
 	}
 
 	gen := samples.New()
+	// check if -g|-generate flag has an accepted value
 	switch sampleGeneration {
 	case "rslice":
 		s, err := gen.Slice(cols, m, M)
