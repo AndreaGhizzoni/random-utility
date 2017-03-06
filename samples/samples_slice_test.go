@@ -25,7 +25,7 @@ func TestCreationRandomSlice(t *testing.T) {
 		{20, -10000000, 10000000},
 	}
 
-	gen := samples.New()
+	gen := samples.NewGenerator()
 	for _, tt := range tableTest {
 		rSlice, err := gen.Slice(tt.length, tt.min, tt.max)
 		if err != nil {
@@ -52,7 +52,7 @@ func TestCreationRandomSlice(t *testing.T) {
 
 // This function tests the creation of random slice with incorrect input data.
 func TestArgumentSlice(t *testing.T) {
-	gen := samples.New()
+	gen := samples.NewGenerator()
 
 	// this must fail: length < 0
 	if _, err := gen.Slice(-1, 1, 10); err == nil {
@@ -68,7 +68,7 @@ func TestArgumentSlice(t *testing.T) {
 
 // benchmark random slice generator
 func BenchmarkGenerateSlice(b *testing.B) {
-	gen := samples.New()
+	gen := samples.NewGenerator()
 	for i := 0; i < b.N; i++ {
 		gen.Slice(100, 1, 10)
 	}

@@ -72,7 +72,7 @@ func main() {
 			"argument.")
 	}
 
-	gen := samples.New()
+	gen := samples.NewGenerator()
 	// check if -g|-generate flag has an accepted value
 	switch sampleGeneration {
 	case "rslice":

@@ -30,7 +30,7 @@ func TestCreationRandomMatrix(t *testing.T) {
 		{5, 20, -10000000, 10000000},
 	}
 
-	gen := samples.New()
+	gen := samples.NewGenerator()
 	for _, tt := range tableTest {
 		matrix, err := gen.Matrix(tt.r, tt.c, tt.min, tt.max)
 		if err != nil {
@@ -65,7 +65,7 @@ func TestCreationRandomMatrix(t *testing.T) {
 
 // This function tests the creation of random matrix with incorrect input data.
 func TestArgumentMatrix(t *testing.T) {
-	gen := samples.New()
+	gen := samples.NewGenerator()
 
 	// this must fail, rows < 0
 	if _, err := gen.Matrix(-1, 1, 1, 10); err == nil {
@@ -85,7 +85,7 @@ func TestArgumentMatrix(t *testing.T) {
 
 // benchmark random matrix generator
 func BenchmarkGenerateMatrix(b *testing.B) {
-	gen := samples.New()
+	gen := samples.NewGenerator()
 	for i := 0; i < b.N; i++ {
 		gen.Matrix(10, 10, -10, 10)
 	}

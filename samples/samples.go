@@ -12,7 +12,7 @@ type Generator struct {
 
 // This method returns a new instance of Generator type.
 // This generator is initialized with current time as seed.
-func New() *Generator {
+func NewGenerator() *Generator {
 	return &Generator{
 		r: rand.New(NewTimeSeed()),
 	}
