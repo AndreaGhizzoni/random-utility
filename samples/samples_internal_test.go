@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestInt64Creation(t *testing.T) {
+func TestCreationInt64(t *testing.T) {
 	var tableTest = []struct {
 		min, max int64
 	}{

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestCreationRandomMatrix(t *testing.T) {
+func TestCreationMatrix(t *testing.T) {
 	var tableTest = []struct {
 		r   int64
 		c   int64
@@ -64,7 +64,7 @@ func TestCreationRandomMatrix(t *testing.T) {
 }
 
 // This function tests the creation of random matrix with incorrect input data.
-func TestArgumentMatrix(t *testing.T) {
+func TestArgumentsMatrix(t *testing.T) {
 	gen := samples.NewGenerator()
 
 	// this must fail, rows < 0

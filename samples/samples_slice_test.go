@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestCreationRandomSlice(t *testing.T) {
+func TestCreationSlice(t *testing.T) {
 	var tableTest = []struct {
 		length int64
 		min    int64
@@ -51,7 +51,7 @@ func TestCreationRandomSlice(t *testing.T) {
 }
 
 // This function tests the creation of random slice with incorrect input data.
-func TestArgumentSlice(t *testing.T) {
+func TestArgumentsSlice(t *testing.T) {
 	gen := samples.NewGenerator()
 
 	// this must fail: length < 0
