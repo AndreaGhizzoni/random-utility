@@ -3,20 +3,39 @@ package out
 import (
 	"bytes"
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"os"
 )
 
 // utility function to convert a slice of int64 into a slice of bytes.
+// return (nil, error) if slice is nil or if writing int64 in the buffer rise
+// an error.
 func convert(slice []int64) ([]byte, error) {
+	if slice == nil {
+		return nil, errors.New("Slice given can not be null")
+	}
+
+	// make a buffer of  bytes
 	buf := new(bytes.Buffer)
+	// for every int64 into slice, convert it in byte and push it in the buffer
 	for _, e := range slice {
 		if err := binary.Write(buf, binary.LittleEndian, e); err != nil {
 			return nil, err
 		}
 	}
 
+	// Bytes() function return a []byte
 	return buf.Bytes(), nil
+}
+
+func checkRW(file string) error {
+	if _, err := os.OpenFile(file, os.O_RDWR, 0666); err != nil {
+		if os.IsPermission(err) {
+			return err
+		}
+	}
+	return nil
 }
 
 func WriteA(slice []int64, path string) error {
