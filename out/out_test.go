@@ -1,8 +1,9 @@
-package out
+package out_test
 
 import (
 	"bufio"
 	"fmt"
+	"github.com/AndreaGhizzoni/zenium/out"
 	"os"
 	"strconv"
 	"testing"
@@ -18,7 +19,7 @@ func TestWrite(t *testing.T) {
 	path := "text.out"
 	slice := []int64{1, 1, 2, 3, 5, 8, 13, 21}
 
-	if err := Write(slice, path); err != nil {
+	if err := out.Write(slice, path); err != nil {
 		t.Fatal(err)
 	}
 
