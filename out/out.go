@@ -1,9 +1,27 @@
 package out
 
 import (
+	"bytes"
+	"encoding/binary"
 	"fmt"
 	"os"
 )
+
+// utility function to convert a slice of int64 into a slice of bytes.
+func convert(slice []int64) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	for _, e := range slice {
+		if err := binary.Write(buf, binary.LittleEndian, e); err != nil {
+			return nil, err
+		}
+	}
+
+	return buf.Bytes(), nil
+}
+
+func WriteA(slice []int64, path string) error {
+	return nil
+}
 
 // TODO add doc
 func Write(slice []int64, path string) error {
