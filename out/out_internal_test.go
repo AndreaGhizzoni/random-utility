@@ -24,6 +24,12 @@ func TestConvert(t *testing.T) {
 	}
 }
 
+func TestArgumentConvert(t *testing.T) {
+	if _, err := convert(nil); err != nil {
+		t.Fatal("convert(nil) must return an error")
+	}
+}
+
 func TestArgumentsCheckRW(t *testing.T) {
 	noRead := "no-read.txt"
 	nr, err := os.Create(noRead)
