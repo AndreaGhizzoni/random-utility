@@ -39,8 +39,8 @@ func TestArgumentsCheckRW(t *testing.T) {
 	nr.Chmod(0222) // this sets permissions to --w--w--w-
 	defer os.Remove(noRead)
 
-	if err := checkRW(noRead); err == nil {
-		t.Fatal("With no-read permission checkRW must return an error")
+	if _, err := openIfCanRW(noRead); err == nil {
+		t.Fatal("With no-read permission openIfCanRW() must return an error")
 	}
 
 	noWrite := "no-write.txt"
@@ -51,7 +51,7 @@ func TestArgumentsCheckRW(t *testing.T) {
 	nw.Chmod(0444) // this sets permissions to -r--r--r--
 	defer os.Remove(noWrite)
 
-	if err := checkRW(noWrite); err == nil {
-		t.Fatal("With no-write permission checkRW must return an error")
+	if _, err := openIfCanRW(noWrite); err == nil {
+		t.Fatal("With no-write permission openIfCanRW() must return an error")
 	}
 }

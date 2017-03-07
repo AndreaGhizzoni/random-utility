@@ -29,13 +29,14 @@ func convert(slice []int64) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func checkRW(file string) error {
-	if _, err := os.OpenFile(file, os.O_RDWR, 0666); err != nil {
+func openIfCanRW(file string) (*os.File, error) {
+	openFile, err := os.OpenFile(file, os.O_RDWR, 0666)
+	if err != nil {
 		if os.IsPermission(err) {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	return openFile, nil
 }
 
 func WriteA(slice []int64, path string) error {
