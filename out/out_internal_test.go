@@ -34,7 +34,7 @@ func TestArgumentsCheckRW(t *testing.T) {
 	defer os.Remove(noRead)
 
 	if err := checkRW(noRead); err == nil {
-		t.Fatalf("check no read %v", err)
+		t.Fatal("With no-read permission checkRW must return an error")
 	}
 
 	noWrite := "no-write.txt"
@@ -46,6 +46,6 @@ func TestArgumentsCheckRW(t *testing.T) {
 	defer os.Remove(noWrite)
 
 	if err := checkRW(noWrite); err == nil {
-		t.Fatalf("check no write %v", err)
+		t.Fatal("With no-write permission checkRW must return an error")
 	}
 }
