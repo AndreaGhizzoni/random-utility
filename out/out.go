@@ -30,11 +30,21 @@ func convert(slice []int64) ([]byte, error) {
 }
 
 func openIfCanRW(file string) (*os.File, error) {
+	// TODO check path is nil
+
 	openFile, err := os.OpenFile(file, os.O_RDWR, 0666)
 	if err != nil {
 		if os.IsPermission(err) {
 			return nil, err
 		}
+	}
+
+	fileStat, errs := os.Stat(file)
+	if errs != nil {
+		return nil, errs
+	}
+	if fileStat.IsDir() {
+		return nil, errors.New("Given path is a directory")
 	}
 	return openFile, nil
 }
