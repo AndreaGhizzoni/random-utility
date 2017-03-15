@@ -29,6 +29,17 @@ func convert(slice []int64) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+// utility function to check if open file given is a directory or not.
+func isDirectory(file *os.File) (error, bool) {
+	fileStat, errs := os.Stat(file)
+	if errs != nil {
+		return nil, errors.New("Error while retriving stats from file")
+	}
+	return nil, fileStat.IsDir()
+}
+
+// utilty function to check if given file is readable or writable.
+// nil, err is occurred otherwise.
 func openIfCanRW(file string) (*os.File, error) {
 	// TODO check path is nil
 
@@ -39,14 +50,18 @@ func openIfCanRW(file string) (*os.File, error) {
 		}
 	}
 
-	fileStat, errs := os.Stat(file)
-	if errs != nil {
-		return nil, errs
-	}
-	if fileStat.IsDir() {
+	if err, isDir := isDirectory(openFile); err != nil {
+		return nil, err
+	} else if isDir {
 		return nil, errors.New("Given path is a directory")
 	}
+
 	return openFile, nil
+}
+
+// this utiliy function writes the header of the file according to structure
+// given. The headers for each data structure are described in README.
+func writeHeader(structure interface{}, path string) error {
 }
 
 func WriteA(slice []int64, path string) error {
