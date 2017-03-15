@@ -54,4 +54,6 @@ func TestArgumentsCheckRW(t *testing.T) {
 	if _, err := openIfCanRW(noWrite); err == nil {
 		t.Fatal("With no-write permission openIfCanRW() must return an error")
 	}
+
+	// TODO test if path points to a directory
 }
