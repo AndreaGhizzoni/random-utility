@@ -1,13 +1,24 @@
 package out
 
 import (
+	"io/ioutil"
 	"os"
 	"testing"
 )
 
-// TODO add test for isDirectory
+func TestIsDirectory(t *testing.T) {
 
-func TestArgumentsCheckRW(t *testing.T) {
+}
+
+func TestArgumentsIsDirectory(t *testing.T) {
+
+}
+
+func TestOpenIfCanRW(t *testing.T) {
+
+}
+
+func TestArgumentsOpenIfCanRW(t *testing.T) {
 	noRead := "no-read.txt"
 	nr, err := os.Create(noRead)
 	if err != nil {
@@ -15,7 +26,6 @@ func TestArgumentsCheckRW(t *testing.T) {
 	}
 	nr.Chmod(0222) // this sets permissions to --w--w--w-
 	defer os.Remove(noRead)
-
 	if _, err := openIfCanRW(noRead); err == nil {
 		t.Fatal("With no-read permission openIfCanRW() must return an error")
 	}
@@ -27,10 +37,13 @@ func TestArgumentsCheckRW(t *testing.T) {
 	}
 	nw.Chmod(0444) // this sets permissions to -r--r--r--
 	defer os.Remove(noWrite)
-
 	if _, err := openIfCanRW(noWrite); err == nil {
 		t.Fatal("With no-write permission openIfCanRW() must return an error")
 	}
 
-	// TODO test if path points to a directory
+	dirPath, err := ioutil.TempDir("", "aDir")
+	defer os.Remove(dirPath)
+	if _, err := openIfCanRW(dirPath); err == nil {
+		t.Fatal("With a directory openIfCanRW() must return an error")
+	}
 }
