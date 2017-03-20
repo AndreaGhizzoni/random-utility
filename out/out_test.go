@@ -2,6 +2,7 @@ package out_test
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"github.com/AndreaGhizzoni/zenium/out"
 	"os"
@@ -9,61 +10,70 @@ import (
 	"testing"
 )
 
-func failif(t *testing.T, err error) {
+func failIf(t *testing.T, err error) {
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestWrite(t *testing.T) {
-	path := "text.out"
-	slice := []int64{1, 1, 2, 3, 5, 8, 13, 21}
-
-	if err := out.Write(slice, path); err != nil {
-		t.Fatal(err)
+	var tableTest = []struct {
+		path  string
+		slice []int64
+	}{
+		{"text1.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{"text2.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{"text3.out", []int64{0000000, 00000000}},
 	}
 
-	fileStat, err := os.Stat(path)
-	failif(t, err)
+	for _, tt := range tableTest {
+		if err := out.Write(tt.slice, tt.path); err != nil {
+			t.Fatal(err)
+		}
 
-	// checking file name
-	if fileStat.Name() != path {
-		failif(t,
-			fmt.Errorf("file name mismatch: %s != %s", fileStat.Name(), path),
-		)
-	}
+		fileStat, err := os.Stat(tt.path)
+		failIf(t, err)
 
-	// checking file size
-	if fileStat.Size() == 0 {
-		failif(t, fmt.Errorf("file size == 0"))
-	}
+		// checking file name
+		if fileStat.Name() != tt.path {
+			t.Fatal(fmt.Errorf("file name mismatch: %s != %s",
+				fileStat.Name(), tt.path))
+		}
 
-	// Now check the actual content
-	file, err1 := os.Open(path)
-	failif(t, err1)
-	defer file.Close()
+		// checking file size
+		if fileStat.Size() == 0 {
+			t.Fatal(errors.New("file size == 0"))
+		}
 
-	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanWords)
-	scanner.Scan()
-	sliceLen, err := strconv.ParseInt(scanner.Text(), 10, 64)
-	failif(t, err)
+		// Now check the actual content
+		file, err := os.Open(tt.path)
+		failIf(t, err)
 
-	result := make([]int64, sliceLen)
-	i := 0
-	for scanner.Scan() {
-		x, err := strconv.ParseInt(scanner.Text(), 10, 64)
-		failif(t, err)
-		result[i] = x
-		i += 1
-	}
+		scanner := bufio.NewScanner(file)
+		scanner.Split(bufio.ScanWords)
+		scanner.Scan()
+		sliceLen, err := strconv.ParseInt(scanner.Text(), 10, 64)
+		failIf(t, err)
 
-	if err := scanner.Err(); err != nil {
-		t.Fatal(err)
-	}
+		result := make([]int64, sliceLen)
+		i := 0
+		for scanner.Scan() {
+			x, err := strconv.ParseInt(scanner.Text(), 10, 64)
+			failIf(t, err)
+			result[i] = x
+			i += 1
+		}
 
-	t.Logf("len(result)=%d", len(result))
-	for _, v := range result {
-		t.Logf("%d ", v)
+		if err := scanner.Err(); err != nil {
+			t.Fatal(err)
+		}
+
+		t.Logf("len(result)=%d", len(result))
+		for _, v := range result {
+			t.Logf("%d ", v)
+		}
+
+        file.Close()
+        os.Remove(tt.path)
 	}
 }
