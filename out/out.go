@@ -41,8 +41,11 @@ func isDirectory(file *os.File) (error, bool) {
 // utilty function to check if given file is readable or writable.
 // nil, err is occurred otherwise.
 func openIfCanRW(file string) (*os.File, error) {
-	// TODO check path is nil
+	if file == nil {
+		return nil, errors.New("Given string cao not be nil.")
+	}
 
+	// check if file is readable or writable.
 	openFile, err := os.OpenFile(file, os.O_RDWR, 0666)
 	if err != nil {
 		if os.IsPermission(err) {
@@ -50,6 +53,7 @@ func openIfCanRW(file string) (*os.File, error) {
 		}
 	}
 
+	// check fi given path points to directory
 	if err, isDir := isDirectory(openFile); err != nil {
 		return nil, err
 	} else if isDir {
