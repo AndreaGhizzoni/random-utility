@@ -17,22 +17,49 @@ func failIf(t *testing.T, err error) {
 	}
 }
 
+func TestWriteArgs(t *testing.T) {
+	var paths = []string{
+		"/text.out",
+		"/../text.out",
+		"/.text.out",
+		"/../.text.out",
+	}
+
+	for _, p := range paths {
+		t.Logf("trying path: %s", p)
+
+		abs, err := filepath.Abs(p)
+		t.Logf("abs: %s %v", abs, err)
+		dir, file1 := filepath.Split(abs)
+		t.Logf("dir, file: %s %s", dir, file1)
+
+		if err := out.Write([]int64{}, p); err == nil {
+			t.Fatalf("Write method with %s must fail.", dir+file1)
+		}
+
+        t.Logf("Ok, can't open %s", dir+file1)
+	}
+}
+
 func TestWrite(t *testing.T) {
+	testsDir := "_test"
+	defer os.RemoveAll(testsDir)
+
 	var tableTest = []struct {
 		path  string
 		slice []int64
 	}{
-		{"text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
-		{"text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{"text.out", []int64{0000000, 00000000}},
+		{testsDir + "/text1.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{testsDir + "/text2.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{testsDir + "/text3.out", []int64{0000000, 00000000}},
 
-		{".text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
-		{".text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{".text.out", []int64{0000000, 00000000}},
+		{testsDir + "/.text4.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{testsDir + "/.text5.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{testsDir + "/.text6.out", []int64{0000000, 00000000}},
 
-		{"dir/.text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
-		{"dir/.text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{"dir/.text.out", []int64{0000000, 00000000}},
+		{testsDir + "/dir/.text7.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{testsDir + "/dir/.text8.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{testsDir + "/dir/.text9.out", []int64{0000000, 00000000}},
 	}
 
 	for _, tt := range tableTest {
@@ -90,10 +117,5 @@ func TestWrite(t *testing.T) {
 		}
 
 		file.Close()
-		if dir != "" {
-			os.RemoveAll(dir)
-		} else {
-			os.Remove(file1)
-		}
 	}
 }
