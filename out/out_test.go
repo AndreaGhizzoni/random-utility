@@ -49,20 +49,21 @@ func TestWrite(t *testing.T) {
 		path  string
 		slice []int64
 	}{
-		{testsDir + "/text1.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
-		{testsDir + "/text2.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{testsDir + "/text3.out", []int64{0000000, 00000000}},
+		{testsDir + "/text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{testsDir + "/text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{testsDir + "/text.out", []int64{0000000, 00000000}},
 
-		{testsDir + "/.text4.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
-		{testsDir + "/.text5.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{testsDir + "/.text6.out", []int64{0000000, 00000000}},
+		{testsDir + "/.text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{testsDir + "/.text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{testsDir + "/.text.out", []int64{0000000, 00000000}},
 
-		{testsDir + "/dir/.text7.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
-		{testsDir + "/dir/.text8.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{testsDir + "/dir/.text9.out", []int64{0000000, 00000000}},
+		{testsDir + "/dir/.text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{testsDir + "/dir/.text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{testsDir + "/dir/.text.out", []int64{0000000, 00000000}},
 	}
 
-	for _, tt := range tableTest {
+	for i, tt := range tableTest {
+        tt.path += "."+strconv.Itoa(i)
 		t.Logf("trying path: %s", tt.path)
 
 		abs, err := filepath.Abs(tt.path)
