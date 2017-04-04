@@ -9,12 +9,15 @@ import (
 	"testing"
 )
 
+// utility method
 func failIf(t *testing.T, err error) {
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
+// this function tests the correct behavior of out.Write method with
+// not corrected inputs
 func TestWriteArgs(t *testing.T) {
 	var paths = []string{
 		"/text.out",
@@ -39,6 +42,8 @@ func TestWriteArgs(t *testing.T) {
 	}
 }
 
+// this function tests the correct behavior of out.Write method with correct
+// inputs
 func TestWrite(t *testing.T) {
 	testsDir := "_test"
 	defer os.RemoveAll(testsDir)
@@ -50,14 +55,20 @@ func TestWrite(t *testing.T) {
 		{testsDir + "/text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
 		{testsDir + "/text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
 		{testsDir + "/text.out", []int64{0000000, 00000000}},
+		{testsDir + "/text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
+		{testsDir + "/text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
 
 		{testsDir + "/.text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
 		{testsDir + "/.text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
 		{testsDir + "/.text.out", []int64{0000000, 00000000}},
+		{testsDir + "/.text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
+		{testsDir + "/.text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
 
 		{testsDir + "/dir/.text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
 		{testsDir + "/dir/.text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
 		{testsDir + "/dir/.text.out", []int64{0000000, 00000000}},
+		{testsDir + "/dir/.text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
+		{testsDir + "/dir/.text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
 	}
 
 	for i, tt := range tableTest {
@@ -124,7 +135,7 @@ func TestWrite(t *testing.T) {
 				len(tt.slice))
 		}
 
-        // check if every elements from slice's file is equal to input slice
+		// check if every elements from slice's file is equal to input slice
 		for i, e := range sliceFromFile {
 			if e != tt.slice[i] {
 				t.Fatalf("Element from file %d != element from in slice %d",
@@ -132,7 +143,7 @@ func TestWrite(t *testing.T) {
 			}
 		}
 
-        // closing  file. not used defer because I'm in a loop.
-        file.Close()
+		// closing  file. not used defer because I'm in a loop.
+		file.Close()
 	}
 }
