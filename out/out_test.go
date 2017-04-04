@@ -2,8 +2,6 @@ package out_test
 
 import (
 	"bufio"
-	"errors"
-	"fmt"
 	"github.com/AndreaGhizzoni/zenium/out"
 	"os"
 	"path/filepath"
@@ -37,7 +35,7 @@ func TestWriteArgs(t *testing.T) {
 			t.Fatalf("Write method with %s must fail.", dir+file1)
 		}
 
-        t.Logf("Ok, can't open %s", dir+file1)
+		t.Logf("Ok, can't open %s", dir+file1)
 	}
 }
 
@@ -63,33 +61,36 @@ func TestWrite(t *testing.T) {
 	}
 
 	for i, tt := range tableTest {
-        tt.path += "."+strconv.Itoa(i)
-		t.Logf("trying path: %s", tt.path)
+		// this is necessary to create a dynamic file name
+		tt.path += "." + strconv.Itoa(i)
 
+		t.Logf("trying path: %s", tt.path)
 		abs, err := filepath.Abs(tt.path)
 		t.Logf("abs: %s %v", abs, err)
-		dir, file1 := filepath.Split(abs)
-		t.Logf("dir, file: %s %s", dir, file1)
+		dir, f := filepath.Split(abs)
+		t.Logf("dir, file: %s %s", dir, f)
 
+		// try to write
 		if err := out.Write(tt.slice, tt.path); err != nil {
 			t.Fatal(err)
 		}
 
+		// get the stat from file already written
 		fileStat, err := os.Stat(tt.path)
 		failIf(t, err)
 
 		// checking file name
-		if fileStat.Name() != filepath.Base(tt.path) {
-			t.Fatal(fmt.Errorf("file name mismatch: %s != %s",
-				fileStat.Name(), tt.path))
+		if fileStat.Name() != filepath.Base(f) {
+			t.Fatalf("file name mismatch: %s != %s", fileStat.Name(), f)
 		}
 
 		// checking file size
 		if fileStat.Size() == 0 {
-			t.Fatal(errors.New("file size == 0"))
+			t.Fatal("file already written has size == 0")
 		}
 
-		// Now check the actual content
+		// open new file and check if slice in it is equal to the slice that
+		// I have.
 		file, err := os.Open(tt.path)
 		failIf(t, err)
 
@@ -99,24 +100,39 @@ func TestWrite(t *testing.T) {
 		sliceLen, err := strconv.ParseInt(scanner.Text(), 10, 64)
 		failIf(t, err)
 
-		result := make([]int64, sliceLen)
+		// read int64 from file
+		sliceFromFile := make([]int64, sliceLen)
 		i := 0
 		for scanner.Scan() {
 			x, err := strconv.ParseInt(scanner.Text(), 10, 64)
 			failIf(t, err)
-			result[i] = x
+			sliceFromFile[i] = x
 			i += 1
 		}
 
+		// check if while read there war an error
 		if err := scanner.Err(); err != nil {
 			t.Fatal(err)
 		}
 
-		t.Logf("len(result)=%d", len(result))
-		for _, v := range result {
-			t.Logf("%d ", v)
+		// check lengths of sliceFromFile
+		t.Logf("len(sliceFromFile)=%d", len(sliceFromFile))
+		t.Log(sliceFromFile)
+		if len(sliceFromFile) != len(tt.slice) {
+			t.Fatalf("len(outRead) != len(tt.slice) : %d, %d",
+				len(sliceFromFile),
+				len(tt.slice))
 		}
 
-		file.Close()
+        // check if every elements from slice's file is equal to input slice
+		for i, e := range sliceFromFile {
+			if e != tt.slice[i] {
+				t.Fatalf("Element from file %d != element from in slice %d",
+					e, tt.path[i])
+			}
+		}
+
+        // closing  file. not used defer because I'm in a loop.
+        file.Close()
 	}
 }
