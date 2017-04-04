@@ -4,34 +4,30 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
-// utility function to check if given file is readable or writable.
+// Utility function to check if given file is readable or writable.
+// To this function must be passed a file path as argument.
 // nil, err is occurred otherwise.
-func openIfCanRW(file string) (*os.File, error) {
+func openFileIfCanRW(parentDir, file string) (*os.File, error) {
 	var f *os.File
 	var e error
-	fileInfo, err := os.Stat(file)
+	_, err := os.Stat(parentDir + file)
 
-	// if err != nil and file doesn't exists then skip directory check, and
-	// create a new file
+	// if err != nil and file doesn't exists create a new file
 	if os.IsNotExist(err) {
-		f, e = os.Create(file)
-	} else {
-		// check fi given path points to directory.
-		if fileInfo.IsDir() {
-			return nil, errors.New("Given path is a directory")
+		if parentDir != "" {
+			os.MkdirAll(parentDir, os.ModePerm)
 		}
-
-		// check if file is readable or writable.
-		f, e = os.OpenFile(file, os.O_RDWR, 0666)
+		f, e = os.Create(parentDir + file)
 	}
 
+	// check if file is readable or writable.
+	f, e = os.OpenFile(parentDir+file, os.O_RDWR, 0666)
 	// e is the error that comes from the creation or opening a new file.
-	if e != nil {
-		if os.IsPermission(e) {
-			return nil, e
-		}
+	if e != nil || os.IsPermission(e) {
+		return nil, e
 	}
 	return f, nil
 }
@@ -52,32 +48,46 @@ func writeSingleSlice(slice []int64, file *os.File) error {
 // this method write a given slice in path file given. error is returned if:
 // slice == nil, can not read/write (or is a directory) to file path or there
 // is an i/o error.
-func Write(slice []int64, path string) error {
+func Write(slice []int64, givenPath string) error {
 	if slice == nil {
 		return errors.New("Given slice can not be nil")
 	}
 
-	// TODO check illegal character like "", " ", "\n" ecc
+	if givenPath == "" {
+		return errors.New("Given path can not be empty string")
+	}
 
-	// open the file if only if passes all checks
-	file, err := openIfCanRW(path)
+	// sanitize path
+	path, err := filepath.Abs(givenPath)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	// split dir and file
+	dir, file := filepath.Split(path)
+	// if file is empty string means that givenPath leads to a folder
+	if file == "" {
+		return errors.New("Given path is a directory")
+	}
 
-	// create and write file header for slice. Check README
-	s := fmt.Sprintf("%d\n", len(slice))
-	if _, err := file.WriteString(s); err != nil {
+	// open the file (dir+file) if only and only if passes all checks
+	openedFile, err := openFileIfCanRW(dir, file)
+	if err != nil {
 		return err
 	}
-	// create and write file body
-	if err := writeSingleSlice(slice, file); err != nil {
+	defer openedFile.Close()
+
+	// create and write openedFile header for slice. Check README
+	s := fmt.Sprintf("%d\n", len(slice))
+	if _, err := openedFile.WriteString(s); err != nil {
+		return err
+	}
+	// create and write openedFile body
+	if err := writeSingleSlice(slice, openedFile); err != nil {
 		return err
 	}
 
 	// Issue a Sync to flush writes to stable storage
-	if err := file.Sync(); err != nil {
+	if err := openedFile.Sync(); err != nil {
 		return err
 	}
 

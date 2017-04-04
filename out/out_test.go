@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/AndreaGhizzoni/zenium/out"
 	"os"
+	"path/filepath"
 	"strconv"
 	"testing"
 )
@@ -21,12 +22,27 @@ func TestWrite(t *testing.T) {
 		path  string
 		slice []int64
 	}{
-		{"text1.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
-		{"text2.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{"text3.out", []int64{0000000, 00000000}},
+		{"text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{"text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{"text.out", []int64{0000000, 00000000}},
+
+		{".text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{".text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{".text.out", []int64{0000000, 00000000}},
+
+		{"dir/.text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{"dir/.text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{"dir/.text.out", []int64{0000000, 00000000}},
 	}
 
 	for _, tt := range tableTest {
+		t.Logf("trying path: %s", tt.path)
+
+		abs, err := filepath.Abs(tt.path)
+		t.Logf("abs: %s %v", abs, err)
+		dir, file1 := filepath.Split(abs)
+		t.Logf("dir, file: %s %s", dir, file1)
+
 		if err := out.Write(tt.slice, tt.path); err != nil {
 			t.Fatal(err)
 		}
@@ -35,7 +51,7 @@ func TestWrite(t *testing.T) {
 		failIf(t, err)
 
 		// checking file name
-		if fileStat.Name() != tt.path {
+		if fileStat.Name() != filepath.Base(tt.path) {
 			t.Fatal(fmt.Errorf("file name mismatch: %s != %s",
 				fileStat.Name(), tt.path))
 		}
@@ -73,7 +89,11 @@ func TestWrite(t *testing.T) {
 			t.Logf("%d ", v)
 		}
 
-        file.Close()
-        os.Remove(tt.path)
+		file.Close()
+		if dir != "" {
+			os.RemoveAll(dir)
+		} else {
+			os.Remove(file1)
+		}
 	}
 }

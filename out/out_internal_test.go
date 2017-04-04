@@ -17,8 +17,8 @@ func TestArgumentsOpenIfCanRW(t *testing.T) {
 	}
 	nr.Chmod(0222) // this sets permissions to --w--w--w-
 	defer os.Remove(noRead)
-	if _, err := openIfCanRW(noRead); err == nil {
-		t.Fatal("With no-read permission, openIfCanRW() must return an error")
+	if _, err := openFileIfCanRW("", noRead); err == nil {
+		t.Fatal("With no-read permission, openFileIfCanRW() must return an error")
 	}
 
 	noWrite := "no-write.txt"
@@ -28,8 +28,8 @@ func TestArgumentsOpenIfCanRW(t *testing.T) {
 	}
 	nw.Chmod(0444) // this sets permissions to -r--r--r--
 	defer os.Remove(noWrite)
-	if _, err := openIfCanRW(noWrite); err == nil {
-		t.Fatal("With no-write permission, openIfCanRW() must return an error")
+	if _, err := openFileIfCanRW("", noWrite); err == nil {
+		t.Fatal("With no-write permission, openFileIfCanRW() must return an error")
 	}
 
 	aDir := "aDir"
@@ -37,7 +37,7 @@ func TestArgumentsOpenIfCanRW(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer os.Remove(aDir)
-	if _, err := openIfCanRW(aDir); err == nil {
-		t.Fatal("With a directory, openIfCanRW() must return an error")
+	if _, err := openFileIfCanRW("", aDir); err == nil {
+		t.Fatal("With a directory, openFileIfCanRW() must return an error")
 	}
 }
