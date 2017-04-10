@@ -5,11 +5,27 @@ import (
 	"testing"
 )
 
-func TestOpenIfCanRW(t *testing.T) {
+func TestOpenFileIfCanRW(t *testing.T) {
+	aFile := "file.txt"
+	if _, err := os.Create(aFile); err != nil {
+		t.Fatal(err.Error())
+	}
+	// try to open a file that exists.
+	if fd, err := openFileIfCanRW("", aFile); err != nil {
+		t.Fatal(err.Error())
+	} else {
+		os.Remove(fd.Name()) // remove it
+	}
 
+	// try to open a file that doesn't exists yet.
+	if fd, err := openFileIfCanRW("", "newFile"); err != nil {
+		t.Fatal(err.Error())
+	} else {
+		os.Remove(fd.Name()) // remove it
+	}
 }
 
-func TestArgumentsOpenIfCanRW(t *testing.T) {
+func TestOpenFileIfCanRWArguments(t *testing.T) {
 	noRead := "no-read.txt"
 	nr, err := os.Create(noRead)
 	if err != nil {
