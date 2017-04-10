@@ -32,6 +32,28 @@ func openFileIfCanRW(parentDir, file string) (*os.File, error) {
 	return f, nil
 }
 
+// reusable method to sanitize given path and split it in absolute path and
+// file name. err != nil if givenPath is empty string or error occurs while
+// processing it.
+func sanitizePath(givenPath string) (dir, file string, err error) {
+	if givenPath == "" {
+		return "", "", errors.New("Given path can not be empty string")
+	}
+
+	// sanitize path
+	path, err := filepath.Abs(givenPath)
+	if err != nil {
+		return "", "", err
+	}
+	// split dir and file
+	dir, file = filepath.Split(path)
+	// if file is empty string means that givenPath leads to a folder
+	if file == "" {
+		return "", "", errors.New("Given path is a directory")
+	}
+	return dir, file, nil
+}
+
 // reusable method to write a single slice on given file
 func writeSingleSlice(slice []int64, file *os.File) error {
 	var s string
@@ -53,20 +75,10 @@ func Write(slice []int64, givenPath string) error {
 		return errors.New("Given slice can not be nil")
 	}
 
-	if givenPath == "" {
-		return errors.New("Given path can not be empty string")
-	}
-
-	// sanitize path
-	path, err := filepath.Abs(givenPath)
+	// sanitize the given path
+	dir, file, err := sanitizePath(givenPath)
 	if err != nil {
 		return err
-	}
-	// split dir and file
-	dir, file := filepath.Split(path)
-	// if file is empty string means that givenPath leads to a folder
-	if file == "" {
-		return errors.New("Given path is a directory")
 	}
 
 	// open the file (dir+file) if only and only if passes all checks
