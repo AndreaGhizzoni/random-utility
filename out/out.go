@@ -105,3 +105,44 @@ func WriteSlice(slice []int64, givenPath string) error {
 
 	return nil
 }
+
+// TODO add doc
+func WriteMatrix(matrix [][]int64, givenPath string) error {
+	if matrix == nil {
+		return errors.New("Given matrix can not be nil")
+	}
+
+	// sanitize the given path
+	dir, file, err := sanitizePath(givenPath)
+	if err != nil {
+		return err
+	}
+
+	// open the file (dir+file) if only and only if passes all checks
+	openedFile, err := openFileIfCanRW(dir, file)
+	defer openedFile.Close()
+	if err != nil {
+		return err
+	}
+
+	// TODO check matrix has at least one row
+
+	// write header for matrix. Check README
+	s := fmt.Sprintf("%d %d\n", len(matrix), len(matrix[0]))
+	if _, err := openedFile.WriteString(s); err != nil {
+		return err
+	}
+
+	// write every matrix row into the file
+	for _, slice := range matrix {
+		if err := writeSingleSlice(slice, openedFile); err != nil {
+			return err
+		}
+	}
+
+	// Issue a Sync to flush writes to stable storage
+	if err := openedFile.Sync(); err != nil {
+		return err
+	}
+	return nil
+}
