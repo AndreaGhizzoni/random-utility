@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// this method test openFileIfCanRW function with correct argument
 func TestOpenFileIfCanRW(t *testing.T) {
 	aFile := "file.txt"
 	if _, err := os.Create(aFile); err != nil {
@@ -14,6 +15,7 @@ func TestOpenFileIfCanRW(t *testing.T) {
 	if fd, err := openFileIfCanRW("", aFile); err != nil {
 		t.Fatal(err.Error())
 	} else {
+        fd.Close()
 		os.Remove(fd.Name()) // remove it
 	}
 
@@ -21,10 +23,12 @@ func TestOpenFileIfCanRW(t *testing.T) {
 	if fd, err := openFileIfCanRW("", "newFile"); err != nil {
 		t.Fatal(err.Error())
 	} else {
+        fd.Close()
 		os.Remove(fd.Name()) // remove it
 	}
 }
 
+// this method tests openFileIfCanRW function with file without permissions
 func TestOpenFileIfCanRWArguments(t *testing.T) {
 	noRead := "no-read.txt"
 	nr, err := os.Create(noRead)
