@@ -16,7 +16,7 @@ func failIf(t *testing.T, err error) {
 	}
 }
 
-// this function tests the correct behavior of out.Write method with
+// this function tests the correct behavior of out.WriteSlice method with
 // not corrected inputs
 func TestWriteArgs(t *testing.T) {
 	var paths = []string{
@@ -34,15 +34,15 @@ func TestWriteArgs(t *testing.T) {
 		dir, file1 := filepath.Split(abs)
 		t.Logf("dir, file: %s %s", dir, file1)
 
-		if err := out.Write([]int64{}, p); err == nil {
-			t.Fatalf("Write method with %s must fail.", dir+file1)
+		if err := out.WriteSlice([]int64{}, p); err == nil {
+			t.Fatalf("WriteSlice method with %s must fail.", dir+file1)
 		}
 
 		t.Logf("Ok, can't open %s", dir+file1)
 	}
 }
 
-// this function tests the correct behavior of out.Write method with correct
+// this function tests the correct behavior of out.WriteSlice method with correct
 // inputs
 func TestWrite(t *testing.T) {
 	testsDir := "_test"
@@ -82,7 +82,7 @@ func TestWrite(t *testing.T) {
 		t.Logf("dir, file: %s %s", dir, f)
 
 		// try to write
-		if err := out.Write(tt.slice, tt.path); err != nil {
+		if err := out.WriteSlice(tt.slice, tt.path); err != nil {
 			t.Fatal(err)
 		}
 

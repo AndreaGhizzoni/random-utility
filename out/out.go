@@ -70,7 +70,7 @@ func writeSingleSlice(slice []int64, file *os.File) error {
 // this method write a given slice in path file given. error is returned if:
 // slice == nil, can not read/write (or is a directory) to file path or there
 // is an i/o error.
-func Write(slice []int64, givenPath string) error {
+func WriteSlice(slice []int64, givenPath string) error {
 	if slice == nil {
 		return errors.New("Given slice can not be nil")
 	}
