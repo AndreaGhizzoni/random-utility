@@ -83,17 +83,17 @@ func WriteSlice(slice []int64, givenPath string) error {
 
 	// open the file (dir+file) if only and only if passes all checks
 	openedFile, err := openFileIfCanRW(dir, file)
+	defer openedFile.Close()
 	if err != nil {
 		return err
 	}
-	defer openedFile.Close()
 
-	// create and write openedFile header for slice. Check README
+	// write header for slice. Check README
 	s := fmt.Sprintf("%d\n", len(slice))
 	if _, err := openedFile.WriteString(s); err != nil {
 		return err
 	}
-	// create and write openedFile body
+	// write slice
 	if err := writeSingleSlice(slice, openedFile); err != nil {
 		return err
 	}
@@ -102,11 +102,14 @@ func WriteSlice(slice []int64, givenPath string) error {
 	if err := openedFile.Sync(); err != nil {
 		return err
 	}
-
 	return nil
 }
 
-// TODO add doc
+// this method write a given matrix in path file given. error is returned if:
+// matrix == nil, can not read/write (or is a directory) to file path or there
+// is an i/o error.
+// This method assumes that every rows in the matrix has the same number of
+// elements of matrix[0]
 func WriteMatrix(matrix [][]int64, givenPath string) error {
 	if matrix == nil {
 		return errors.New("Given matrix can not be nil")
@@ -125,12 +128,15 @@ func WriteMatrix(matrix [][]int64, givenPath string) error {
 		return err
 	}
 
-	// TODO check matrix has at least one row
-
 	// write header for matrix. Check README
-	s := fmt.Sprintf("%d %d\n", len(matrix), len(matrix[0]))
-	if _, err := openedFile.WriteString(s); err != nil {
-		return err
+	// check matrix has at least one row
+	if rows := len(matrix); rows != 0 {
+		s := fmt.Sprintf("%d %d\n", rows, len(matrix[0]))
+		if _, err := openedFile.WriteString(s); err != nil {
+			return err
+		}
+	} else {
+		return errors.New("Given Matrix has zero rows")
 	}
 
 	// write every matrix row into the file
