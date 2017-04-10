@@ -18,7 +18,7 @@ func failIf(t *testing.T, err error) {
 
 // this function tests the correct behavior of out.WriteSlice method with
 // not corrected inputs
-func TestWriteArgs(t *testing.T) {
+func TestWriteSliceArgs(t *testing.T) {
 	var paths = []string{
 		"/text.out",
 		"/../text.out",
@@ -44,7 +44,7 @@ func TestWriteArgs(t *testing.T) {
 
 // this function tests the correct behavior of out.WriteSlice method with correct
 // inputs
-func TestWrite(t *testing.T) {
+func TestWriteSlice(t *testing.T) {
 	testsDir := "_test"
 	defer os.RemoveAll(testsDir)
 
