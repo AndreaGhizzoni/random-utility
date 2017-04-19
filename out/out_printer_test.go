@@ -16,6 +16,15 @@ func failIf(t *testing.T, err error) {
 	}
 }
 
+// utility method to log file path
+func logPath(t *testing.T, p string) {
+	t.Logf("trying path: %s", p)
+	abs, err := filepath.Abs(p)
+	t.Logf("abs: %s %v", abs, err)
+	dir, file := filepath.Split(abs)
+	t.Logf("dir, file: %s %s", dir, file)
+}
+
 // this function tests the correct behavior of out.NewPrinter method with
 // correct inputs
 func TestNewPrinter(t *testing.T) {
@@ -31,18 +40,13 @@ func TestNewPrinter(t *testing.T) {
 	}
 
 	for _, p := range paths {
-		t.Logf("trying path: %s", p)
-
-		abs, err := filepath.Abs(p)
-		t.Logf("abs: %s %v", abs, err)
-		dir, file := filepath.Split(abs)
-		t.Logf("dir, file: %s %s", dir, file)
+		logPath(t, p)
 
 		if _, err := out.NewPrinter(p); err != nil {
-			t.Fatalf("out.NewPrinter(%s) must not fail.", dir+file)
+			t.Fatalf("out.NewPrinter(%s) must not fail.", p)
 		}
 
-		t.Logf("Ok, can open %s", dir+file)
+		t.Logf("Ok, can open %s", p)
 	}
 }
 
@@ -58,18 +62,13 @@ func TestNewPrinter_Arguments(t *testing.T) {
 	}
 
 	for _, p := range paths {
-		t.Logf("trying path: %s", p)
-
-		abs, err := filepath.Abs(p)
-		t.Logf("abs: %s %v", abs, err)
-		dir, file := filepath.Split(abs)
-		t.Logf("dir, file: %s %s", dir, file)
+		logPath(t, p)
 
 		if _, err := out.NewPrinter(p); err == nil {
-			t.Fatalf("out.NewPrinter(%s) must fail.", dir+file)
+			t.Fatalf("out.NewPrinter(%s) must fail.", p)
 		}
 
-		t.Logf("Ok, can't open %s", dir+file)
+		t.Logf("Ok, can't open %s", p)
 	}
 }
 
@@ -88,33 +87,30 @@ func TestPrinter_WriteSlice(t *testing.T) {
 		{tD + "text.out", []int64{0000000, 00000000}},
 		{tD + "text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
 		{tD + "text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
+		{tD + "text.out", []int64{}},
 
 		{tD + ".text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
 		{tD + ".text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
 		{tD + ".text.out", []int64{0000000, 00000000}},
 		{tD + ".text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
 		{tD + ".text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
+		{tD + ".text.out", []int64{}},
 
 		{tD + "dir/.text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
 		{tD + "dir/.text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
 		{tD + "dir/.text.out", []int64{0000000, 00000000}},
 		{tD + "dir/.text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
 		{tD + "dir/.text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
+		{tD + "dir/.text.out", []int64{}},
 	}
 
 	for i, tt := range tableTest {
 		// this is necessary to create a dynamic file name
 		tt.path += "." + strconv.Itoa(i)
-
-		t.Logf("trying path: %s", tt.path)
-		abs, err := filepath.Abs(tt.path)
-		t.Logf("abs: %s %v", abs, err)
-		dir, f := filepath.Split(abs)
-		t.Logf("dir, file: %s %s", dir, f)
+		logPath(t, tt.path)
 
 		printer, err := out.NewPrinter(tt.path)
 		failIf(t, err)
-
 		// try to write
 		if err := printer.WriteSlice(tt.slice); err != nil {
 			t.Fatal(err)
@@ -125,8 +121,8 @@ func TestPrinter_WriteSlice(t *testing.T) {
 		failIf(t, err)
 
 		// checking file name
-		if fileStat.Name() != filepath.Base(f) {
-			t.Fatalf("file name mismatch: %s != %s", fileStat.Name(), f)
+		if fileStat.Name() != filepath.Base(tt.path) {
+			t.Fatalf("file name mismatch: %s != %s", fileStat.Name(), tt.path)
 		}
 
 		// checking file size
@@ -134,7 +130,7 @@ func TestPrinter_WriteSlice(t *testing.T) {
 			t.Fatal("file already written has size == 0")
 		}
 
-		// open new file and check if slice in it is equal to the slice that
+		// open new file and check if matrix in it is equal to the matrix that
 		// I have.
 		file, err := os.Open(tt.path)
 		failIf(t, err)
@@ -147,12 +143,14 @@ func TestPrinter_WriteSlice(t *testing.T) {
 
 		// read int64 from file
 		sliceFromFile := make([]int64, sliceLen)
-		i := 0
-		for scanner.Scan() {
-			x, err := strconv.ParseInt(scanner.Text(), 10, 64)
-			failIf(t, err)
-			sliceFromFile[i] = x
-			i += 1
+		if sliceLen != 0 {
+			i := 0
+			for scanner.Scan() {
+				x, err := strconv.ParseInt(scanner.Text(), 10, 64)
+				failIf(t, err)
+				sliceFromFile[i] = x
+				i += 1
+			}
 		}
 
 		// check if while read there war an error
@@ -164,12 +162,12 @@ func TestPrinter_WriteSlice(t *testing.T) {
 		t.Logf("len(sliceFromFile)=%d", len(sliceFromFile))
 		t.Log(sliceFromFile)
 		if len(sliceFromFile) != len(tt.slice) {
-			t.Fatalf("len(outRead) != len(tt.slice) : %d, %d",
+			t.Fatalf("len(sliceFromFile) != len(tt.slice) : %d, %d",
 				len(sliceFromFile),
 				len(tt.slice))
 		}
 
-		// check if every elements from slice's file is equal to input slice
+		// check if every elements from matrix's file is equal to input matrix
 		for i, e := range sliceFromFile {
 			if e != tt.slice[i] {
 				t.Fatalf("Element from file %d != element from in slice %d",
@@ -182,9 +180,33 @@ func TestPrinter_WriteSlice(t *testing.T) {
 	}
 }
 
-// TODO add docs
+// this function tests the correct behavior of out.Printer.WriteSlice method
+// with wrong inputs
 func TestPrinter_WriteSlice_Arguments(t *testing.T) {
-	// TODO
+	tD := "_test/"
+	defer os.RemoveAll(tD)
+
+	var nilSlice []int64
+	var tableTest = []struct {
+		path  string
+		slice []int64
+	}{
+		{tD + "text.out", nilSlice},
+		{tD + ".text.out", nilSlice},
+		{tD + "dir/.text.out", nilSlice},
+		{"", nilSlice},
+	}
+
+	for _, tt := range tableTest {
+		logPath(t, tt.path)
+
+		printer, err := out.NewPrinter(tt.path)
+		failIf(t, err)
+
+		if err := printer.WriteSlice(tt.slice); err == nil {
+			t.Fatalf("printer.WriteSlice(%v) must fail", tt.slice)
+		}
+	}
 }
 
 // this function tests the correct behavior of out.Printer.WriteMatrix method
@@ -202,33 +224,30 @@ func TestPrinter_WriteMatrix(t *testing.T) {
 		{tD + "text.out", [][]int64{{0000000}, {00000000}}},
 		{tD + "text.out", [][]int64{{-1, -1, -2, -3}, {-5, -8, -13, -21}}},
 		{tD + "text.out", [][]int64{{1, 1, -2, 3}, {-5, 8, -13, 21}}},
+		{tD + "text.out", [][]int64{{}}},
 
 		{tD + ".text.out", [][]int64{{1, 1, 2, 3}, {5, 8, 13, 21}}},
 		{tD + ".text.out", [][]int64{{0, 0, 0, 0}, {0, 0, 0, 0}}},
 		{tD + ".text.out", [][]int64{{0000000}, {00000000}}},
 		{tD + ".text.out", [][]int64{{-1, -1, -2, -3}, {-5, -8, -13, -21}}},
 		{tD + ".text.out", [][]int64{{1, 1, -2, 3}, {-5, 8, -13, 21}}},
+		{tD + ".text.out", [][]int64{{}}},
 
 		{tD + "dir/.text.out", [][]int64{{1, 1, 2, 3}, {5, 8, 13, 21}}},
 		{tD + "dir/.text.out", [][]int64{{0, 0, 0, 0}, {0, 0, 0, 0, 0}}},
 		{tD + "dir/.text.out", [][]int64{{0000000}, {00000000}}},
 		{tD + "dir/.text.out", [][]int64{{-1, -1, -2, -3}, {-5, -8, -13, -21}}},
 		{tD + "dir/.text.out", [][]int64{{1, 1, -2, 3}, {-5, 8, -13, 21}}},
+		{tD + "dir/.text.out", [][]int64{{}}},
 	}
 
 	for i, tt := range tableTest {
 		// this is necessary to create a dynamic file name
 		tt.path += "." + strconv.Itoa(i)
-
-		t.Logf("trying path: %s", tt.path)
-		abs, err := filepath.Abs(tt.path)
-		t.Logf("abs: %s %v", abs, err)
-		dir, f := filepath.Split(abs)
-		t.Logf("dir, file: %s %s", dir, f)
+		logPath(t, tt.path)
 
 		printer, err := out.NewPrinter(tt.path)
 		failIf(t, err)
-
 		// try to write
 		if err := printer.WriteMatrix(tt.matrix); err != nil {
 			t.Fatal(err)
@@ -239,8 +258,8 @@ func TestPrinter_WriteMatrix(t *testing.T) {
 		failIf(t, err)
 
 		// checking file name
-		if fileStat.Name() != filepath.Base(f) {
-			t.Fatalf("file name mismatch: %s != %s", fileStat.Name(), f)
+		if fileStat.Name() != filepath.Base(tt.path) {
+			t.Fatalf("file name mismatch: %s != %s", fileStat.Name(), tt.path)
 		}
 
 		// checking file size
@@ -309,7 +328,38 @@ func TestPrinter_WriteMatrix(t *testing.T) {
 	}
 }
 
-// TODO add docs
+// this function tests the correct behavior of out.Printer.WriteMatrix method
+// with wrong inputs
 func TestPrinter_WriteMatrix_Arguments(t *testing.T) {
-	// TODO
+	tD := "_test/"
+	defer os.RemoveAll(tD)
+
+	var nilMatrix [][]int64
+	var tableTest = []struct {
+		path   string
+		matrix [][]int64
+	}{
+		{tD + "text.out", nilMatrix},
+		{tD + "text.out", [][]int64{}},
+
+		{tD + ".text.out", nilMatrix},
+		{tD + ".text.out", [][]int64{}},
+
+		{tD + "dir/.text.out", nilMatrix},
+		{tD + "dir/text.out", [][]int64{}},
+
+		{"", nilMatrix},
+		{"", [][]int64{}},
+	}
+
+	for _, tt := range tableTest {
+		logPath(t, tt.path)
+
+		printer, err := out.NewPrinter(tt.path)
+		failIf(t, err)
+
+		if err := printer.WriteMatrix(tt.matrix); err == nil {
+			t.Fatalf("printer.WriteSlice(%v) must fail", tt.matrix)
+		}
+	}
 }
