@@ -11,7 +11,7 @@ import (
 
 // this function tests the correct behavior of out.WriteMatrix method with
 // not corrected inputs
-func TestWriteMatrixArgs(t *testing.T) {
+func TestWriteMatrixArguments(t *testing.T) {
 	var paths = []string{
 		"/text.out",
 		"/../text.out",
@@ -27,8 +27,8 @@ func TestWriteMatrixArgs(t *testing.T) {
 		dir, file1 := filepath.Split(abs)
 		t.Logf("dir, file: %s %s", dir, file1)
 
-		if err := out.WriteMatrix([][]int64{}, p); err == nil {
-			t.Fatalf("WriteSlice method with %s must fail.", dir+file1)
+		if _, err := out.NewPrinter(p); err == nil {
+			t.Fatalf("out.NewPrinter(%s) must fail.", dir+file1)
 		}
 
 		t.Logf("Ok, can't open %s", dir+file1)
@@ -74,8 +74,11 @@ func TestWriteMatrix(t *testing.T) {
 		dir, f := filepath.Split(abs)
 		t.Logf("dir, file: %s %s", dir, f)
 
+		printer, err := out.NewPrinter(tt.path)
+		failIf(t, err)
+
 		// try to write
-		if err := out.WriteMatrix(tt.matrix, tt.path); err != nil {
+		if err := printer.WriteMatrix(tt.matrix); err != nil {
 			t.Fatal(err)
 		}
 
