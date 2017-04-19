@@ -4,135 +4,86 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"path/filepath"
 )
 
-// Utility function to check if given file is readable or writable.
-// To this function must be passed a file path as argument.
-// nil, err is occurred otherwise.
-func openFileIfCanRW(parentDir, file string) (*os.File, error) {
-	var f *os.File
-	var e error
-	_, err := os.Stat(parentDir + file)
-
-	// if err != nil and file doesn't exists create a new file
-	if os.IsNotExist(err) {
-		if parentDir != "" {
-			os.MkdirAll(parentDir, os.ModePerm)
-		}
-		f, e = os.Create(parentDir + file)
-	}
-
-	// check if file is readable or writable.
-	f, e = os.OpenFile(parentDir+file, os.O_RDWR, 0666)
-	// e is the error that comes from the creation or opening a new file.
-	if e != nil || os.IsPermission(e) {
-		return nil, e
-	}
-	return f, nil
+// TODO add docs
+type Printer struct {
+	file *os.File
 }
 
-// reusable method to sanitize given path and split it in absolute path and
-// file name. err != nil if givenPath is empty string or error occurs while
-// processing it.
-func sanitizePath(givenPath string) (dir, file string, err error) {
-	if givenPath == "" {
-		return "", "", errors.New("Given path can not be empty string")
+// TODO add docs
+// if path is empty string, default output is console
+func NewPrinter(path string) (*Printer, error) {
+	if path != "" {
+		dir, file, errS := sanitizePath(path)
+		if errS != nil {
+			return nil, errS
+		}
+		oFile, errF := openFileIfCanRW(dir, file)
+		if errF != nil {
+			return nil, errF
+		}
+		return &Printer{oFile}, nil
 	}
-
-	// sanitize path
-	path, err := filepath.Abs(givenPath)
-	if err != nil {
-		return "", "", err
-	}
-	// split dir and file
-	dir, file = filepath.Split(path)
-	// if file is empty string means that givenPath leads to a folder
-	if file == "" {
-		return "", "", errors.New("Given path is a directory")
-	}
-	return dir, file, nil
+	// TODO need to test these cases
+	return &Printer{os.Stdout}, nil
 }
 
 // reusable method to write a single slice on given file
-func writeSingleSlice(slice []int64, file *os.File) error {
+func (p *Printer) writeSingleSlice(slice []int64) error {
 	var s string
 	for _, v := range slice {
 		s = fmt.Sprintf("%d ", v)
-		if _, err := file.WriteString(s); err != nil {
+		if _, err := p.file.WriteString(s); err != nil {
 			return err
 		}
 	}
-	_, err := file.WriteString("\n")
+	_, err := p.file.WriteString("\n")
 	return err
 }
 
+// TODO update docs
 // this method write a given slice in path file given. error is returned if:
 // slice == nil, can not read/write (or is a directory) to file path or there
 // is an i/o error.
-func WriteSlice(slice []int64, givenPath string) error {
+func (p *Printer) WriteSlice(slice []int64) error {
 	if slice == nil {
 		return errors.New("Given slice can not be nil")
 	}
 
-	// sanitize the given path
-	dir, file, err := sanitizePath(givenPath)
-	if err != nil {
-		return err
-	}
-
-	// open the file (dir+file) if only and only if passes all checks
-	openedFile, err := openFileIfCanRW(dir, file)
-	defer openedFile.Close()
-	if err != nil {
-		return err
-	}
-
 	// write header for slice. Check README
 	s := fmt.Sprintf("%d\n", len(slice))
-	if _, err := openedFile.WriteString(s); err != nil {
+	if _, err := p.file.WriteString(s); err != nil {
 		return err
 	}
 	// write slice
-	if err := writeSingleSlice(slice, openedFile); err != nil {
+	if err := p.writeSingleSlice(slice); err != nil {
 		return err
 	}
 
 	// Issue a Sync to flush writes to stable storage
-	if err := openedFile.Sync(); err != nil {
+	if err := p.file.Sync(); err != nil {
 		return err
 	}
 	return nil
 }
 
+// TODO update docs
 // this method write a given matrix in path file given. error is returned if:
 // matrix == nil, can not read/write (or is a directory) to file path or there
 // is an i/o error.
 // This method assumes that every rows in the matrix has the same number of
 // elements of matrix[0]
-func WriteMatrix(matrix [][]int64, givenPath string) error {
+func (p *Printer) WriteMatrix(matrix [][]int64) error {
 	if matrix == nil {
 		return errors.New("Given matrix can not be nil")
-	}
-
-	// sanitize the given path
-	dir, file, err := sanitizePath(givenPath)
-	if err != nil {
-		return err
-	}
-
-	// open the file (dir+file) if only and only if passes all checks
-	openedFile, err := openFileIfCanRW(dir, file)
-	defer openedFile.Close()
-	if err != nil {
-		return err
 	}
 
 	// write header for matrix. Check README
 	// check matrix has at least one row
 	if rows := len(matrix); rows != 0 {
 		s := fmt.Sprintf("%d %d\n", rows, len(matrix[0]))
-		if _, err := openedFile.WriteString(s); err != nil {
+		if _, err := p.file.WriteString(s); err != nil {
 			return err
 		}
 	} else {
@@ -141,13 +92,13 @@ func WriteMatrix(matrix [][]int64, givenPath string) error {
 
 	// write every matrix row into the file
 	for _, slice := range matrix {
-		if err := writeSingleSlice(slice, openedFile); err != nil {
+		if err := p.writeSingleSlice(slice); err != nil {
 			return err
 		}
 	}
 
 	// Issue a Sync to flush writes to stable storage
-	if err := openedFile.Sync(); err != nil {
+	if err := p.file.Sync(); err != nil {
 		return err
 	}
 	return nil
