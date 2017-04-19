@@ -15,7 +15,7 @@ func TestOpenFileIfCanRW(t *testing.T) {
 	if fd, err := openFileIfCanRW("", aFile); err != nil {
 		t.Fatal(err.Error())
 	} else {
-        fd.Close()
+		fd.Close()
 		os.Remove(fd.Name()) // remove it
 	}
 
@@ -23,13 +23,13 @@ func TestOpenFileIfCanRW(t *testing.T) {
 	if fd, err := openFileIfCanRW("", "newFile"); err != nil {
 		t.Fatal(err.Error())
 	} else {
-        fd.Close()
+		fd.Close()
 		os.Remove(fd.Name()) // remove it
 	}
 }
 
 // this method tests openFileIfCanRW function with file without permissions
-func TestOpenFileIfCanRWArguments(t *testing.T) {
+func TestOpenFileIfCanRW_Arguments(t *testing.T) {
 	noRead := "no-read.txt"
 	nr, err := os.Create(noRead)
 	if err != nil {
@@ -60,4 +60,14 @@ func TestOpenFileIfCanRWArguments(t *testing.T) {
 	if _, err := openFileIfCanRW("", aDir); err == nil {
 		t.Fatal("With a directory, openFileIfCanRW() must return an error")
 	}
+}
+
+// TODO add docs
+func TestSanitizePath(t *testing.T) {
+	// TODO
+}
+
+// TODO add docs
+func TestSanitizePath_Arguments(t *testing.T) {
+	// TODO
 }
