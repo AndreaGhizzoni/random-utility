@@ -6,13 +6,17 @@ import (
 	"os"
 )
 
-// TODO add docs
+// This structure is responsible to know how to write custom structure to file.
 type Printer struct {
 	file *os.File
 }
 
-// TODO add docs
-// if path is empty string, default output is console
+// This method instance a new printer that knows how to write some data
+// structures to given path, according to README.md file.
+// Argument path must be a file path (relative/absolute) or empty string to
+// print on standard out.
+// error is returned if: path leads to a non-readable/non-writable file or
+// leads to a directory o
 func NewPrinter(path string) (*Printer, error) {
 	if path != "" {
 		dir, file, errS := sanitizePath(path)
@@ -42,10 +46,8 @@ func (p *Printer) writeSingleSlice(slice []int64) error {
 	return err
 }
 
-// TODO update docs
-// this method write a given slice in path file given. error is returned if:
-// slice == nil, can not read/write (or is a directory) to file path or there
-// is an i/o error.
+// This method write a given slice according to instanced out.Printer.
+// error is returned if: slice == nil or there is an i/o error.
 func (p *Printer) WriteSlice(slice []int64) error {
 	if slice == nil {
 		return errors.New("Given slice can not be nil")
@@ -68,10 +70,8 @@ func (p *Printer) WriteSlice(slice []int64) error {
 	return nil
 }
 
-// TODO update docs
-// this method write a given matrix in path file given. error is returned if:
-// matrix == nil, can not read/write (or is a directory) to file path or there
-// is an i/o error.
+// This method write a given matrix according to instanced out.Printer.
+// error is returned if: matrix == nil or there is an i/o error.
 // This method assumes that every rows in the matrix has the same number of
 // elements of matrix[0]
 func (p *Printer) WriteMatrix(matrix [][]int64) error {
