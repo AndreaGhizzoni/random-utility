@@ -283,3 +283,8 @@ func TestPrinter_WriteMatrix(t *testing.T) {
 		file.Close()
 	}
 }
+
+// TODO add docs
+func TestPrinter_WriteMatrix_Arguments(t *testing.T) {
+	// TODO
+}
