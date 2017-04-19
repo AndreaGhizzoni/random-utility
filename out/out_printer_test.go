@@ -16,9 +16,34 @@ func failIf(t *testing.T, err error) {
 	}
 }
 
-// TODO description
+// this function tests the correct behavior of out.NewPrinter method with
+// correct inputs
 func TestNewPrinter(t *testing.T) {
-	// TODO
+	tD := "_test"
+	defer os.RemoveAll(tD)
+
+	// list of paths
+	var paths = []string{
+		tD + "/text.out",
+		tD + "/some/folder/../.text.out",
+		tD + "/some/folder/../text.out",
+		"", // write to stdout
+	}
+
+	for _, p := range paths {
+		t.Logf("trying path: %s", p)
+
+		abs, err := filepath.Abs(p)
+		t.Logf("abs: %s %v", abs, err)
+		dir, file := filepath.Split(abs)
+		t.Logf("dir, file: %s %s", dir, file)
+
+		if _, err := out.NewPrinter(p); err != nil {
+			t.Fatalf("out.NewPrinter(%s) must not fail.", dir+file)
+		}
+
+		t.Logf("Ok, can open %s", dir+file)
+	}
 }
 
 // this function tests the correct behavior of out.NewPrinter method with wrong
@@ -37,44 +62,44 @@ func TestNewPrinter_Arguments(t *testing.T) {
 
 		abs, err := filepath.Abs(p)
 		t.Logf("abs: %s %v", abs, err)
-		dir, file1 := filepath.Split(abs)
-		t.Logf("dir, file: %s %s", dir, file1)
+		dir, file := filepath.Split(abs)
+		t.Logf("dir, file: %s %s", dir, file)
 
 		if _, err := out.NewPrinter(p); err == nil {
-			t.Fatalf("out.NewPrinter(%s) must fail.", dir+file1)
+			t.Fatalf("out.NewPrinter(%s) must fail.", dir+file)
 		}
 
-		t.Logf("Ok, can't open %s", dir+file1)
+		t.Logf("Ok, can't open %s", dir+file)
 	}
 }
 
 // this function tests the correct behavior of out.Printer.WriteSlice method
 // with correct inputs
 func TestPrinter_WriteSlice(t *testing.T) {
-	tD := "_test"
+	tD := "_test/"
 	defer os.RemoveAll(tD)
 
 	var tableTest = []struct {
 		path  string
 		slice []int64
 	}{
-		{tD + "/text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
-		{tD + "/text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{tD + "/text.out", []int64{0000000, 00000000}},
-		{tD + "/text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
-		{tD + "/text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
+		{tD + "text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{tD + "text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{tD + "text.out", []int64{0000000, 00000000}},
+		{tD + "text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
+		{tD + "text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
 
-		{tD + "/.text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
-		{tD + "/.text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{tD + "/.text.out", []int64{0000000, 00000000}},
-		{tD + "/.text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
-		{tD + "/.text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
+		{tD + ".text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{tD + ".text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{tD + ".text.out", []int64{0000000, 00000000}},
+		{tD + ".text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
+		{tD + ".text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
 
-		{tD + "/dir/.text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
-		{tD + "/dir/.text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		{tD + "/dir/.text.out", []int64{0000000, 00000000}},
-		{tD + "/dir/.text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
-		{tD + "/dir/.text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
+		{tD + "dir/.text.out", []int64{1, 1, 2, 3, 5, 8, 13, 21}},
+		{tD + "dir/.text.out", []int64{0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{tD + "dir/.text.out", []int64{0000000, 00000000}},
+		{tD + "dir/.text.out", []int64{-1, -1, -2, -3, -5, -8, -13, -21}},
+		{tD + "dir/.text.out", []int64{1, 1, -2, 3, -5, 8, -13, 21}},
 	}
 
 	for i, tt := range tableTest {
@@ -165,30 +190,30 @@ func TestPrinter_WriteSlice_Arguments(t *testing.T) {
 // this function tests the correct behavior of out.Printer.WriteMatrix method
 // with correct inputs
 func TestPrinter_WriteMatrix(t *testing.T) {
-	tD := "_test"
+	tD := "_test/"
 	defer os.RemoveAll(tD)
 
 	var tableTest = []struct {
 		path   string
 		matrix [][]int64
 	}{
-		{tD + "/text.out", [][]int64{{1, 1, 2, 3}, {5, 8, 13, 21}}},
-		{tD + "/text.out", [][]int64{{0, 0, 0, 0}, {0, 0, 0, 0}}},
-		{tD + "/text.out", [][]int64{{0000000}, {00000000}}},
-		{tD + "/text.out", [][]int64{{-1, -1, -2, -3}, {-5, -8, -13, -21}}},
-		{tD + "/text.out", [][]int64{{1, 1, -2, 3}, {-5, 8, -13, 21}}},
+		{tD + "text.out", [][]int64{{1, 1, 2, 3}, {5, 8, 13, 21}}},
+		{tD + "text.out", [][]int64{{0, 0, 0, 0}, {0, 0, 0, 0}}},
+		{tD + "text.out", [][]int64{{0000000}, {00000000}}},
+		{tD + "text.out", [][]int64{{-1, -1, -2, -3}, {-5, -8, -13, -21}}},
+		{tD + "text.out", [][]int64{{1, 1, -2, 3}, {-5, 8, -13, 21}}},
 
-		{tD + "/.text.out", [][]int64{{1, 1, 2, 3}, {5, 8, 13, 21}}},
-		{tD + "/.text.out", [][]int64{{0, 0, 0, 0}, {0, 0, 0, 0}}},
-		{tD + "/.text.out", [][]int64{{0000000}, {00000000}}},
-		{tD + "/.text.out", [][]int64{{-1, -1, -2, -3}, {-5, -8, -13, -21}}},
-		{tD + "/.text.out", [][]int64{{1, 1, -2, 3}, {-5, 8, -13, 21}}},
+		{tD + ".text.out", [][]int64{{1, 1, 2, 3}, {5, 8, 13, 21}}},
+		{tD + ".text.out", [][]int64{{0, 0, 0, 0}, {0, 0, 0, 0}}},
+		{tD + ".text.out", [][]int64{{0000000}, {00000000}}},
+		{tD + ".text.out", [][]int64{{-1, -1, -2, -3}, {-5, -8, -13, -21}}},
+		{tD + ".text.out", [][]int64{{1, 1, -2, 3}, {-5, 8, -13, 21}}},
 
-		{tD + "/dir/.text.out", [][]int64{{1, 1, 2, 3}, {5, 8, 13, 21}}},
-		{tD + "/dir/.text.out", [][]int64{{0, 0, 0, 0}, {0, 0, 0, 0, 0}}},
-		{tD + "/dir/.text.out", [][]int64{{0000000}, {00000000}}},
-		{tD + "/dir/.text.out", [][]int64{{-1, -1, -2, -3}, {-5, -8, -13, -21}}},
-		{tD + "/dir/.text.out", [][]int64{{1, 1, -2, 3}, {-5, 8, -13, 21}}},
+		{tD + "dir/.text.out", [][]int64{{1, 1, 2, 3}, {5, 8, 13, 21}}},
+		{tD + "dir/.text.out", [][]int64{{0, 0, 0, 0}, {0, 0, 0, 0, 0}}},
+		{tD + "dir/.text.out", [][]int64{{0000000}, {00000000}}},
+		{tD + "dir/.text.out", [][]int64{{-1, -1, -2, -3}, {-5, -8, -13, -21}}},
+		{tD + "dir/.text.out", [][]int64{{1, 1, -2, 3}, {-5, 8, -13, 21}}},
 	}
 
 	for i, tt := range tableTest {
