@@ -36,6 +36,15 @@ func checkBound(min, max int64) error {
 	return nil
 }
 
+// Int64 generate a random number between min <= x < max. err != nil if
+// min > max.
+func (g *Generator) Int64(min, max int64) (int64, error) {
+	if err := checkBound(min, max); err != nil {
+		return -1, err
+	}
+	return g.r.Int63n(max-min) + min, nil
+}
+
 // This function generate a slice of len length, with random numbers X where
 // min <= X < max.
 // If len <= 0 or min > max return a error.
@@ -51,7 +60,7 @@ func (g *Generator) Slice(len, min, max int64) ([]int64, error) {
 	perm := make([]int64, len)
 	var i int64 = 0
 	for ; i < len; i++ {
-		intRandom, e := getInt64(g.r, min, max)
+		intRandom, e := g.Int64(min, max)
 		if e != nil {
 			return nil, e
 		}
