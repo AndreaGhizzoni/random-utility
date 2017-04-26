@@ -31,9 +31,16 @@ func openFileIfCanRW(parentDir, file string) (*os.File, error) {
 	return f, nil
 }
 
-// reusable method to sanitize given path and split it in absolute path and
-// file name. err != nil if givenPath is empty string or error occurs while
-// processing it.
+// Reusable method to convert a given path, possible relative, into absolute
+// path and split into parent directory and file. If given path results to /
+// (root). For example:
+//  sanitizePath("someFile.txt") = (<relative_path>, "someFile.txt", nil)
+//  sanitizePath("/abs/path/someFile.txt") = ("/abs/path/", "someFile.txt", nil)
+//  sanitizePath("/abs/path/someFolder") = ("/abs/path/", "someFolder", nil)
+//  sanitizePath("/") = ("/", "", nil)
+//  sanitizePath("/this/../is/../root/../") = ("/", "", nil)
+// err != nil if givenPath is empty string or error occurs while processing
+// the absolute path.
 func sanitizePath(givenPath string) (dir, file string, err error) {
 	if givenPath == "" {
 		return "", "", errors.New("Given path can not be empty string")
@@ -44,11 +51,7 @@ func sanitizePath(givenPath string) (dir, file string, err error) {
 	if err != nil {
 		return "", "", err
 	}
-	// split dir and file
+	// split parent folder and file
 	dir, file = filepath.Split(path)
-	// if file is empty string means that givenPath leads to a folder
-	if file == "" {
-		return "", "", errors.New("Given path is a directory")
-	}
 	return dir, file, nil
 }
