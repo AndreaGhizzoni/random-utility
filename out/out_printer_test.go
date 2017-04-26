@@ -27,15 +27,15 @@ func logPath(t *testing.T, p string) {
 
 // this function tests the correct behavior of out.NewPrinter method with
 // correct inputs
-func TestNewPrinter(t *testing.T) {
-	tD := "_test"
+func TestPrinter_NewPrinter(t *testing.T) {
+	tD := "_test/"
 	defer os.RemoveAll(tD)
 
 	// list of paths
 	var paths = []string{
-		tD + "/text.out",
-		tD + "/some/folder/../.text.out",
-		tD + "/some/folder/../text.out",
+		tD + "text.out",
+		tD + "some/folder/../.text.out",
+		tD + "some/folder/../text.out",
 		"", // write to stdout
 	}
 
@@ -52,7 +52,7 @@ func TestNewPrinter(t *testing.T) {
 
 // this function tests the correct behavior of out.NewPrinter method with wrong
 // inputs
-func TestNewPrinter_Arguments(t *testing.T) {
+func TestPrinter_NewPrinter_Arguments(t *testing.T) {
 	// list of wrong paths
 	var paths = []string{
 		"/text.out",
