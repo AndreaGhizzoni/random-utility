@@ -5,7 +5,8 @@ import (
 	"testing"
 )
 
-func TestCreationInt64(t *testing.T) {
+// This function test the creation of random int64 with correct input data.
+func TestGetInt64(t *testing.T) {
 	var tableTest = []struct {
 		min, max int64
 	}{
@@ -41,8 +42,8 @@ func TestCreationInt64(t *testing.T) {
 	}
 }
 
-// This function test the creation of random int64 with incorrect input data.
-func TestArgumentsInt64(t *testing.T) {
+// This function test the creation of random int64 with wrong input data.
+func TestGetInt64_Arguments(t *testing.T) {
 	// this must fail with nil random generator
 	if _, err := getInt64(nil, 10, 100); err == nil {
 		t.Fatal("With nil as Rand struct, getInt64() needs to return " +
@@ -56,10 +57,4 @@ func TestArgumentsInt64(t *testing.T) {
 	}
 }
 
-// benchmark random int64 generator
-func BenchmarkInt64(b *testing.B) {
-	r := rand.New(NewTimeSeed())
-	for i := 0; i < b.N; i++ {
-		getInt64(r, 10, 100)
-	}
-}
+
