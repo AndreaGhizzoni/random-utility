@@ -2,10 +2,20 @@ package out
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 )
 
-// this method test openFileIfCanRW function with correct argument
+// utility method to log file path.
+func logPath(t *testing.T, p string) {
+	t.Logf("trying path: %s", p)
+	abs, err := filepath.Abs(p)
+	t.Logf("abs: %s %v", abs, err)
+	dir, file := filepath.Split(abs)
+	t.Logf("dir, file: %s %s", dir, file)
+}
+
+// this method test openFileIfCanRW function with correct argument.
 func TestOpenFileIfCanRW(t *testing.T) {
 	aFile := "file.txt"
 	if _, err := os.Create(aFile); err != nil {
@@ -28,7 +38,7 @@ func TestOpenFileIfCanRW(t *testing.T) {
 	}
 }
 
-// this method tests openFileIfCanRW function with file without permissions
+// this method tests openFileIfCanRW function with file without permissions.
 func TestOpenFileIfCanRW_Arguments(t *testing.T) {
 	noRead := "no-read.txt"
 	nr, err := os.Create(noRead)
@@ -62,12 +72,46 @@ func TestOpenFileIfCanRW_Arguments(t *testing.T) {
 	}
 }
 
-// TODO add docs
+// this function tests the correct behavior of sanitizePath method with correct
+// inputs.
 func TestSanitizePath(t *testing.T) {
-	// TODO
+	var strings = []string{
+		"simpleFile.txt",
+		"simpleFolder",
+		"/this/../is/../root/../", // -> is /
+		"/this/leads/to/a/file.txt",
+		"/this/leads/to/a/folder",
+		"this/leads/to/a/file.txt",
+		"../this/is/also/a/file.txt",
+		"../this/../is/../also/../a/../file.txt",
+		"/",   // -> is /
+		"//",  // -> is /
+		"///", // -> is /
+	}
+
+	for _, s := range strings {
+		logPath(t, s)
+		dir, file, err := sanitizePath(s)
+		if dir == "" || err != nil {
+			t.Fatalf("sanitizePath(%s) fail with = %s, %s, %v",
+				s, dir, file, err)
+		}
+	}
 }
 
-// TODO add docs
+// this function tests the correct behavior of sanitizePath method with wrong
+// inputs.
 func TestSanitizePath_Arguments(t *testing.T) {
-	// TODO
+	var strings = []string{
+		"",
+	}
+
+	for _, s := range strings {
+		logPath(t, s)
+		dir, file, err := sanitizePath(s)
+		if err == nil {
+			t.Fatalf("sanitizePath(%s) must fail = %s, %s, %s",
+				s, dir, file, err)
+		}
+	}
 }
