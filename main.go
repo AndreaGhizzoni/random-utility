@@ -9,12 +9,12 @@ import (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "zenium"             // TODO move in separate file
-	app.Version = "app.Version"     // TODO move in separate file
-	app.Usage = "app.Usage"         // TODO move in separate file
-	app.UsageText = "app.UsageText" // TODO move in separate file
-	// TODO move in separate file
-	app.ArgsUsage = "generate [rslice|oslice|matrix|bound]"
+
+	// TODO move constants to separate file
+	app.Name = "zenium"
+	app.Version = "0.1"
+	app.Usage = "utility program to generate random data structures"
+	app.UsageText = app.Name + " [rslice|oslice|matrix|bound]"
 	app.Authors = []cli.Author{
 		{Name: "Andrea Ghizzoni", Email: "andrea.ghz@gmail.com"},
 	}
@@ -53,76 +53,69 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
-			Name:    "generate",
-			Aliases: []string{"g"},
-			//Category:    "generate command",
-			Usage: "generate usage",
-			//UsageText:   "generate usage text",
-			Description: "generate description",
-			ArgsUsage:   "generate args usage",
-			Subcommands: cli.Commands{
-				cli.Command{
-					Name:  "rslice",
-					Usage: "rslice usage",
-					Flags: []cli.Flag{outFlag, minFlag, maxFlag, lengthFlag},
-					Action: func(c *cli.Context) error {
-						fmt.Println("generate rslice command")
-						fmt.Printf("out flag is set ? %v\n", c.IsSet("out"))
-						fmt.Printf("min flag is set ? %v\n", c.IsSet("min"))
-						fmt.Printf("max flag is set ? %v\n", c.IsSet("max"))
-						fmt.Printf("length flag is set ? %v\n",
-							c.IsSet("length"))
-						return nil
-					},
-				},
-				cli.Command{
-					Name:  "oslice",
-					Usage: "oslice usage",
-					Flags: []cli.Flag{outFlag, minFlag, maxFlag, lengthFlag},
-					Action: func(c *cli.Context) error {
-						fmt.Println("generate oslice command")
-						fmt.Printf("out flag is set ? %v\n", c.IsSet("out"))
-						fmt.Printf("min flag is set ? %v\n", c.IsSet("min"))
-						fmt.Printf("max flag is set ? %v\n", c.IsSet("max"))
-						fmt.Printf("length flag is set ? %v\n",
-							c.IsSet("length"))
-						return nil
-					},
-				},
-				cli.Command{
-					Name:  "matrix",
-					Usage: "matrix usage",
-					Flags: []cli.Flag{outFlag, minFlag, maxFlag, rowsFlag,
-						columnFlag},
-					Action: func(c *cli.Context) error {
-						fmt.Println("generate matrix command")
-						fmt.Printf("out flag is set ? %v\n", c.IsSet("out"))
-						fmt.Printf("min flag is set ? %v\n", c.IsSet("min"))
-						fmt.Printf("max flag is set ? %v\n", c.IsSet("max"))
-						fmt.Printf("rows flag is set ? %v\n", c.IsSet("rows"))
-						fmt.Printf("cols flag is set ? %v\n",
-							c.IsSet("columns"))
-						return nil
-					},
-				},
-				cli.Command{
-					Name:  "bound",
-					Usage: "bound usage",
-					Flags: []cli.Flag{outFlag, minFlag, maxFlag},
-					Action: func(c *cli.Context) error {
-						fmt.Println("generate bound command")
-						fmt.Printf("out flag is set ? %v\n", c.IsSet("out"))
-						fmt.Printf("min flag is set ? %v\n", c.IsSet("min"))
-						fmt.Printf("max flag is set ? %v\n", c.IsSet("max"))
-						fmt.Printf("rows flag is set ? %v\n", c.IsSet("rows"))
-						return nil
-					},
-				},
-			},
+			Name:  "rslice",
+			Usage: "usage",
+			Flags: []cli.Flag{outFlag, minFlag, maxFlag, lengthFlag},
+            Action:generateRSlice,
+		},
+		{
+			Name:   "oslice",
+			Usage:  "usage",
+			Flags:  []cli.Flag{outFlag, minFlag, maxFlag, lengthFlag},
+			Action: generateOSlice,
+		},
+		{
+			Name:  "matrix",
+			Usage: "usage",
+			Flags: []cli.Flag{outFlag, minFlag, maxFlag, rowsFlag,
+				columnFlag},
+			Action: generateMatrix,
+		},
+		{
+			Name:   "bound",
+			Usage:  "usage",
+			Flags:  []cli.Flag{outFlag, minFlag, maxFlag},
+			Action: generateBound,
 		},
 	}
 
 	sort.Sort(cli.FlagsByName(app.Flags))
 	sort.Sort(cli.CommandsByName(app.Commands))
 	app.Run(os.Args)
+}
+
+func generateRSlice(c *cli.Context) error {
+	fmt.Println("generate rslice command")
+	fmt.Printf("out = %v\n", c.String("out"))
+	fmt.Printf("min = %v\n", c.Int64("min"))
+	fmt.Printf("max = %v\n", c.Int64("max"))
+	fmt.Printf("length = %v\n", c.Int64("length"))
+	return nil
+}
+
+func generateOSlice(c *cli.Context) error {
+	fmt.Println("generate oslice command")
+	fmt.Printf("out = %v\n", c.String("out"))
+	fmt.Printf("min = %v\n", c.Int64("min"))
+	fmt.Printf("max = %v\n", c.Int64("max"))
+	fmt.Printf("length = %v\n", c.Int64("length"))
+	return nil
+}
+
+func generateMatrix(c *cli.Context) error {
+	fmt.Println("generate matrix command")
+	fmt.Printf("out = %v\n", c.String("out"))
+	fmt.Printf("min = %v\n", c.Int64("min"))
+	fmt.Printf("max = %v\n", c.Int64("max"))
+	fmt.Printf("rows = %v\n", c.Int64("rows"))
+	fmt.Printf("cols = %v\n", c.Int64("columns"))
+	return nil
+}
+
+func generateBound(c *cli.Context) error {
+	fmt.Println("generate bound command")
+	fmt.Printf("out = %v\n", c.String("out"))
+	fmt.Printf("min = %v\n", c.Int64("min"))
+	fmt.Printf("max = %v\n", c.Int64("max"))
+	return nil
 }
