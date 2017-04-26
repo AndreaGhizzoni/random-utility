@@ -4,15 +4,14 @@ import (
 	"github.com/AndreaGhizzoni/zenium/samples"
 	"testing"
 )
-/*
+
 // benchmark random int64 generator
 func BenchmarkGetInt64(b *testing.B) {
-	r := rand.New(NewTimeSeed())
+	gen := samples.NewGenerator()
 	for i := 0; i < b.N; i++ {
-		getInt64(r, 10, 100)
+		gen.Int64(10, 100)
 	}
 }
-*/
 
 // benchmark random slice generator
 func BenchmarkGenerate_Slice(b *testing.B) {
