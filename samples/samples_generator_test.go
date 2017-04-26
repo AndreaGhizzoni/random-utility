@@ -5,6 +5,54 @@ import (
 	"testing"
 )
 
+// This function test the creation of random int64 with correct input data.
+func TestGenerator_Int64(t *testing.T) {
+	var tableTest = []struct {
+		min, max int64
+	}{
+		{0, 10},
+		{0, 100},
+		{0, 1000},
+		{0, 10000},
+		{-10, 0},
+		{-100, 0},
+		{-1000, 0},
+		{-10000, 0},
+		{-10, 10},
+		{-10, 100},
+		{-1000, 1000},
+		{-10000, 10000},
+		{-100000, 100000},
+		{-1000000, 1000000},
+	}
+
+	gen := samples.NewGenerator()
+	for _, tt := range tableTest {
+		random, err := gen.Int64(tt.min, tt.max)
+		if err != nil {
+			t.Fatalf("getInt64() returned an error: %v", err)
+		}
+
+		// random number must be in range tt.min <= X < tt.max
+		if random < tt.min || random >= tt.max {
+			t.Fatalf("bounds not respected: min=%d, max=%d", tt.min, tt.max)
+		}
+
+		t.Logf("getInt64(%d,%d) = %d ", tt.min, tt.max, random)
+	}
+}
+
+// This function test the creation of random int64 with wrong input data.
+func TestGenerator_Int64_Arguments(t *testing.T) {
+	gen := samples.NewGenerator()
+
+	// this must fail with min > max
+	min, max := int64(10), int64(5)
+	if _, err := gen.Int64(min, max); err == nil {
+		t.Fatalf("gen.Int64(%d, %d) must fail", min, max)
+	}
+}
+
 // This function tests the creation of random slice with correct input data.
 func TestGenerator_Slice(t *testing.T) {
 	var tableTest = []struct {
