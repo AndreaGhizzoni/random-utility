@@ -4,7 +4,7 @@ Zenium it'a a utility program to generate random data files.
 ## Introductions
 * [Dependencies](#dependencies)
 * [Installation](#installation)
-* [Structure of Data](#structure)
+* [Structure of Data](#structure-of-generated-data)
     - [Random Slice](#slice)
     - [Random Matrix](#matrix)
     
@@ -20,8 +20,8 @@ go get github.com/AndreaGhizzoni/zenium
 ./$GOPATH/bin/zenium -h
 ```
 
-## Structure
-All generated data files will be in the following format:
+## Structure of Generated Data
+All generated data will be in the following format:
 
 ### Slice
 ```bash
