@@ -112,7 +112,7 @@ fpm:
     description: Utility program to generate random data structures
 
     # Your app's license. Default is empty.
-    license: GNU v3
+    license: GPL-3.0
 
     # Formats to generate as output
     formats:
@@ -129,11 +129,11 @@ fpm:
         #- bash
 
 # Snapshot information
-snapshot:
+#snapshot:
     # Allows you to change the name of the generated snapshot
     # releases. The following variables are available:
     # - Commit
     # - Tag
     # - Timestamp
     # Default: SNAPSHOT-{{.Commit}}
-    name_template: {{.Commit}}
+#    name_template: {{.Commit}}
