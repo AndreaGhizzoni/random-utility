@@ -4,7 +4,7 @@ release:
     # Default is extracted from the origin remote URL.
     github:
         owner: AndreaGhizzoni
-        name: TestGoReleaser
+        name: zenium
 
     # If set to true, will not auto-publish the release. Default is false.
     draft: false
