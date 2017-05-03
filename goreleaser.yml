@@ -136,4 +136,4 @@ snapshot:
     # - Tag
     # - Timestamp
     # Default: SNAPSHOT-{{.Commit}}
-    name_template: SNAPSHOT-{{.Commit}}
+    name_template: {{.Commit}}
