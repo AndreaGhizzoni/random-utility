@@ -119,12 +119,12 @@ fpm:
         - deb
 
     # Dependencies of your package
-    #dependencies:
+    dependencies:
         #- git
         #- zsh
 
     # Packages that conflict with your package
-    #conflicts:
+    conflicts:
         #- svn
         #- bash
 
