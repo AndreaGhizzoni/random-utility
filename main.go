@@ -7,73 +7,74 @@ import (
 	"sort"
 )
 
+var version = "0.0.1"
+
 func main() {
 	app := cli.NewApp()
 
-	// TODO move constants to separate file
-	app.Name = "zenium"
-	app.Version = "0.1"
-	app.Usage = "utility program to generate random data structures"
-	app.UsageText = app.Name + " [rslice|oslice|matrix|bound]"
+	app.Name = name
+	app.Version = version
+	app.Usage = usage
+	app.UsageText = name + usageText
 	app.Authors = []cli.Author{
 		{Name: "Andrea Ghizzoni", Email: "andrea.ghz@gmail.com"},
 	}
 
 	// TODO maybe move all flags to separate file
 	outFlag := cli.StringFlag{
-		Name:  "out, o",
+		Name:  outFlag,
 		Value: "",
-		Usage: "usage flag out `FILE`",
+		Usage: outUsage,
 	}
 	minFlag := cli.Int64Flag{
-		Name:  "min, m",
+		Name:  minFlag,
 		Value: -922337203685477580,
-		Usage: "usage flag min",
+		Usage: minUsage,
 	}
 	maxFlag := cli.Int64Flag{
-		Name:  "max, M",
+		Name:  maxFlag,
 		Value: 922337203685477580,
-		Usage: "usage flag max",
+		Usage: maxUsage,
 	}
 	columnFlag := cli.Int64Flag{
-		Name:  "columns, c",
+		Name:  colsFlag,
 		Value: 0,
-		Usage: "usage flag column",
+		Usage: colsUsage,
 	}
 	rowsFlag := cli.Int64Flag{
-		Name:  "rows, r",
+		Name:  rowsFlag,
 		Value: 0,
-		Usage: "usage flag rows",
+		Usage: rowsUsage,
 	}
 	lengthFlag := cli.Int64Flag{
-		Name:  "length, l",
+		Name:  lengthFlag,
 		Value: 0,
-		Usage: "usage flag length",
+		Usage: lengthUsage,
 	}
 
 	app.Commands = []cli.Command{
 		{
-			Name:  "rslice",
-			Usage: "usage",
-			Flags: []cli.Flag{outFlag, minFlag, maxFlag, lengthFlag},
-            Action:generateRSlice,
+			Name:   rsliceCommand,
+			Usage:  rsliceUsage,
+			Flags:  []cli.Flag{outFlag, minFlag, maxFlag, lengthFlag},
+			Action: generateRSlice,
 		},
 		{
-			Name:   "oslice",
-			Usage:  "usage",
+			Name:   osliceCommand,
+			Usage:  osliceUsage,
 			Flags:  []cli.Flag{outFlag, minFlag, maxFlag, lengthFlag},
 			Action: generateOSlice,
 		},
 		{
-			Name:  "matrix",
-			Usage: "usage",
+			Name:  matrixCommand,
+			Usage: matrixUsage,
 			Flags: []cli.Flag{outFlag, minFlag, maxFlag, rowsFlag,
 				columnFlag},
 			Action: generateMatrix,
 		},
 		{
-			Name:   "bound",
-			Usage:  "usage",
+			Name:   boundCommand,
+			Usage:  boundUsage,
 			Flags:  []cli.Flag{outFlag, minFlag, maxFlag},
 			Action: generateBound,
 		},

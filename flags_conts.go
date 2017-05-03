@@ -2,25 +2,46 @@ package main
 
 // constants for flags
 const (
-	helpHeader = "Usage of Zenium samples generator: %s [OPTIONS]\n"
+	// name of utility
+	name = "zenium"
 
-	generateUsage = "`rslice|oslice|matrix|bound` one of these options to " +
-		"generate a random or ordered slice (aka vector), a random matrix or " +
-		"random bound. Multiple argument of this flag pipe-separated is not " +
-		"supported yet."
+	// usage text
+	usage     = "utility program to generate random data structures"
+	usageText = " [rslice|oslice|matrix|bound] [OPTIONS]"
 
-	outUsage = "`/path/to/file` to output the generate sample. stdout is the " +
-		"default."
+	// flag usage
+	outFlag  = "out, o"
+	outUsage = "`FILE` to output the generate sample. stdout is the default."
 
+	minFlag  = "min, m"
 	minUsage = "`m` is a integer numeber to set the minimum value of random " +
 		"generator."
+
+	maxFlag  = "max, M"
 	maxUsage = "`M` is a integer numeber to set the maximum value of random " +
 		"generator. "
 
-	colsUsage = "`c` is a integer number to set the matrix columns if " +
-		"-g matrix is set. (default 0)"
-	rowsUsage = "`r` is a integer number to set the matrix rows if -g matrix " +
-		"is set. (default 0)"
-	lengthUsage = "`l` is a integer number to set the slice length if " +
-		"-g rslice|oslice is set. (default 0)"
+	colsFlag  = "columns, c"
+	colsUsage = "`c` is a integer number to set the matrix columns."
+
+	rowsFlag  = "rows, r"
+	rowsUsage = "`r` is a integer number to set the matrix rows."
+
+	lengthFlag  = "length, l"
+	lengthUsage = "`l` is a integer number to set the slice length."
+
+	// command usage
+	rsliceCommand = "rslice"
+	rsliceUsage   = "command to generate random slice (aka vector)." + commonPart
+
+	osliceCommand = "oslice"
+	osliceUsage   = "command to generate ordered slice (aka vector)." + commonPart
+
+	matrixCommand = "matrix"
+	matrixUsage   = "command to generate random matrix. " + commonPart
+
+	boundCommand = "bound"
+	boundUsage   = "command to generate random bound. " + commonPart
+
+	commonPart = "See '" + name + " [COMMAND] help' for more options."
 )
