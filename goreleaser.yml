@@ -1,0 +1,139 @@
+# Release information
+release:
+    # Repo in which the release will be created.
+    # Default is extracted from the origin remote URL.
+    github:
+        owner: AndreaGhizzoni
+        name: TestGoReleaser
+
+    # If set to true, will not auto-publish the release. Default is false.
+    draft: false
+
+# GO build information
+build:
+    # GOOS list to build in.
+    # For more info refer to https://golang.org/doc/install/source#environment
+    # Defaults are darwin and linux
+    goos:
+        - linux
+        - darwin
+        - windows
+
+    # GOARCH to buld it
+    # For more info refer to https://golang.org/doc/install/source#environment
+    # Defaults are 386 and amd64
+    goarch:
+        - amd64
+        - "386"
+
+    # GOARM to build in when GOARCH is arm.
+    # For more info refer to https://golang.org/doc/install/source#environment
+    # Defaults are 6
+    goarm:
+        - 6
+        - 7
+
+    # Path to main.go file or main package. Default is `.`
+    main: .
+
+    # Custom ldflags template.
+    # This is parsed with Golang template engine and the following variables
+    # are available:
+    # - Date
+    # - Commit
+    # - Tag
+    # - Version (Tag with the `v` prefix stripped)
+    # The default is 
+    # `-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X
+    #           main.date={{.Date}}`
+    # Date format is `2006-01-02_15:04:05`
+    ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+
+    # Name of the binary. Default is the name of the project directory.
+    binary: zenium
+
+    # Hooks can be used to customize the final binary, for example, to run
+    # generator or whatever you want. Default is both hooks empty.
+    hooks: {}
+
+# Archive information
+archive:
+    # Archive format. Valid options are `tar.gz` and `zip`. Default is `tar.gz`
+    format: tar.gz
+
+    # You can change the name of the archive.
+    # This is parsed with Golang template engine and the following variables
+    # are available:
+    # - Binary
+    # - Tag
+    # - Version (Tag with the `v` prefix stripped)
+    # - Os
+    # - Arch
+    # - Arm (ARM version)
+    # The default is 
+    # `{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}`
+    name_template: '{{.Binary}}_{{.Os}}_{{.Arch}}{{if .Arm}}v{{.Arm}}{{end}}'
+
+    # Replacements for GOOS and GOARCH on the archive name.
+    # The keys should be valid GOOS or GOARCH values followed by your custom
+    # replacements.
+    # By default, `replacements` replace GOOS and GOARCH values with valid 
+    # outputs of `uname -s` and `uname -m` respectively.
+    replacements:
+        386: x86
+        amd64: x86_64
+        darwin: macOS
+
+    # Additional files you want to add to the archive.
+    # Defaults are any files matching `LICENCE*`, `LICENSE*`,
+    # `README*` and `CHANGELOG*` (case-insensitive)
+    files:
+        - README.md
+        - LICENSE
+
+    # Can be used to archive on different formats for specific GOOSs.
+    # Most common use case is to archive as zip on Windows. Default is empty.
+    format_overrides:
+        - goos: windows
+          format: zip
+
+# Packet Managers information
+fpm:
+    # Your app's vendor. Default is empty.
+    vendor: Andrea
+
+    # Your app's homepage. Default is empty,.
+    homepage: http://andreaghizzoni.github.io
+
+    # Your app's maintainer (probably you). Default is empty
+    maintainer: Andrea <andrea.ghz@gmail.com>
+
+    # Your app's description. Default is empty.
+    description: Utility program to generate random data structures
+
+    # Your app's license. Default is empty.
+    license: GNU v3
+
+    # Formats to generate as output
+    formats:
+        - deb
+
+    # Dependencies of your package
+    #dependencies:
+        #- git
+        #- zsh
+
+    # Packages that conflict with your package
+    #conflicts:
+        #- svn
+        #- bash
+
+# Snapshot information
+snapshot:
+    # Allows you to change the name of the generated snapshot
+    # releases. The following variables are available:
+    # - Commit
+    # - Tag
+    # - Timestamp
+    # Default: SNAPSHOT-{{.Commit}}
+    name_template: {{.Tag}}-SNAPSHOT-{{.Commit}}
