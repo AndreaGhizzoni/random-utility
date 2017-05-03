@@ -2,11 +2,11 @@
 Zenium it'a a utility program to generate random data files.
 
 ## Introductions
-* [Dependencies](##Dependencies)
-* [Installation](##Installation)
-* [Structure of Data](##Structure)
-    - [Random Slice](###Slice)
-    - [Random Matrix](###Matrix)
+* [Dependencies](#dependencies)
+* [Installation](#installation)
+* [Structure of Data](#structure)
+    - [Random Slice](#slice)
+    - [Random Matrix](#matrix)
     
 ## Dependencies
  - [cli framework](https://github.com/urfave/cli)
