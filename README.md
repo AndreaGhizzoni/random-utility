@@ -3,15 +3,15 @@ Zenium it'a a utility program to generate random data files.
 
 ## Introductions
 * [Dependencies](##Dependencies)
-* [Get this project](##Get this project)
-* [Structure of Data](##Structure of random data)
-    - [Random Slice](###Slice (aka Vectors))
+* [Installation](##Installation)
+* [Structure of Data](##Structure)
+    - [Random Slice](###Slice)
     - [Random Matrix](###Matrix)
     
 ## Dependencies
  - [cli framework](https://github.com/urfave/cli)
 
-## Get this project
+## Installation
 Keep in mind that this project is still WORK IN PROGRESS, so changes will be
 made.
 ```bash
@@ -20,10 +20,10 @@ go get github.com/AndreaGhizzoni/zenium
 ./$GOPATH/bin/zenium -h
 ```
 
-## Structure of random data
+## Structure
 All generated data files will be in the following format:
 
-### Slice (aka Vectors)
+### Slice
 ```bash
 ./$GOPATH/bin/zenium rslice -l 50 -o vector.txt -m 1 -M 10
 ```
