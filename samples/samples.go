@@ -101,9 +101,27 @@ func (g *Generator) Matrix(r, c, min, max int64) ([][]int64, error) {
 	return matrix, nil
 }
 
-// TODO add doc
-func (g *Generator) Bound(min, max, width int64) (int64, int64) {
-	return -1, -1
+// This function generate a random bound of fixed length.
+func (g *Generator) Bound(min, max, width int64) (int64, int64, error) {
+	if err := checkDimension(width, "Bound with"); err != nil {
+		return -1, -1, err
+	}
+
+	if err := checkBound(min, max); err != nil {
+		return -1, -1, err
+	}
+
+	bLow := g.generateInt(min, max)
+	bUp := g.generateInt(min, max)
+	if bUp-bLow > width {
+		addOrSub := g.generateInt(0, 1)
+		if addOrSub == 0 {
+			bUp -= bUp - bLow - width
+		} else {
+			bLow += bUp - bLow - width
+		}
+	}
+	return bLow, bUp, nil
 }
 
 // TODO add doc
