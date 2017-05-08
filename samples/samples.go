@@ -113,6 +113,9 @@ func (g *Generator) Bound(min, max, width int64) (int64, int64, error) {
 
 	bLow := g.generateInt(min, max)
 	bUp := g.generateInt(min, max)
+    if bLow > bUp {
+		bLow, bUp = bUp, bLow
+	}
 	if bUp-bLow > width {
 		addOrSub := g.generateInt(0, 1)
 		if addOrSub == 0 {
