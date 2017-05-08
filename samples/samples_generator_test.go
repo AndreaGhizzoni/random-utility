@@ -193,3 +193,50 @@ func TestGenerator_Matrix_Arguments(t *testing.T) {
 		t.Error("With min > max, Matrix() needs to return (_, nil)")
 	}
 }
+
+func TestGenerator_Bound(t *testing.T) {
+	var tableTest = []struct {
+		min int64
+		max int64
+	}{
+		{1, 10},
+		{1, 100},
+		{1, 1000},
+		{1, 10000},
+		{-10, 1},
+		{-100, 1},
+		{-1000, 1},
+		{-10000, 1},
+		{-10, 10},
+		{-100, 100},
+		{-1000, 1000},
+		{-10000, 10000},
+	}
+	var width int64 = 1
+	var maxWidth int64 = 9
+
+	gen := samples.NewGenerator()
+	for ; width <= maxWidth; width++ {
+		for _, tt := range tableTest {
+			blow, bup, err := gen.Bound(tt.min, tt.max, width)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Logf("bound generated: [%d, %d] [%d]", blow, bup, width)
+
+			if blow < tt.min {
+				t.Fatalf("generated blow is less then min: %d < %d", blow,
+					tt.min)
+			}
+			if bup > tt.max {
+				t.Fatalf("generated bup is greater then max: %d > %d", blow,
+					tt.max)
+			}
+			if bup-blow != width {
+				t.Fatalf("bound width is not equal as requested: %d != %d",
+					bup-blow, width)
+			}
+		}
+	}
+
+}
