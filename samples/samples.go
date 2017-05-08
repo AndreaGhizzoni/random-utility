@@ -36,13 +36,19 @@ func checkBound(min, max int64) error {
 	return nil
 }
 
+// utility function to generate a single int64 by given min and max, assuming
+// that min < max.
+func (g *Generator) generateInt(min, max int64) int64 {
+	return g.r.Int63n(max-min) + min
+}
+
 // Int64 generate a random number between min <= x < max. err != nil if
 // min > max.
 func (g *Generator) Int64(min, max int64) (int64, error) {
 	if err := checkBound(min, max); err != nil {
 		return -1, err
 	}
-	return g.r.Int63n(max-min) + min, nil
+	return g.generateInt(min, max), nil
 }
 
 // This function generate a slice of len length, with random numbers X where
@@ -60,11 +66,7 @@ func (g *Generator) Slice(len, min, max int64) ([]int64, error) {
 	perm := make([]int64, len)
 	var i int64 = 0
 	for ; i < len; i++ {
-		intRandom, e := g.Int64(min, max)
-		if e != nil {
-			return nil, e
-		}
-		perm[i] = intRandom
+		perm[i] = g.generateInt(min, max)
 	}
 
 	return perm, nil
