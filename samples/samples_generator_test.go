@@ -218,6 +218,9 @@ func TestGenerator_Bound(t *testing.T) {
 	gen := samples.NewGenerator()
 	for ; width <= maxWidth; width++ {
 		for _, tt := range tableTest {
+			t.Logf("== Try to generate bound with: min = %d, max = %d, "+
+				"width = %d",
+				tt.min, tt.max, width)
 			blow, bup, err := gen.Bound(tt.min, tt.max, width)
 			if err != nil {
 				t.Fatal(err)
@@ -225,11 +228,11 @@ func TestGenerator_Bound(t *testing.T) {
 			t.Logf("bound generated: [%d, %d] [%d]", blow, bup, width)
 
 			if blow < tt.min {
-				t.Fatalf("generated blow is less then min: %d < %d", blow,
+				t.Fatalf("generated bLow is less then min: %d < %d", blow,
 					tt.min)
 			}
 			if bup > tt.max {
-				t.Fatalf("generated bup is greater then max: %d > %d", blow,
+				t.Fatalf("generated bUp is greater then max: %d > %d", bup,
 					tt.max)
 			}
 			if bup-blow != width {
@@ -238,5 +241,4 @@ func TestGenerator_Bound(t *testing.T) {
 			}
 		}
 	}
-
 }
