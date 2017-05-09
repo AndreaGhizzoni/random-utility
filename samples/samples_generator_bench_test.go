@@ -28,3 +28,5 @@ func BenchmarkGenerate_Matrix(b *testing.B) {
 		gen.Matrix(10, 10, -10, 10)
 	}
 }
+
+// TODO add new benchmarks
