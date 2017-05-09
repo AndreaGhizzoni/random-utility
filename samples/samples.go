@@ -30,7 +30,7 @@ func checkDimension(dim int64, msg string) error {
 
 // utility method to check if min > max
 func checkBound(min, max int64) error {
-	if min > max {
+	if min >= max {
 		return fmt.Errorf("Bounds malformed: (min) %d > %d (max)", min, max)
 	}
 	return nil
