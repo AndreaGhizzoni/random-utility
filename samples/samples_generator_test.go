@@ -222,23 +222,23 @@ func TestGenerator_Bound(t *testing.T) {
 			t.Logf("== Try to generate bound with: min = %d, max = %d, "+
 				"width = %d",
 				tt.min, tt.max, width)
-			blow, bup, err := gen.Bound(tt.min, tt.max, width)
+			bound, err := gen.Bound(tt.min, tt.max, width)
 			if err != nil {
 				t.Fatal(err)
 			}
-			t.Logf("bound generated: [%d, %d] [%d]", blow, bup, width)
+			t.Logf("bound generated: %s [%d]", bound.String(), bound.Width())
 
-			if blow < tt.min {
-				t.Fatalf("generated bLow is less then min: %d < %d", blow,
-					tt.min)
+			if bound.Low() < tt.min {
+				t.Fatalf("bound.Low() generated is less then min: %d < %d",
+					bound.Low(), tt.min)
 			}
-			if bup > tt.max {
-				t.Fatalf("generated bUp is greater then max: %d > %d", bup,
-					tt.max)
+			if bound.Up() > tt.max {
+				t.Fatalf("bound.Up() generated is greater then max: %d > %d",
+					bound.Up(), tt.max)
 			}
-			if bup-blow != width {
-				t.Fatalf("bound width is not equal as requested: %d != %d",
-					bup-blow, width)
+			if bound.Width() != width {
+				t.Fatalf("bound.Width() is not equal as requested: %d != %d",
+					bound.Width(), width)
 			}
 		}
 	}
@@ -250,7 +250,7 @@ func TestGenerator_Bound_Arguments(t *testing.T) {
 	var min, max, width int64
 
 	min, max, width = 10, 1, 5
-	if _, _, err := gen.Bound(min, max, width); err == nil {
+	if _, err := gen.Bound(min, max, width); err == nil {
 		t.Fatalf("gen.Bound(%d, %d, %d) must fail because min > max", min,
 			max, width)
 	}
@@ -258,7 +258,7 @@ func TestGenerator_Bound_Arguments(t *testing.T) {
 		min, max, width)
 
 	min, max, width = 10, 10, 5
-	if _, _, err := gen.Bound(min, max, width); err == nil {
+	if _, err := gen.Bound(min, max, width); err == nil {
 		t.Fatalf("gen.Bound(%d, %d, %d) must fail because min == max", min,
 			max, width)
 	}
@@ -266,7 +266,7 @@ func TestGenerator_Bound_Arguments(t *testing.T) {
 		min, max, width)
 
 	min, max, width = 1, 10, 0
-	if _, _, err := gen.Bound(min, max, width); err == nil {
+	if _, err := gen.Bound(min, max, width); err == nil {
 		t.Fatalf("gen.Bound(%d, %d, %d) must fail because width == 0", min,
 			max, width)
 	}
