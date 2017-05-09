@@ -63,6 +63,8 @@ that all the elements of matrix: columns separated by space and rows by new line
 - [x] Slice (aka Vector)
 - [x] Matrix
 - [x] Complete -output|-o flag
+- [x] Bound
+- [ ] Using math/big instead of all int64
+- [ ] Using crypto/rand in certain cases
 - [ ] Ordered Slice
-- [ ] Bound
 - [ ] Multiple generation with a single command
