@@ -194,6 +194,7 @@ func TestGenerator_Matrix_Arguments(t *testing.T) {
 	}
 }
 
+// This function tests the creation of random bound with correct input data.
 func TestGenerator_Bound(t *testing.T) {
 	var tableTest = []struct {
 		min int64
@@ -243,6 +244,7 @@ func TestGenerator_Bound(t *testing.T) {
 	}
 }
 
+// This function tests the creation of random bound with wrong input data.
 func TestGenerator_Bound_Arguments(t *testing.T) {
 	gen := samples.NewGenerator()
 	var min, max, width int64
