@@ -120,8 +120,3 @@ func (g *Generator) Bound(min, max, width int64) (int64, int64, error) {
 	}
 	return bLow, bUp, nil
 }
-
-// TODO add doc
-func (g *Generator) OrderedSlice(len, min, max int64) ([]int64, error) {
-	return nil, nil
-}
