@@ -242,3 +242,32 @@ func TestGenerator_Bound(t *testing.T) {
 		}
 	}
 }
+
+func TestGenerator_Bound_Arguments(t *testing.T) {
+	gen := samples.NewGenerator()
+	var min, max, width int64
+
+	min, max, width = 10, 1, 5
+	if _, _, err := gen.Bound(min, max, width); err == nil {
+		t.Fatalf("gen.Bound(%d, %d, %d) must fail because min > max", min,
+			max, width)
+	}
+	t.Logf("== Try to generate bound with: min = %d, max = %d, width = %d. OK.",
+		min, max, width)
+
+	min, max, width = 10, 10, 5
+	if _, _, err := gen.Bound(min, max, width); err == nil {
+		t.Fatalf("gen.Bound(%d, %d, %d) must fail because min == max", min,
+			max, width)
+	}
+	t.Logf("== Try to generate bound with: min = %d, max = %d, width = %d. OK.",
+		min, max, width)
+
+	min, max, width = 1, 10, 0
+	if _, _, err := gen.Bound(min, max, width); err == nil {
+		t.Fatalf("gen.Bound(%d, %d, %d) must fail because width == 0", min,
+			max, width)
+	}
+	t.Logf("== Try to generate bound with: min = %d, max = %d, width = %d. OK.",
+		min, max, width)
+}
