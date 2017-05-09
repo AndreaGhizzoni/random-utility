@@ -29,7 +29,6 @@ func NewPrinter(path string) (*Printer, error) {
 		}
 		return &Printer{oFile}, nil
 	}
-	// TODO need to test these cases
 	return &Printer{os.Stdout}, nil
 }
 
