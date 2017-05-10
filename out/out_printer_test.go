@@ -365,7 +365,8 @@ func TestPrinter_WriteMatrix_Arguments(t *testing.T) {
 	}
 }
 
-// TODO add doc
+// this function tests the correct behavior of out.Printer.WriteBound method
+// with correct inputs
 func TestPrinter_WriteBound(t *testing.T) {
 	tD := "_test/"
 	defer os.RemoveAll(tD)
@@ -456,7 +457,8 @@ func TestPrinter_WriteBound(t *testing.T) {
 	}
 }
 
-// TODO add doc
+// this function tests the correct behavior of out.Printer.WriteBound method
+// with wrong inputs
 func TestPrinter_WriteBounds(t *testing.T) {
 	tD := "_test/"
 	defer os.RemoveAll(tD)

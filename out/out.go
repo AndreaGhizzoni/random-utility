@@ -8,6 +8,7 @@ import (
 )
 
 // This structure is responsible to know how to write custom structure to file.
+// Every WriteX method, where X is a structure, produce a single file.
 type Printer struct {
 	file *os.File
 }
@@ -17,7 +18,7 @@ type Printer struct {
 // Argument path must be a file path (relative/absolute) or empty string to
 // print on standard out.
 // error is returned if: path leads to a non-readable/non-writable file or
-// leads to a directory o
+// leads to a directory
 func NewPrinter(path string) (*Printer, error) {
 	if path != "" {
 		dir, file, errS := sanitizePath(path)
@@ -104,12 +105,14 @@ func (p *Printer) WriteMatrix(matrix [][]int64) error {
 	return nil
 }
 
-// TODO add doc
-func (p* Printer) WriteBound(bound samples.Bound) error{
+// This method writes a single sample.Bound structure according to instanced
+// out.Printer. error is returned if there is a i/o error.
+func (p *Printer) WriteBound(bound samples.Bound) error {
 	return p.WriteBounds([]samples.Bound{bound})
 }
 
-// TODO add doc
+// This method writes a slice of sample.Bound according to instanced
+// out.Printer. error is returned if there is a i/o error or if slice is nil.
 func (p *Printer) WriteBounds(bounds []samples.Bound) error {
 	if bounds == nil {
 		return errors.New("Given bound can not be nil")
