@@ -3,6 +3,7 @@ package out
 import (
 	"errors"
 	"fmt"
+	"github.com/AndreaGhizzoni/zenium/samples"
 	"os"
 )
 
@@ -92,6 +93,39 @@ func (p *Printer) WriteMatrix(matrix [][]int64) error {
 	// write every matrix row into the file
 	for _, slice := range matrix {
 		if err := p.writeSingleSlice(slice); err != nil {
+			return err
+		}
+	}
+
+	// Issue a Sync to flush writes to stable storage
+	if err := p.file.Sync(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// TODO add doc
+func (p* Printer) WriteBound(bound samples.Bound) error{
+	return p.WriteBounds([]samples.Bound{bound})
+}
+
+// TODO add doc
+func (p *Printer) WriteBounds(bounds []samples.Bound) error {
+	if bounds == nil {
+		return errors.New("Given bound can not be nil")
+	}
+
+	// write header for bounds. Check README
+	header := fmt.Sprintf("%d\n", len(bounds))
+	if _, err := p.file.WriteString(header); err != nil {
+		return err
+	}
+
+	// for every bound write it into file
+	var row string = ""
+	for _, b := range bounds {
+		row = fmt.Sprintf("%d %d\n", b.Low(), b.Up())
+		if _, err := p.file.WriteString(row); err != nil {
 			return err
 		}
 	}
