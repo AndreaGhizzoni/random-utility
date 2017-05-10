@@ -471,18 +471,23 @@ func TestPrinter_WriteBounds(t *testing.T) {
 			*samples.NewBound(-1, 2),
 			*samples.NewBound(-100, 6),
 		}},
+		{tD + "text.out", []samples.Bound{}},
+
 		{tD + ".text.out", []samples.Bound{
 			*samples.NewBound(1, 3),
 			*samples.NewBound(1, 6),
 			*samples.NewBound(-1, 2),
 			*samples.NewBound(-100, 6),
 		}},
+		{tD + ".text.out", []samples.Bound{}},
+
 		{tD + "dir/.text.out", []samples.Bound{
 			*samples.NewBound(1, 3),
 			*samples.NewBound(1, 6),
 			*samples.NewBound(-1, 2),
 			*samples.NewBound(-100, 6),
 		}},
+		{tD + "dir/.text.out", []samples.Bound{}},
 	}
 
 	for i, tt := range tableTest {
@@ -550,7 +555,33 @@ func TestPrinter_WriteBounds(t *testing.T) {
 				t.Fatalf("Upper bound from file != input upper bound: %d != %d",
 					bUp, tt.bounds[i].Up())
 			}
-
 		}
+	}
+}
+
+func TestPrinter_WriteBounds_Arguments(t *testing.T) {
+	tD := "_test/"
+	defer os.RemoveAll(tD)
+
+	var tableTest = []struct {
+		path   string
+		bounds []samples.Bound
+	}{
+		{tD + "text.out", nil},
+	}
+
+	for i, tt := range tableTest {
+		// this is necessary to create a dynamic file name
+		tt.path += "." + strconv.Itoa(i)
+		logPath(t, tt.path)
+
+		printer, err := out.NewPrinter(tt.path)
+		failIf(t, err)
+
+		// try to write
+		if err := printer.WriteBounds(tt.bounds); err == nil {
+			t.Fatalf("With bound: %v printer.WriteBounds must fail", tt.bounds)
+		}
+		t.Logf("printer.WriteBounds(%v) failed -> OK.", tt.bounds)
 	}
 }
