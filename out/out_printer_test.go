@@ -3,6 +3,7 @@ package out_test
 import (
 	"bufio"
 	"github.com/AndreaGhizzoni/zenium/out"
+	"github.com/AndreaGhizzoni/zenium/samples"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -360,6 +361,196 @@ func TestPrinter_WriteMatrix_Arguments(t *testing.T) {
 
 		if err := printer.WriteMatrix(tt.matrix); err == nil {
 			t.Fatalf("printer.WriteSlice(%v) must fail", tt.matrix)
+		}
+	}
+}
+
+// TODO add doc
+func TestPrinter_WriteBound(t *testing.T) {
+	tD := "_test/"
+	defer os.RemoveAll(tD)
+
+	var tableTest = []struct {
+		path  string
+		bound *samples.Bound
+	}{
+		{tD + "text.out", samples.NewBound(1, 3)},
+		{tD + "text.out", samples.NewBound(1, 6)},
+		{tD + "text.out", samples.NewBound(-1, 2)},
+		{tD + "text.out", samples.NewBound(-100, 6)},
+
+		{tD + ".text.out", samples.NewBound(1, 3)},
+		{tD + ".text.out", samples.NewBound(1, 6)},
+		{tD + ".text.out", samples.NewBound(-1, 2)},
+		{tD + ".text.out", samples.NewBound(-100, 6)},
+
+		{tD + "dir/.text.out", samples.NewBound(1, 3)},
+		{tD + "dir/.text.out", samples.NewBound(1, 6)},
+		{tD + "dir/.text.out", samples.NewBound(-1, 2)},
+		{tD + "dir/.text.out", samples.NewBound(-100, 6)},
+	}
+
+	for i, tt := range tableTest {
+		// this is necessary to create a dynamic file name
+		tt.path += "." + strconv.Itoa(i)
+		logPath(t, tt.path)
+
+		printer, err := out.NewPrinter(tt.path)
+		failIf(t, err)
+		// try to write
+		if err := printer.WriteBound(*tt.bound); err != nil {
+			t.Fatal(err)
+		}
+
+		// get the stat from file already written
+		fileStat, err := os.Stat(tt.path)
+		failIf(t, err)
+
+		// checking file name
+		if fileStat.Name() != filepath.Base(tt.path) {
+			t.Fatalf("file name mismatch: %s != %s", fileStat.Name(), tt.path)
+		}
+
+		// checking file size
+		if fileStat.Size() == 0 {
+			t.Fatal("file already written has size == 0")
+		}
+
+		// open new file and check if matrix in it is equal to the matrix that
+		// I have.
+		file, err := os.Open(tt.path)
+		failIf(t, err)
+
+		scanner := bufio.NewScanner(file)
+		scanner.Split(bufio.ScanWords)
+
+		// read the first int64 that represents the number of bounds
+		scanner.Scan()
+		numberOfBounds, errR := strconv.ParseInt(scanner.Text(), 10, 64)
+		failIf(t, errR)
+		t.Logf("Bounds to read from file: %d", numberOfBounds)
+
+		if numberOfBounds != 1 {
+			t.Fatal("Number of bounds into file != 1")
+		}
+
+		// read lower bound elements as int64 from file
+		scanner.Scan()
+		bLow, errBLow := strconv.ParseInt(scanner.Text(), 10, 64)
+		failIf(t, errBLow)
+		t.Logf("Lower bound to read from file: %d", bLow)
+		if bLow != tt.bound.Low() {
+			t.Fatalf("Lower bound from file != input lower bound: %d != %d",
+				bLow, tt.bound.Low())
+		}
+
+		// read upper bound elements as int64 from file
+		scanner.Scan()
+		bUp, errBUp := strconv.ParseInt(scanner.Text(), 10, 64)
+		failIf(t, errBUp)
+		t.Logf("Upper bound to read from file: %d", bUp)
+		if bUp != tt.bound.Up() {
+			t.Fatalf("Upper bound from file != input upper bound: %d != %d",
+				bUp, tt.bound.Up())
+		}
+	}
+}
+
+// TODO add doc
+func TestPrinter_WriteBounds(t *testing.T) {
+	tD := "_test/"
+	defer os.RemoveAll(tD)
+
+	var tableTest = []struct {
+		path   string
+		bounds []samples.Bound
+	}{
+		{tD + "text.out", []samples.Bound{
+			*samples.NewBound(1, 3),
+			*samples.NewBound(1, 6),
+			*samples.NewBound(-1, 2),
+			*samples.NewBound(-100, 6),
+		}},
+		{tD + ".text.out", []samples.Bound{
+			*samples.NewBound(1, 3),
+			*samples.NewBound(1, 6),
+			*samples.NewBound(-1, 2),
+			*samples.NewBound(-100, 6),
+		}},
+		{tD + "dir/.text.out", []samples.Bound{
+			*samples.NewBound(1, 3),
+			*samples.NewBound(1, 6),
+			*samples.NewBound(-1, 2),
+			*samples.NewBound(-100, 6),
+		}},
+	}
+
+	for i, tt := range tableTest {
+		// this is necessary to create a dynamic file name
+		tt.path += "." + strconv.Itoa(i)
+		logPath(t, tt.path)
+
+		printer, err := out.NewPrinter(tt.path)
+		failIf(t, err)
+		// try to write
+		if err := printer.WriteBounds(tt.bounds); err != nil {
+			t.Fatal(err)
+		}
+
+		// get the stat from file already written
+		fileStat, err := os.Stat(tt.path)
+		failIf(t, err)
+
+		// checking file name
+		if fileStat.Name() != filepath.Base(tt.path) {
+			t.Fatalf("file name mismatch: %s != %s", fileStat.Name(), tt.path)
+		}
+
+		// checking file size
+		if fileStat.Size() == 0 {
+			t.Fatal("file already written has size == 0")
+		}
+
+		// open new file and check if matrix in it is equal to the matrix that
+		// I have.
+		file, err := os.Open(tt.path)
+		failIf(t, err)
+
+		scanner := bufio.NewScanner(file)
+		scanner.Split(bufio.ScanWords)
+
+		// read the first int64 that represents the number of bounds
+		scanner.Scan()
+		numberOfBounds, errR := strconv.ParseInt(scanner.Text(), 10, 64)
+		failIf(t, errR)
+		t.Logf("Bounds to read from file: %d", numberOfBounds)
+
+		if numberOfBounds != int64(len(tt.bounds)) {
+			t.Fatal("Number of bounds into file != 1")
+		}
+
+		var i int64 = 0
+		for ; i < numberOfBounds; i++ {
+			// read lower bound elements as int64 from file
+			scanner.Scan()
+			bLow, errBLow := strconv.ParseInt(scanner.Text(), 10, 64)
+			failIf(t, errBLow)
+			t.Logf("Lower bound to read from file: %d", bLow)
+			if bLow != tt.bounds[i].Low() {
+				t.Fatalf("Lower bound from file != input lower bound: %d != %d",
+					bLow, tt.bounds[i].Low())
+			}
+
+			// read upper bound elements as int64 from file
+			scanner.Scan()
+			bUp, errBUp := strconv.ParseInt(scanner.Text(), 10, 64)
+			failIf(t, errBUp)
+			t.Logf("Upper bound to read from file: %d", bUp)
+			if bUp != tt.bounds[i].Up() {
+				t.Fatalf("Upper bound from file != input upper bound: %d != %d",
+					bUp, tt.bounds[i].Up())
+			}
+
 		}
 	}
 }
