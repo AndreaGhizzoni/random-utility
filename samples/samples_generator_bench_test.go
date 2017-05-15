@@ -6,7 +6,7 @@ import (
 )
 
 // benchmark random int64 generator
-func BenchmarkGetInt64(b *testing.B) {
+func BenchmarkGenerate_Int64(b *testing.B) {
 	gen := samples.NewGenerator()
 	for i := 0; i < b.N; i++ {
 		gen.Int64(10, 100)
@@ -29,4 +29,10 @@ func BenchmarkGenerate_Matrix(b *testing.B) {
 	}
 }
 
-// TODO add new benchmarks
+// benchmark random matrix generator
+func BenchmarkGenerate_Bounds(b *testing.B) {
+	gen := samples.NewGenerator()
+	for i := 0; i < b.N; i++ {
+        gen.Bound(-10, 10, 3)
+	}
+}
