@@ -7,6 +7,7 @@ Zenium it'a a utility program to generate random data files.
 * [Structure of Data](#structure-of-generated-data)
     - [Random Slice](#slice)
     - [Random Matrix](#matrix)
+    - [Random Bound](#bound)
 * [TODO](#todo)
     
 ## Dependencies
@@ -58,6 +59,25 @@ xm1 [...] xmn
 ```
 Where `m n` is the given size of matrix (10 10 in the example) and listed below
 that all the elements of matrix: columns separated by space and rows by new line.
+
+
+### Bound
+```bash
+./$GOPATH/bin/zenium bound -o bound.txt -m -10 -M 10 -w 3 -a 10
+```
+This command generate a file called `bound.txt` that contains a list of 
+`10` bounds of width `3`, all in between `-10` and `10`.
+
+The file format is the follow:
+```
+a
+x1 y1
+x2 y2
+[...]
+xa ya
+```
+Where `a` is the amount of bounds listed below, and for each line the bound 
+is expressed as lower bound `x` and upper bound `y`, where `m <= x < y <= M`. 
 
 # TODO
 - [x] Slice (aka Vector)
