@@ -97,13 +97,6 @@ func main() {
 }
 
 func generateRSlice(c *cli.Context) error {
-	/* TODO maybe integrate with logger ?
-	fmt.Println("generate rslice command")
-	fmt.Printf("out = %v\n", c.String("out"))
-	fmt.Printf("min = %v\n", c.Int64("min"))
-	fmt.Printf("max = %v\n", c.Int64("max"))
-	fmt.Printf("length = %v\n", c.Int64("length"))
-	*/
 	output := c.String("out")
 	l := c.Int64("length")
 	min := c.Int64("min")
@@ -126,26 +119,11 @@ func generateRSlice(c *cli.Context) error {
 }
 
 func generateOSlice(c *cli.Context) error {
-	/* TODO maybe integrate with logger ?
-	fmt.Println("generate oslice command")
-	fmt.Printf("out = %v\n", c.String("out"))
-	fmt.Printf("min = %v\n", c.Int64("min"))
-	fmt.Printf("max = %v\n", c.Int64("max"))
-	fmt.Printf("length = %v\n", c.Int64("length"))
-	*/
 	fmt.Printf("TODO")
 	return nil
 }
 
 func generateMatrix(c *cli.Context) error {
-	/* TODO maybe integrate with logger ?
-	fmt.Println("generate matrix command")
-	fmt.Printf("out = %v\n", c.String("out"))
-	fmt.Printf("min = %v\n", c.Int64("min"))
-	fmt.Printf("max = %v\n", c.Int64("max"))
-	fmt.Printf("rows = %v\n", c.Int64("rows"))
-	fmt.Printf("cols = %v\n", c.Int64("columns"))
-	*/
 	output := c.String("out")
 	min := c.Int64("min")
 	max := c.Int64("max")
@@ -169,12 +147,6 @@ func generateMatrix(c *cli.Context) error {
 }
 
 func generateBound(c *cli.Context) error {
-	/* TODO maybe integrate with logger ?
-	   fmt.Println("generate bound command")
-	   fmt.Printf("out = %v\n", c.String("out"))
-	   fmt.Printf("min = %v\n", c.Int64("min"))
-	   fmt.Printf("max = %v\n", c.Int64("max"))
-	*/
 	output := c.String("out")
 	min := c.Int64("min")
 	max := c.Int64("max")
