@@ -31,7 +31,10 @@ const (
 	lengthUsage = "`l` is a integer number to set the slice length."
 
 	widthFlag = "width, w"
-	widthUsage = "`w` is a integer number to set the bound width"
+	widthUsage = "`w` is a integer number to set the bound width."
+
+	amountFlag = "amount, a"
+	amountUsage = "`a` is the amount of bounds to generate."
 
 	// command usage
 	rsliceCommand = "rslice"
