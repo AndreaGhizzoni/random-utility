@@ -52,6 +52,11 @@ func main() {
 		Value: 0,
 		Usage: lengthUsage,
 	}
+	widthFlag := cli.Int64Flag{
+		Name:  widthFlag,
+		Value: 0,
+		Usage: widthUsage,
+	}
 
 	app.Commands = []cli.Command{
 		{
@@ -76,7 +81,7 @@ func main() {
 		{
 			Name:   boundCommand,
 			Usage:  boundUsage,
-			Flags:  []cli.Flag{outFlag, minFlag, maxFlag},
+			Flags:  []cli.Flag{outFlag, minFlag, maxFlag, widthFlag},
 			Action: generateBound,
 		},
 	}
@@ -165,6 +170,22 @@ func generateBound(c *cli.Context) error {
 	   fmt.Printf("min = %v\n", c.Int64("min"))
 	   fmt.Printf("max = %v\n", c.Int64("max"))
 	*/
-	fmt.Printf("TODO")
-	return nil
+	output := c.String("out")
+	min := c.Int64("min")
+	max := c.Int64("max")
+	width := c.Int64("width")
+
+	p, err := out.NewPrinter(output)
+	if err != nil {
+		fmt.Errorf(err.Error())
+		return err
+	}
+
+	gen := samples.NewGenerator()
+	bound, err := gen.Bound(min, max, width)
+	if err != nil {
+		fmt.Errorf(err.Error())
+		return err
+	}
+	return p.WriteBound(*bound)
 }

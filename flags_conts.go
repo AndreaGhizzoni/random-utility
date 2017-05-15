@@ -30,6 +30,9 @@ const (
 	lengthFlag  = "length, l"
 	lengthUsage = "`l` is a integer number to set the slice length."
 
+	widthFlag = "width, w"
+	widthUsage = "`w` is a integer number to set the bound width"
+
 	// command usage
 	rsliceCommand = "rslice"
 	rsliceUsage   = "command to generate random slice (aka vector)." + commonPart
