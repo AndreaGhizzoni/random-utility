@@ -14,11 +14,11 @@ const (
 	outUsage = "`FILE` to output the generate sample. stdout is the default."
 
 	minFlag  = "min, m"
-	minUsage = "`m` is a integer numeber to set the minimum value of random " +
+	minUsage = "`m` is a integer number to set the minimum value of random " +
 		"generator."
 
 	maxFlag  = "max, M"
-	maxUsage = "`M` is a integer numeber to set the maximum value of random " +
+	maxUsage = "`M` is a integer number to set the maximum value of random " +
 		"generator. "
 
 	colsFlag  = "columns, c"

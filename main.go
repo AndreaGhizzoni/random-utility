@@ -39,22 +39,22 @@ func main() {
 	}
 	columnFlag := cli.Int64Flag{
 		Name:  colsFlag,
-		Value: 0,
+		Value: 1,
 		Usage: colsUsage,
 	}
 	rowsFlag := cli.Int64Flag{
 		Name:  rowsFlag,
-		Value: 0,
+		Value: 1,
 		Usage: rowsUsage,
 	}
 	lengthFlag := cli.Int64Flag{
 		Name:  lengthFlag,
-		Value: 0,
+		Value: 1,
 		Usage: lengthUsage,
 	}
 	widthFlag := cli.Int64Flag{
 		Name:  widthFlag,
-		Value: 0,
+		Value: 1,
 		Usage: widthUsage,
 	}
 
