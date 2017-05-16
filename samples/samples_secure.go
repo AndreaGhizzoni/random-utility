@@ -9,7 +9,6 @@ import (
 // TODO add doc
 type SGenerator struct{}
 
-var zero = big.NewInt(0)
 var one = big.NewInt(1)
 
 // TODO add doc
@@ -17,12 +16,11 @@ func NewSecureGenerator() *SGenerator {
 	return &SGenerator{}
 }
 
-// utility method to check if big.Int given given is <= 0.
-// dim is the dimension to check and msg is a string to put before the error
-// message string
-func isLessThenZero(dim *big.Int, msgIfTrue string) error {
-	if dim.Cmp(zero) == -1 || dim.Cmp(zero) == 0 { // dim <= zero
-		return fmt.Errorf(msgIfTrue+" given is invalid: %v <= 0.", dim)
+// dim is the dimension to check if it's < 1 and msg is a string to put before
+// the error message if check is true.
+func isLessThenOne(dim *big.Int, msgIfTrue string) error {
+	if dim.Cmp(one) == -1 { // dim < 1
+		return fmt.Errorf(msgIfTrue+" given is invalid: %v < 1.", dim)
 	}
 	return nil
 }
@@ -72,7 +70,7 @@ func (g *SGenerator) Int(min, max *big.Int) (*big.Int, error) {
 // min <= X < max.
 // If len <= 0 or min > max return a error.
 func (g *SGenerator) Slice(len, min, max *big.Int) ([]*big.Int, error) {
-	if err := isLessThenZero(len, "Slice length"); err != nil {
+	if err := isLessThenOne(len, "Slice length"); err != nil {
 		return nil, err
 	}
 
@@ -88,14 +86,14 @@ func (g *SGenerator) Slice(len, min, max *big.Int) ([]*big.Int, error) {
 // If r <= 0 or c <= 0 or min => max, this function return an error.
 func (g *SGenerator) Matrix(r, c, min, max *big.Int) ([][]*big.Int, error) {
 	// check rows dimension
-	if err := isLessThenZero(r, "Matrix rows"); err != nil {
+	if err := isLessThenOne(r, "Matrix rows"); err != nil {
 		return nil, err
 	}
 
 	// check columns too because, in case of error in matrix generation, the
 	// following error message will be displayed: "Slice length given ...", and
 	// this method do not generate any slice, but a matrix.
-	if err := isLessThenZero(c, "Matrix columns"); err != nil {
+	if err := isLessThenOne(c, "Matrix columns"); err != nil {
 		return nil, err
 	}
 
