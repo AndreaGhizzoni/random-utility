@@ -70,7 +70,7 @@ func TestSGenerator_Slice_(t *testing.T) {
 			t.Logf("Try to generate random secure slice with: l= %v, min= %d,"+
 				" max= %v", l, min, max)
 
-			s, err := generate.Slice_(l, min, max)
+			s, err := generate.Slice(l, min, max)
 			if err != nil {
 				t.Fatal(err.Error())
 			}
