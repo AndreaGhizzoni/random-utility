@@ -10,6 +10,7 @@ import (
 type SGenerator struct{}
 
 var zero = big.NewInt(0)
+var one = big.NewInt(1)
 
 // TODO add doc
 func NewSecureGenerator() *SGenerator {
@@ -26,10 +27,10 @@ func isLessThenZero(dim *big.Int, msgIfTrue string) error {
 	return nil
 }
 
-// utility method to check if min > max.
+// utility method to check if min >= max.
 func checkBounds(min, max *big.Int) error {
-	if min.Cmp(max) == 1 { // min > max
-		return fmt.Errorf("Bounds malformed: (min) %v > %v (max)", min, max)
+	if min.Cmp(max) == 1 || min.Cmp(max) == 0 { // min >= max
+		return fmt.Errorf("Bounds malformed: (min) %v >= %v (max)", min, max)
 	}
 	return nil
 }
@@ -46,34 +47,38 @@ func (g *SGenerator) generateInt(min, max *big.Int) (*big.Int, error) {
 
 // TODO add doc
 func (g *SGenerator) Int(min, max *big.Int) (*big.Int, error) {
-    if err := checkBounds(min, max); err != nil{
+	if err := checkBounds(min, max); err != nil {
 		return nil, err
 	}
 	return g.generateInt(min, max)
 }
 
-/*
 // This function generate a slice of len length, with random numbers X where
 // min <= X < max.
 // If len <= 0 or min > max return a error.
-func (g *Generator) Slice(len, min, max int64) ([]int64, error) {
-	if err := checkDimension(len, "Slice length"); err != nil {
+func (g *SGenerator) Slice_(len, min, max *big.Int) ([]*big.Int, error) {
+	if err := isLessThenZero(len, "Slice length"); err != nil {
 		return nil, err
 	}
 
-	if err := checkBound(min, max); err != nil {
+	if err := checkBounds(min, max); err != nil {
 		return nil, err
 	}
 
-	perm := make([]int64, len)
-	var i int64 = 0
-	for ; i < len; i++ {
-		perm[i] = g.generateInt(min, max)
+	perm := []*big.Int{}
+	i := big.NewInt(0)
+	for ; i.Cmp(len) == -1; i.Add(i, one) {
+		if r, err := g.generateInt(min, max); err != nil {
+			return nil, err
+		} else {
+			perm = append(perm, r)
+		}
 	}
 
 	return perm, nil
 }
 
+/*
 // This function generate a matrix with r rows and c cols. The number X in it
 // are min <= X < max.
 // If r <= 0 or c <= 0 or min > max, this function return an error
