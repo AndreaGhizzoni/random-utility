@@ -2,7 +2,7 @@ package samples
 
 import (
 	"crypto/rand"
-	"fmt"
+	"errors"
 	"github.com/AndreaGhizzoni/zenium/structures"
 	"math/big"
 )
@@ -21,7 +21,7 @@ func NewSecureGenerator() *SGenerator {
 // the error message if check is true.
 func isLessThenOne(dim *big.Int, msgIfTrue string) error {
 	if dim.Cmp(one) == -1 { // dim < 1
-		return fmt.Errorf(msgIfTrue+" given is invalid: %v < 1.", dim)
+		errors.New(msgIfTrue + " given is invalid: " + dim.String() + " < 1")
 	}
 	return nil
 }
@@ -29,7 +29,8 @@ func isLessThenOne(dim *big.Int, msgIfTrue string) error {
 // utility method to check if min >= max.
 func checkBounds(min, max *big.Int) error {
 	if min.Cmp(max) == 1 || min.Cmp(max) == 0 { // min >= max
-		return fmt.Errorf("Bounds malformed: (min) %v >= %v (max)", min, max)
+		return errors.New("Bounds malformed: (min) " + min.String() +
+			" >= " + max.String() + " (max)")
 	}
 	return nil
 }
