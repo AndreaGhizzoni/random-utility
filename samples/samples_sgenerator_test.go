@@ -2,6 +2,7 @@ package samples_test
 
 import (
 	"github.com/AndreaGhizzoni/zenium/samples"
+	"github.com/AndreaGhizzoni/zenium/structures"
 	"math/big"
 	"testing"
 )
@@ -67,7 +68,7 @@ func TestSGenerator_Slice_(t *testing.T) {
 			min = big.NewInt(2).Exp(two, pow, zero)
 			min.Neg(min)
 
-			t.Logf("Try to generate random secure slice with: l= %v, min= %d,"+
+			t.Logf("Try to generate random secure slice with: l= %v, min= %v,"+
 				" max= %v", l, min, max)
 
 			s, err := generate.Slice(l, min, max)
@@ -120,7 +121,7 @@ func TestSGenerator_Matrix(t *testing.T) {
 			min.Neg(min)
 
 			t.Logf("Try to generate random secure matrix with: r= %v, c= %v, "+
-				"min= %d, max= %v", l.r, l.c, min, max)
+				"min= %v, max= %v", l.r, l.c, min, max)
 
 			m, err := generate.Matrix(l.r, l.c, min, max)
 			if err != nil {
@@ -147,6 +148,69 @@ func TestSGenerator_Matrix(t *testing.T) {
 						t.Fatalf("number in matrix is greater then max: %v > "+
 							"%v", c, max)
 					}
+				}
+			}
+		}
+	}
+}
+
+// TODO add description
+func TestSGenerator_Bound(t *testing.T) {
+	var tableTest = []struct {
+		amount, width *big.Int
+	}{
+		{big.NewInt(10), big.NewInt(1000)},
+		{big.NewInt(100), big.NewInt(1000)},
+		{big.NewInt(1000), big.NewInt(1000)},
+	}
+	zero := big.NewInt(0)
+	one := big.NewInt(1)
+	two := big.NewInt(2)
+
+	// reusable pointer to big.Int
+	var min, max *big.Int = nil, nil
+	var pow *big.Int
+	generate := samples.NewSecureGenerator()
+	// pow indicates the power that is used to generate the bounds
+	max_pow := big.NewInt(64)
+	for _, l := range tableTest {
+		pow = big.NewInt(10) // power start to 10 because of fixed bound width
+		for ; pow.Cmp(max_pow) == -1; pow.Add(pow, one) {
+			max = big.NewInt(2).Exp(two, pow, zero)
+			min = big.NewInt(2).Exp(two, pow, zero)
+			min.Neg(min)
+
+			t.Logf("Try to generate random secure bound with: a= %v, w= %v, "+
+				"min= %v, max= %v", l.amount, l.width, min, max)
+
+			bounds := []*structures.Bound{}
+			i := big.NewInt(0)
+			for ; i.Cmp(l.amount) == -1; i.Add(i, one) {
+				b, err := generate.Bound(min, max, l.width)
+				if err != nil {
+					t.Fatal(err.Error())
+				}
+				bounds = append(bounds, b)
+			}
+
+			lenBounds := int64(len(bounds))
+			if l.amount.Cmp(big.NewInt(lenBounds)) != 0 {
+				t.Fatalf("Generated amount of bounds mismatch: %v != %v",
+					l.amount, lenBounds)
+			}
+
+			for _, b := range bounds {
+				if b.Low().Cmp(min) == -1 { // lower bound < min
+					t.Fatalf("lower bound is less then min: %v < %v",
+						b.Low(), min)
+				}
+				if b.Up().Cmp(max) == 1 { // upper bound > max
+					t.Fatalf("upper bound is greater then max: %v > %v",
+						b.Up(), max)
+				}
+				if b.Width().Cmp(l.width) != 0 { // bound width != width
+					t.Fatalf("bound width mismatch: %v != %v",
+						b.Width(), l.width)
 				}
 			}
 		}
