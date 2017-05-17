@@ -124,7 +124,7 @@ func (g *SGenerator) Bound(min, max, width *big.Int) (*structures.Bound, error) 
 		return nil, err
 	}
 
-	if err := checkBound(min, max); err != nil {
+	if err := checkBounds(min, max); err != nil {
 		return nil, err
 	}
 
