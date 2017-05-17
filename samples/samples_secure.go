@@ -119,7 +119,7 @@ func (g *SGenerator) Matrix(r, c, min, max *big.Int) ([][]*big.Int, error) {
 // This function generate a random bound of fixed length. min and max are the
 // minimum and the maximum bounds that the bound will be generated of length
 // width.
-func (g *SGenerator) Bound(min, max, width *big.Int) (*Bound, error) {
+func (g *SGenerator) Bound(min, max, width *big.Int) (*structures.Bound, error) {
 	if err := isLessThenOne(width, "Bound with"); err != nil {
 		return nil, err
 	}
