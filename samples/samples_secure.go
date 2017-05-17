@@ -4,35 +4,17 @@ import (
 	"crypto/rand"
 	"errors"
 	"github.com/AndreaGhizzoni/zenium/structures"
+	"github.com/AndreaGhizzoni/zenium/util"
 	"math/big"
 )
 
 // TODO add doc
 type SGenerator struct{}
 
-var one = big.NewInt(1)
 
 // TODO add doc
 func NewSecureGenerator() *SGenerator {
 	return &SGenerator{}
-}
-
-// dim is the dimension to check if it's < 1 and msg is a string to put before
-// the error message if check is true.
-func isLessThenOne(dim *big.Int, msgIfTrue string) error {
-	if dim.Cmp(one) == -1 { // dim < 1
-		errors.New(msgIfTrue + " given is invalid: " + dim.String() + " < 1")
-	}
-	return nil
-}
-
-// utility method to check if min >= max.
-func checkBounds(min, max *big.Int) error {
-	if min.Cmp(max) == 1 || min.Cmp(max) == 0 { // min >= max
-		return errors.New("Bounds malformed: (min) " + min.String() +
-			" >= " + max.String() + " (max)")
-	}
-	return nil
 }
 
 // TODO add description
@@ -62,7 +44,7 @@ func generateSlice(len, min, max *big.Int) ([]*big.Int, error) {
 
 // TODO add doc
 func (g *SGenerator) Int(min, max *big.Int) (*big.Int, error) {
-	if err := checkBounds(min, max); err != nil {
+	if err := util.CheckBounds(min, max); err != nil {
 		return nil, err
 	}
 	return generateInt(min, max)
@@ -72,11 +54,11 @@ func (g *SGenerator) Int(min, max *big.Int) (*big.Int, error) {
 // min <= X < max.
 // If len <= 0 or min > max return a error.
 func (g *SGenerator) Slice(len, min, max *big.Int) ([]*big.Int, error) {
-	if err := isLessThenOne(len, "Slice length"); err != nil {
+	if err := util.IsLessThenOne(len, "Slice length"); err != nil {
 		return nil, err
 	}
 
-	if err := checkBounds(min, max); err != nil {
+	if err := util.CheckBounds(min, max); err != nil {
 		return nil, err
 	}
 
@@ -88,19 +70,19 @@ func (g *SGenerator) Slice(len, min, max *big.Int) ([]*big.Int, error) {
 // If r <= 0 or c <= 0 or min => max, this function return an error.
 func (g *SGenerator) Matrix(r, c, min, max *big.Int) ([][]*big.Int, error) {
 	// check rows dimension
-	if err := isLessThenOne(r, "Matrix rows"); err != nil {
+	if err := util.IsLessThenOne(r, "Matrix rows"); err != nil {
 		return nil, err
 	}
 
 	// check columns too because, in case of error in matrix generation, the
 	// following error message will be displayed: "Slice length given ...", and
 	// this method do not generate any slice, but a matrix.
-	if err := isLessThenOne(c, "Matrix columns"); err != nil {
+	if err := util.IsLessThenOne(c, "Matrix columns"); err != nil {
 		return nil, err
 	}
 
 	// check ranges
-	if err := checkBounds(min, max); err != nil {
+	if err := util.CheckBounds(min, max); err != nil {
 		return nil, err
 	}
 
@@ -121,11 +103,11 @@ func (g *SGenerator) Matrix(r, c, min, max *big.Int) ([][]*big.Int, error) {
 // minimum and the maximum bounds that the bound will be generated of length
 // width.
 func (g *SGenerator) Bound(min, max, width *big.Int) (*structures.Bound, error) {
-	if err := isLessThenOne(width, "Bound with"); err != nil {
+	if err := util.IsLessThenOne(width, "Bound with"); err != nil {
 		return nil, err
 	}
 
-	if err := checkBounds(min, max); err != nil {
+	if err := util.CheckBounds(min, max); err != nil {
 		return nil, err
 	}
 
