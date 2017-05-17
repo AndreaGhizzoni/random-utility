@@ -43,7 +43,7 @@ func Test_SGenerator_Int(t *testing.T) {
 }
 
 // TODO add description
-func TestSGenerator_Slice_(t *testing.T) {
+func TestSGenerator_Slice(t *testing.T) {
 	var lengths = []*big.Int{
 		big.NewInt(1),
 		big.NewInt(10),
