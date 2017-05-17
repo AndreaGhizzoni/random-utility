@@ -3,6 +3,7 @@ package samples
 import (
 	"crypto/rand"
 	"fmt"
+	"github.com/AndreaGhizzoni/zenium/structures"
 	"math/big"
 )
 
@@ -97,13 +98,13 @@ func (g *SGenerator) Matrix(r, c, min, max *big.Int) ([][]*big.Int, error) {
 		return nil, err
 	}
 
-    // check ranges
+	// check ranges
 	if err := checkBounds(min, max); err != nil {
 		return nil, err
 	}
 
 	matrix := [][]*big.Int{}
-    i := big.NewInt(0)
+	i := big.NewInt(0)
 	for ; i.Cmp(r) == -1; i.Add(i, one) {
 		perm, e := generateSlice(c, min, max)
 		if e != nil {
@@ -115,12 +116,11 @@ func (g *SGenerator) Matrix(r, c, min, max *big.Int) ([][]*big.Int, error) {
 	return matrix, nil
 }
 
-/*
 // This function generate a random bound of fixed length. min and max are the
 // minimum and the maximum bounds that the bound will be generated of length
 // width.
-func (g *Generator) Bound(min, max, width int64) (*Bound, error) {
-	if err := checkDimension(width, "Bound with"); err != nil {
+func (g *SGenerator) Bound(min, max, width *big.Int) (*Bound, error) {
+	if err := isLessThenOne(width, "Bound with"); err != nil {
 		return nil, err
 	}
 
@@ -128,13 +128,18 @@ func (g *Generator) Bound(min, max, width int64) (*Bound, error) {
 		return nil, err
 	}
 
-	bLow, bUp := g.generateInt(min, max), int64(0)
-	if bLow+width > max {
-		bUp = max
-		bLow = bUp - width
-	} else {
-		bUp = bLow + width
+	bLow, err := generateInt(min, max)
+	if err != nil {
+		return nil, err
 	}
-	return NewBound(bLow, bUp), nil
+	bUp := big.NewInt(0)
+
+	i := big.NewInt(0).Add(bLow, width)
+	if i.Cmp(max) == 1 { // bLow+width > max
+		bUp = max
+		bLow.Sub(bUp, width) //bLow = bUp - width
+	} else {
+		bUp.Add(bLow, width)
+	}
+	return structures.NewBound(bLow, bUp), nil
 }
-*/
