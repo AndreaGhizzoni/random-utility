@@ -18,7 +18,7 @@ func IsLessThenOne(dim *big.Int, msgIfTrue string) error {
 	return nil
 }
 
-// utility method to check if min >= max. If is true create a new error with
+// CheckBounds check if min >= max. If is true create a new error with
 // appropriate description, otherwise return nil.
 func CheckBounds(min, max *big.Int) error {
 	if min.Cmp(max) == 1 || min.Cmp(max) == 0 { // min >= max
