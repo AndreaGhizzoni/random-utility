@@ -2,7 +2,6 @@ package samples_test
 
 import (
 	"github.com/AndreaGhizzoni/zenium/samples"
-	"github.com/AndreaGhizzoni/zenium/structures"
 	"math/big"
 	"testing"
 )
@@ -79,8 +78,8 @@ func TestSGenerator_Slice(t *testing.T) {
 				t.Fatal(err.Error())
 			}
 
-			actualSliceLength := int64(len(slice))
-			if length.Cmp(big.NewInt(actualSliceLength)) != 0 {
+			actualSliceLength := big.NewInt(int64(len(slice)))
+			if length.Cmp(actualSliceLength) != 0 {
 				t.Fatalf("Generated slice length mismatch: %v != %v", length,
 					actualSliceLength)
 			}
@@ -131,14 +130,14 @@ func TestSGenerator_Matrix(t *testing.T) {
 				t.Fatal(err.Error())
 			}
 
-			rows := int64(len(matrix))
-			if dimension.r.Cmp(big.NewInt(rows)) != 0 {
+			rows := big.NewInt(int64(len(matrix)))
+			if dimension.r.Cmp(rows) != 0 {
 				t.Fatalf("Generated matrix rows mismatch: %v != %v",
 					dimension.r, rows)
 			}
 
-			cols := int64(len(matrix[0]))
-			if dimension.c.Cmp(big.NewInt(cols)) != 0 {
+			cols := big.NewInt(int64(len(matrix[0])))
+			if dimension.c.Cmp(cols) != 0 {
 				t.Fatalf("Generated matrix cols mismatch: %v != %v",
 					dimension.c, cols)
 			}
@@ -187,20 +186,15 @@ func TestSGenerator_Bound(t *testing.T) {
 			t.Logf("Try to generate random secure bound with: amount= %v, "+
 				"w= %v, min= %v, max= %v", amount, boundWidth, min, max)
 
-			bounds := []*structures.Bound{}
-			i := big.NewInt(0)
-			for ; i.Cmp(amount) == -1; i.Add(i, one) {
-				b, err := generate.Bound(min, max, boundWidth)
-				if err != nil {
-					t.Fatal(err.Error())
-				}
-				bounds = append(bounds, b)
+			bounds, err := generate.Bounds(min, max, boundWidth, amount)
+			if err != nil {
+				t.Fatal(err.Error())
 			}
 
-			lenBounds := int64(len(bounds))
-			if amount.Cmp(big.NewInt(lenBounds)) != 0 {
+			actualBounds := big.NewInt(int64(len(bounds)))
+			if amount.Cmp(actualBounds) != 0 {
 				t.Fatalf("Generated amount of bounds mismatch: %v != %v",
-					amount, lenBounds)
+					amount, actualBounds)
 			}
 
 			for _, bound := range bounds {
