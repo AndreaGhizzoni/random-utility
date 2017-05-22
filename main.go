@@ -104,14 +104,14 @@ func generateRSlice(c *cli.Context) error {
 
 	p, err := out.NewPrinter(output)
 	if err != nil {
-		fmt.Errorf(err.Error())
+		os.Stderr.WriteString(err.Error())
 		return err
 	}
 
 	gen := samples.NewGenerator()
 	slice, err := gen.Slice(l, min, max)
 	if err != nil {
-		fmt.Errorf(err.Error())
+		os.Stderr.WriteString(err.Error())
 		return err
 	}
 
@@ -132,14 +132,14 @@ func generateMatrix(c *cli.Context) error {
 
 	p, err := out.NewPrinter(output)
 	if err != nil {
-		fmt.Errorf(err.Error())
+		os.Stderr.WriteString(err.Error())
 		return err
 	}
 
 	gen := samples.NewGenerator()
 	matrix, err := gen.Matrix(rows, cols, min, max)
 	if err != nil {
-		fmt.Errorf(err.Error())
+		os.Stderr.WriteString(err.Error())
 		return err
 	}
 
@@ -155,7 +155,7 @@ func generateBound(c *cli.Context) error {
 
 	p, err := out.NewPrinter(output)
 	if err != nil {
-		fmt.Errorf(err.Error())
+		os.Stderr.WriteString(err.Error())
 		return err
 	}
 
@@ -163,7 +163,7 @@ func generateBound(c *cli.Context) error {
 	bounds := make([]samples.Bound, amount)
 	for i := range bounds {
 		if bound, err := gen.Bound(min, max, width); err != nil {
-			fmt.Errorf(err.Error())
+			os.Stderr.WriteString(err.Error())
 			return err
 		} else {
 			bounds[i] = *bound
