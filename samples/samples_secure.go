@@ -123,7 +123,10 @@ func (g *SGenerator) Bounds(min, max, width, amount *big.Int) ([]*structures.Bou
 	if err := util.IsLessThenOne(width, "Bound width"); err != nil {
 		return nil, err
 	}
-	// TODO check if (max-min >= width)
+
+	if err := util.IsWidthContainedInBounds(min, max, width); err != nil {
+		return nil, err
+	}
 
 	if err := util.CheckBounds(min, max); err != nil {
 		return nil, err
