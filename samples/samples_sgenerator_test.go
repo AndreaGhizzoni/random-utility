@@ -19,7 +19,7 @@ func Test_SGenerator_Int(t *testing.T) {
 	var min, max *big.Int = nil, nil
 	// power indicates the power of 2 that is used to generate the upper and
 	// lower bounds
-	var power *big.Int = nil
+	var power = big.NewInt(1)
 	var max_power = big.NewInt(64)
 
 	generate := samples.NewSecureGenerator()
