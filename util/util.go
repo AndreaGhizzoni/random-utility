@@ -5,10 +5,11 @@ import (
 	"math/big"
 )
 
+// One represents the integer 1 as *big.Int
 var One = big.NewInt(1)
 
-// dim is the dimension to check if it's < 1 and msg is a string to put before
-// the error message if check is true.
+// IsLessThenOne check if dim < 1. If is true create a new error with msgIfTrue
+// as error's message prefix, otherwise return nil.
 func IsLessThenOne(dim *big.Int, msgIfTrue string) error {
 	if dim.Cmp(One) == -1 { // dim < 1
 		return errors.New(msgIfTrue + " given is invalid: " + dim.String() +
@@ -17,7 +18,8 @@ func IsLessThenOne(dim *big.Int, msgIfTrue string) error {
 	return nil
 }
 
-// utility method to check if min >= max.
+// utility method to check if min >= max. If is true create a new error with
+// appropriate description, otherwise return nil.
 func CheckBounds(min, max *big.Int) error {
 	if min.Cmp(max) == 1 || min.Cmp(max) == 0 { // min >= max
 		return errors.New("Bounds malformed: (min) " + min.String() +
@@ -26,7 +28,9 @@ func CheckBounds(min, max *big.Int) error {
 	return nil
 }
 
-// utility function to check if width given is greater than max-min.
+// IsWidthContainedInBounds check if argument width given is greater then
+// |max-min|. If is true create a new error with appropriate description,
+// otherwise return nil.
 func IsWidthContainedInBounds(min, max, width *big.Int) error {
 	maxMinusMin := big.NewInt(0).Sub(max, min)
 	maxMinusMin.Abs(maxMinusMin)
