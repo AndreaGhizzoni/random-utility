@@ -1,4 +1,6 @@
 # Project Zenium
+[![codebeat badge](https://codebeat.co/badges/42816dbb-cc47-4931-9685-39d7b5ab2281)](https://codebeat.co/projects/github-com-andreaghizzoni-zenium-master)
+
 Zenium it'a a utility program to generate random data files.
 
 ## Introductions
