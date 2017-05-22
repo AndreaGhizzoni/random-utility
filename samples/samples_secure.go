@@ -128,7 +128,7 @@ func (g *SGenerator) Bounds(min, max, width, amount *big.Int) ([]*structures.Bou
 		return nil, err
 	}
 
-    if err := util.IsWidthContainedInBounds(min, max, width); err != nil {
+	if err := util.IsWidthContainedInBounds(min, max, width); err != nil {
 		return nil, err
 	}
 

@@ -161,7 +161,7 @@ func generateBound(c *cli.Context) error {
 
 	gen := samples.NewGenerator()
 	bounds := make([]samples.Bound, amount)
-	for i, _ := range bounds {
+	for i := range bounds {
 		if bound, err := gen.Bound(min, max, width); err != nil {
 			fmt.Errorf(err.Error())
 			return err

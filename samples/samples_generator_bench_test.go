@@ -33,6 +33,6 @@ func BenchmarkGenerate_Matrix(b *testing.B) {
 func BenchmarkGenerate_Bounds(b *testing.B) {
 	gen := samples.NewGenerator()
 	for i := 0; i < b.N; i++ {
-        gen.Bound(-10, 10, 3)
+		gen.Bound(-10, 10, 3)
 	}
 }

@@ -21,7 +21,7 @@ func NewBound(bLow, bUp *big.Int) *Bound {
 }
 
 // This function returns the width of the bound.
-func (b *Bound) Width() *big.Int{
+func (b *Bound) Width() *big.Int {
 	return big.NewInt(0).Sub(b.upper, b.lower)
 }
 
@@ -31,7 +31,7 @@ func (b *Bound) Low() *big.Int {
 }
 
 // This function returns the upper bound of the bound.
-func (b *Bound) Up()  *big.Int {
+func (b *Bound) Up() *big.Int {
 	return b.upper
 }
 
