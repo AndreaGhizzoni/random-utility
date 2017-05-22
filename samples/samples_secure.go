@@ -129,13 +129,14 @@ func (g *SGenerator) Bounds(min, max, width, amount *big.Int) ([]*structures.Bou
 		return nil, err
 	}
 
-	boundSlice := make([]*structures.Bound, amount.Int64())
+	boundSlice := []*structures.Bound{}
 	i := big.NewInt(0)
 	for ; i.Cmp(amount) == -1; i.Add(i, util.One) {
-		if bound, err := g.Bound(min, max, boundWidth); err != nil {
+		if bound, err := generateBound(min, max, width); err != nil {
 			return nil, err
 		} else {
 			boundSlice = append(boundSlice, bound)
 		}
 	}
+	return boundSlice, nil
 }
