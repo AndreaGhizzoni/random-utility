@@ -11,7 +11,8 @@ var One = big.NewInt(1)
 // the error message if check is true.
 func IsLessThenOne(dim *big.Int, msgIfTrue string) error {
 	if dim.Cmp(One) == -1 { // dim < 1
-		errors.New(msgIfTrue + " given is invalid: " + dim.String() + " < 1")
+		return errors.New(msgIfTrue + " given is invalid: " + dim.String() +
+			" < 1")
 	}
 	return nil
 }
