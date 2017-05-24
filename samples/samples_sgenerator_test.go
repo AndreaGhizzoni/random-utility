@@ -13,6 +13,27 @@ var (
 )
 
 // TODO add description
+func TestNewSecureGenerator(t *testing.T) {
+	// reusable pointer to big.Int
+	var min, max *big.Int = nil, nil
+	// power indicates the power of 2 that is used to generate the upper and
+	// lower bounds
+	var power = big.NewInt(1)
+	var max_power = big.NewInt(64)
+
+	var err error
+	for ; power.Cmp(max_power) == -1; power.Add(power, one) {
+		max = big.NewInt(2).Exp(two, power, modZero)
+		min = big.NewInt(2).Exp(two, power, modZero)
+		min.Neg(min)
+
+		if _, err = samples.NewSecureGenerator(min, max); err != nil {
+			t.Fatal(err.Error())
+		}
+	}
+}
+
+// TODO add description
 func Test_SGenerator_Int(t *testing.T) {
 	// reusable pointer to big.Int
 	var min, max *big.Int = nil, nil
