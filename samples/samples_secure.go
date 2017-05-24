@@ -8,138 +8,125 @@ import (
 )
 
 // TODO add doc
-type SGenerator struct{}
-
-// TODO add doc
-func NewSecureGenerator() *SGenerator {
-	return &SGenerator{}
-}
-
-// TODO add description
-func generateInt(min, max *big.Int) (*big.Int, error) {
-	r, err := rand.Int(rand.Reader, max.Sub(max, min))
-	if err != nil {
-		return nil, err
-	}
-	return r.Add(r, min), nil
-
-}
-
-// TODO add description
-func generateSlice(len, min, max *big.Int) ([]*big.Int, error) {
-	perm := []*big.Int{}
-	i := big.NewInt(0)
-	for ; i.Cmp(len) == -1; i.Add(i, util.One) {
-		if r, err := generateInt(min, max); err != nil {
-			return nil, err
-		} else {
-			perm = append(perm, r)
-		}
-	}
-
-	return perm, nil
-}
-
-// TODO add description
-func generateBound(min, max, width *big.Int) (*structures.Bound, error) {
-	bLow, err := generateInt(min, max)
-	if err != nil {
-		return nil, err
-	}
-	bUp := big.NewInt(0)
-
-	bLowPlusWidth := big.NewInt(0).Add(bLow, width)
-	if bLowPlusWidth.Cmp(max) == 1 { // bLow+width > max
-		bUp = max
-		bLow.Sub(bUp, width) //bLow = bUp - width
-	} else {
-		bUp.Add(bLow, width)
-	}
-	return structures.NewBound(bLow, bUp), nil
+type SGenerator struct {
+	min, max *big.Int
 }
 
 // TODO add doc
-func (g *SGenerator) Int(min, max *big.Int) (*big.Int, error) {
+func NewSecureGenerator(min, max *big.Int) (*SGenerator, error) {
 	if err := util.CheckBounds(min, max); err != nil {
 		return nil, err
 	}
-	return generateInt(min, max)
+	return &SGenerator{min, max}, nil
 }
 
+// TODO add description
+func (this *SGenerator) generateInt() (*big.Int, error) {
+	width := big.NewInt(0).Sub(this.max, this.min)
+	randomInWidth, err := rand.Int(rand.Reader, width)
+	if err != nil {
+		return nil, err
+	}
+
+	return randomInWidth.Add(randomInWidth, this.min), nil
+}
+
+// TODO add description
+func (this *SGenerator) generateSlice(len *big.Int) ([]*big.Int, error) {
+	randomSlice := []*big.Int{}
+	for i := big.NewInt(0); i.Cmp(len) == -1; i.Add(i, util.One) {
+		if random, err := this.generateInt(); err != nil {
+			return nil, err
+		} else {
+			randomSlice = append(randomSlice, random)
+		}
+	}
+
+	return randomSlice, nil
+}
+
+// TODO add description
+func (this *SGenerator) generateBound(width *big.Int) (*structures.Bound, error) {
+	lowerBound, err := this.generateInt()
+	if err != nil {
+		return nil, err
+	}
+	upperBound := big.NewInt(0)
+
+	lowerBoundPlusWidth := big.NewInt(0).Add(lowerBound, width)
+	if lowerBoundPlusWidth.Cmp(this.max) == 1 { // lowerBound + width > max
+		upperBound = this.max
+		lowerBound.Sub(upperBound, width) // lowerBound = upperBound - width
+	} else {
+		upperBound.Add(lowerBound, width) // upperBound = lowerBound + width
+	}
+	return structures.NewBound(lowerBound, upperBound), nil
+}
+
+// TODO add doc
+func (this *SGenerator) Int() (*big.Int, error) {
+	return this.generateInt()
+}
+
+// TODO check this comments
 // This function generate a slice of len length, with random numbers X where
 // min <= X < max.
 // If len <= 0 or min > max return a error.
-func (g *SGenerator) Slice(len, min, max *big.Int) ([]*big.Int, error) {
+func (this *SGenerator) Slice(len *big.Int) ([]*big.Int, error) {
 	if err := util.IsLessThenOne(len, "Slice length"); err != nil {
 		return nil, err
 	}
 
-	if err := util.CheckBounds(min, max); err != nil {
-		return nil, err
-	}
-
-	return generateSlice(len, min, max)
+	return this.generateSlice(len)
 }
 
+// TODO check this comments
 // This function generate a matrix with r rows and c columns. The numbers in it
 // are min <= X < max.
 // If r <= 0 or c <= 0 or min => max, this function return an error.
-func (g *SGenerator) Matrix(r, c, min, max *big.Int) ([][]*big.Int, error) {
-	// check rows dimension
-	if err := util.IsLessThenOne(r, "Matrix rows"); err != nil {
+func (this *SGenerator) Matrix(rows, columns *big.Int) ([][]*big.Int, error) {
+	if err := util.IsLessThenOne(rows, "Matrix rows"); err != nil {
 		return nil, err
 	}
 
-	// check columns too because, in case of error in matrix generation, the
-	// following error message will be displayed: "Slice length given ...", and
-	// this method do not generate any slice, but a matrix.
-	if err := util.IsLessThenOne(c, "Matrix columns"); err != nil {
-		return nil, err
-	}
-
-	// check ranges
-	if err := util.CheckBounds(min, max); err != nil {
+	if err := util.IsLessThenOne(columns, "Matrix columns"); err != nil {
 		return nil, err
 	}
 
 	matrix := [][]*big.Int{}
-	i := big.NewInt(0)
-	for ; i.Cmp(r) == -1; i.Add(i, util.One) {
-		perm, e := generateSlice(c, min, max)
-		if e != nil {
-			return nil, e
+	for i := big.NewInt(0); i.Cmp(rows) == -1; i.Add(i, util.One) {
+		random, err := this.generateSlice(columns)
+		if err != nil {
+			return nil, err
 		}
-		matrix = append(matrix, perm)
+		matrix = append(matrix, random)
 	}
 
 	return matrix, nil
 }
 
+// TODO check this comments
 // This function generate a slice of random structure.Bound.
 // min and max represents the lower and the upprer bounds of element's slice.
 // width is the fixed with of all the bounds.
 // amount is the number of bounds that will be generated.
-func (g *SGenerator) Bounds(min, max, width, amount *big.Int) ([]*structures.Bound, error) {
+func (this *SGenerator) Bounds(width, amount *big.Int) ([]*structures.Bound, error) {
 	if err := util.IsLessThenOne(width, "Bound width"); err != nil {
 		return nil, err
 	}
 
-	if err := util.CheckBounds(min, max); err != nil {
+    err := util.IsWidthContainedInBounds(this.min, this.max, width)
+	if err!= nil {
 		return nil, err
 	}
 
-	if err := util.IsWidthContainedInBounds(min, max, width); err != nil {
-		return nil, err
-	}
-
-	boundSlice := []*structures.Bound{}
-	i := big.NewInt(0)
-	for ; i.Cmp(amount) == -1; i.Add(i, util.One) {
-		if bound, err := generateBound(min, max, width); err != nil {
+	bounds := []*structures.Bound{}
+	for i := big.NewInt(0); i.Cmp(amount) == -1; i.Add(i, util.One) {
+		if bound, err := this.generateBound(width); err != nil {
 			return nil, err
 		} else {
-			boundSlice = append(boundSlice, bound)
+			bounds = append(bounds, bound)
 		}
 	}
-	return boundSlice, nil
+	return bounds, nil
 }

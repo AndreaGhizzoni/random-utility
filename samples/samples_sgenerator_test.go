@@ -21,16 +21,22 @@ func Test_SGenerator_Int(t *testing.T) {
 	var power = big.NewInt(1)
 	var max_power = big.NewInt(64)
 
-	generate := samples.NewSecureGenerator()
+	var generate *samples.SGenerator
+	var err error
 	for ; power.Cmp(max_power) == -1; power.Add(power, one) {
 		max = big.NewInt(2).Exp(two, power, modZero)
 		min = big.NewInt(2).Exp(two, power, modZero)
 		min.Neg(min)
 
+		generate, err = samples.NewSecureGenerator(min, max)
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+
 		t.Logf("Try to generate secure random number between: min= %v, max= %v",
 			min, max)
 
-		random, err := generate.Int(min, max)
+		random, err := generate.Int()
 		if err != nil {
 			t.Fatal(err.Error())
 		}
@@ -62,7 +68,8 @@ func TestSGenerator_Slice(t *testing.T) {
 	var power *big.Int = nil
 	var max_power = big.NewInt(64)
 
-	generate := samples.NewSecureGenerator()
+	var generate *samples.SGenerator
+	var err error
 	for _, length := range lengths {
 		power = big.NewInt(1)
 		for ; power.Cmp(max_power) == -1; power.Add(power, one) {
@@ -70,10 +77,15 @@ func TestSGenerator_Slice(t *testing.T) {
 			min = big.NewInt(2).Exp(two, power, modZero)
 			min.Neg(min)
 
+			generate, err = samples.NewSecureGenerator(min, max)
+			if err != nil {
+				t.Fatal(err.Error())
+			}
+
 			t.Logf("Try to generate random secure slice with: length= %v, "+
 				"min= %v, max= %v", length, min, max)
 
-			slice, err := generate.Slice(length, min, max)
+			slice, err := generate.Slice(length)
 			if err != nil {
 				t.Fatal(err.Error())
 			}
@@ -101,7 +113,7 @@ func TestSGenerator_Slice(t *testing.T) {
 // TODO add description
 func TestSGenerator_Matrix(t *testing.T) {
 	var matrixDimensions = []struct {
-		r, c *big.Int
+		rows, columns *big.Int
 	}{
 		{big.NewInt(1), big.NewInt(1)},
 		{big.NewInt(10), big.NewInt(10)},
@@ -114,7 +126,8 @@ func TestSGenerator_Matrix(t *testing.T) {
 	var power *big.Int = nil
 	var max_power = big.NewInt(64)
 
-	generate := samples.NewSecureGenerator()
+	var generate *samples.SGenerator
+	var err error
 	for _, dimension := range matrixDimensions {
 		power = big.NewInt(1)
 		for ; power.Cmp(max_power) == -1; power.Add(power, one) {
@@ -122,35 +135,40 @@ func TestSGenerator_Matrix(t *testing.T) {
 			min = big.NewInt(2).Exp(two, power, modZero)
 			min.Neg(min)
 
-			t.Logf("Try to generate random secure matrix with: r= %v, c= %v, "+
-				"min= %v, max= %v", dimension.r, dimension.c, min, max)
+			generate, err = samples.NewSecureGenerator(min, max)
+			if err != nil {
+				t.Fatal(err.Error())
+			}
 
-			matrix, err := generate.Matrix(dimension.r, dimension.c, min, max)
+			t.Logf("Try to generate random secure matrix with: rows= %v, columns= %v, "+
+				"min= %v, max= %v", dimension.rows, dimension.columns, min, max)
+
+			matrix, err := generate.Matrix(dimension.rows, dimension.columns)
 			if err != nil {
 				t.Fatal(err.Error())
 			}
 
 			rows := big.NewInt(int64(len(matrix)))
-			if dimension.r.Cmp(rows) != 0 {
+			if dimension.rows.Cmp(rows) != 0 {
 				t.Fatalf("Generated matrix rows mismatch: %v != %v",
-					dimension.r, rows)
+					dimension.rows, rows)
 			}
 
 			cols := big.NewInt(int64(len(matrix[0])))
-			if dimension.c.Cmp(cols) != 0 {
+			if dimension.columns.Cmp(cols) != 0 {
 				t.Fatalf("Generated matrix cols mismatch: %v != %v",
-					dimension.c, cols)
+					dimension.columns, cols)
 			}
 
-			for _, r := range matrix {
-				for _, c := range r {
-					if c.Cmp(min) == -1 { // c < min
+			for _, rows := range matrix {
+				for _, element := range rows {
+					if element.Cmp(min) == -1 { // element < min
 						t.Fatalf("number in matrix is less then min: %v < "+
-							"%v", c, min)
+							"%v", element, min)
 					}
-					if c.Cmp(max) == 1 { // c > max
+					if element.Cmp(max) == 1 { // element > max
 						t.Fatalf("number in matrix is greater then max: %v > "+
-							"%v", c, max)
+							"%v", element, max)
 					}
 				}
 			}
@@ -174,7 +192,8 @@ func TestSGenerator_Bound(t *testing.T) {
 	var power *big.Int = nil
 	var max_power = big.NewInt(64)
 
-	generate := samples.NewSecureGenerator()
+	var generate *samples.SGenerator
+	var err error
 	for _, amount := range numberOfBounds {
 		// It starts at 10 because of fixed boundWidth
 		power = big.NewInt(10)
@@ -183,10 +202,15 @@ func TestSGenerator_Bound(t *testing.T) {
 			min = big.NewInt(2).Exp(two, power, modZero)
 			min.Neg(min)
 
+			generate, err = samples.NewSecureGenerator(min, max)
+			if err != nil {
+				t.Fatal(err.Error())
+			}
+
 			t.Logf("Try to generate random secure bound with: amount= %v, "+
 				"w= %v, min= %v, max= %v", amount, boundWidth, min, max)
 
-			bounds, err := generate.Bounds(min, max, boundWidth, amount)
+			bounds, err := generate.Bounds(boundWidth, amount)
 			if err != nil {
 				t.Fatal(err.Error())
 			}
