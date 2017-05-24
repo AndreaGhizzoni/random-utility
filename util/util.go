@@ -8,9 +8,13 @@ import (
 // One represents the integer 1 as *big.Int
 var One = big.NewInt(1)
 
-// IsLessThenOne check if dim < 1. If is true create a new error with msgIfTrue
-// as error's message prefix, otherwise return nil.
-func IsLessThenOne(dim *big.Int, msgIfTrue string) error {
+// IsNilOrLessThenOne check if dim != nil and dim < 1. If is true create a new
+// error with msgIfTrue as error's message prefix, otherwise return nil.
+func IsNilOrLessThenOne(dim *big.Int, msgIfTrue string) error {
+	if dim == nil {
+		return errors.New("Dimension given can not be nil.")
+	}
+
 	if dim.Cmp(One) == -1 { // dim < 1
 		return errors.New(msgIfTrue + " given is invalid: " + dim.String() +
 			" < 1")
@@ -18,9 +22,17 @@ func IsLessThenOne(dim *big.Int, msgIfTrue string) error {
 	return nil
 }
 
-// CheckBounds check if min >= max. If is true create a new error with
-// appropriate description, otherwise return nil.
-func CheckBounds(min, max *big.Int) error {
+// CheckBoundsIfNotNil check min != nil && max != nil and thane check if
+// min >= max. If is true create a new error with appropriate description,
+// otherwise return nil.
+func CheckBoundsIfNotNil(min, max *big.Int) error {
+	if min == nil {
+		return errors.New("minimum given can not be nil.")
+	}
+	if max == nil {
+		return errors.New("maximum given can not be nil.")
+	}
+
 	if min.Cmp(max) == 1 || min.Cmp(max) == 0 { // min >= max
 		return errors.New("Bounds malformed: (min) " + min.String() +
 			" >= " + max.String() + " (max)")

@@ -14,7 +14,7 @@ type SGenerator struct {
 
 // TODO add doc
 func NewSecureGenerator(min, max *big.Int) (*SGenerator, error) {
-	if err := util.CheckBounds(min, max); err != nil {
+	if err := util.CheckBoundsIfNotNil(min, max); err != nil {
 		return nil, err
 	}
 	return &SGenerator{min, max}, nil
@@ -73,7 +73,7 @@ func (this *SGenerator) Int() (*big.Int, error) {
 // min <= X < max.
 // If len <= 0 or min > max return a error.
 func (this *SGenerator) Slice(len *big.Int) ([]*big.Int, error) {
-	if err := util.IsLessThenOne(len, "Slice length"); err != nil {
+	if err := util.IsNilOrLessThenOne(len, "Slice length"); err != nil {
 		return nil, err
 	}
 
@@ -85,11 +85,11 @@ func (this *SGenerator) Slice(len *big.Int) ([]*big.Int, error) {
 // are min <= X < max.
 // If r <= 0 or c <= 0 or min => max, this function return an error.
 func (this *SGenerator) Matrix(rows, columns *big.Int) ([][]*big.Int, error) {
-	if err := util.IsLessThenOne(rows, "Matrix rows"); err != nil {
+	if err := util.IsNilOrLessThenOne(rows, "Matrix rows"); err != nil {
 		return nil, err
 	}
 
-	if err := util.IsLessThenOne(columns, "Matrix columns"); err != nil {
+	if err := util.IsNilOrLessThenOne(columns, "Matrix columns"); err != nil {
 		return nil, err
 	}
 
@@ -111,7 +111,7 @@ func (this *SGenerator) Matrix(rows, columns *big.Int) ([][]*big.Int, error) {
 // width is the fixed with of all the bounds.
 // amount is the number of bounds that will be generated.
 func (this *SGenerator) Bounds(width, amount *big.Int) ([]*structures.Bound, error) {
-	if err := util.IsLessThenOne(width, "Bound width"); err != nil {
+	if err := util.IsNilOrLessThenOne(width, "Bound width"); err != nil {
 		return nil, err
 	}
 
