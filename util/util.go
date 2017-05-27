@@ -8,6 +8,8 @@ import (
 // One represents the integer 1 as *big.Int
 var One = big.NewInt(1)
 
+var baseTen = 10
+
 // IsNilOrLessThenOne check if dim != nil and dim < 1. If is true create a new
 // error with msgIfTrue as error's message prefix, otherwise return nil.
 func IsNilOrLessThenOne(dim *big.Int, msgIfTrue string) error {
@@ -51,4 +53,17 @@ func IsWidthContainedInBounds(min, max, width *big.Int) error {
 			width.String() + " > " + maxMinusMin.String())
 	}
 	return nil
+}
+
+// TODO add description
+func FromStringToBigInt(aString string, prefixError string) (*big.Int, error) {
+	bigInt := big.NewInt(1)
+	if aString == "" {
+		return bigInt, nil
+	}
+	if _, success := bigInt.SetString(aString, baseTen); !success {
+		return nil, errors.New(prefixError + ": Fail to cast to big.Int from " +
+			"string.")
+	}
+	return bigInt, nil
 }
