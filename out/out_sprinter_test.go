@@ -97,7 +97,7 @@ func TestNewSecurePrinter_Arguments(t *testing.T) {
 	for _, path := range paths {
 		logFullPath(t, path)
 
-		if _, err := out.NewPrinter(path); err == nil {
+		if _, err := out.NewSecurePrinter(path); err == nil {
 			t.Fatalf("out.NewPrinter(%s) must fail.", path)
 		}
 
@@ -498,7 +498,7 @@ func TestSPrinter_WriteBounds(t *testing.T) {
 // this function tests the correct behavior of out.SPrinter.WriteBounds method
 // with wrong inputs
 func TestSPrinter_WriteBounds_Arguments(t *testing.T) {
-    tD := "_test/"
+	tD := "_test/"
 	defer os.RemoveAll(tD)
 
 	var tableTest = []struct {
