@@ -13,7 +13,7 @@ type Generator struct {
 }
 
 // NewGenerator returns a new instance of samples.Generator type.
-// This generator uses math/crypt to generate *big.Int numbers between min
+// This generator uses crypto/rand to generate *big.Int numbers between min
 // and max. error is returned if min > max or if min == nil || max == nil.
 func NewGenerator(min, max *big.Int) (*Generator, error) {
 	if err := util.CheckBoundsIfNotNil(min, max); err != nil {
