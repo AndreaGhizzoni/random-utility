@@ -7,12 +7,14 @@ import (
 	"math/big"
 )
 
-// TODO add doc
+// This is the generator of random numbers.
 type SGenerator struct {
 	min, max *big.Int
 }
 
-// TODO add doc
+// NewSecureGenerator returns a new instance of samples.SGenerator type.
+// This generator uses math/crypt to generate *big.Int numbers between min
+// and max. error is returned if min > max or if min == nil || max == nil.
 func NewSecureGenerator(min, max *big.Int) (*SGenerator, error) {
 	if err := util.CheckBoundsIfNotNil(min, max); err != nil {
 		return nil, err
@@ -20,7 +22,6 @@ func NewSecureGenerator(min, max *big.Int) (*SGenerator, error) {
 	return &SGenerator{min, max}, nil
 }
 
-// TODO add description
 func (this *SGenerator) generateInt() (*big.Int, error) {
 	width := big.NewInt(0).Sub(this.max, this.min)
 	randomInWidth, err := rand.Int(rand.Reader, width)
@@ -31,7 +32,6 @@ func (this *SGenerator) generateInt() (*big.Int, error) {
 	return randomInWidth.Add(randomInWidth, this.min), nil
 }
 
-// TODO add description
 func (this *SGenerator) generateSlice(len *big.Int) ([]*big.Int, error) {
 	randomSlice := []*big.Int{}
 	for i := big.NewInt(0); i.Cmp(len) == -1; i.Add(i, util.One) {
@@ -45,7 +45,6 @@ func (this *SGenerator) generateSlice(len *big.Int) ([]*big.Int, error) {
 	return randomSlice, nil
 }
 
-// TODO add description
 func (this *SGenerator) generateBound(width *big.Int) (*structures.Bound, error) {
 	lowerBound, err := this.generateInt()
 	if err != nil {
@@ -63,15 +62,14 @@ func (this *SGenerator) generateBound(width *big.Int) (*structures.Bound, error)
 	return structures.NewBound(lowerBound, upperBound), nil
 }
 
-// TODO add doc
+// Int generate a random *big.Int according to samples.SGenerator instanced.
+// error is returned if generation fails.
 func (this *SGenerator) Int() (*big.Int, error) {
 	return this.generateInt()
 }
 
-// TODO check this comments
-// This function generate a slice of len length, with random numbers X where
-// min <= X < max.
-// If len <= 0 or min > max return a error.
+// Slice generate a slice of length len. error is returned if len == nil or
+// if single *big.Int generation fails.
 func (this *SGenerator) Slice(len *big.Int) ([]*big.Int, error) {
 	if err := util.IsNilOrLessThenOne(len, "Slice length"); err != nil {
 		return nil, err
@@ -80,10 +78,10 @@ func (this *SGenerator) Slice(len *big.Int) ([]*big.Int, error) {
 	return this.generateSlice(len)
 }
 
-// TODO check this comments
-// This function generate a matrix with r rows and c columns. The numbers in it
-// are min <= X < max.
-// If r <= 0 or c <= 0 or min => max, this function return an error.
+// Matrix generate a matrix with rows and columns given according to
+// samples.SGenerator instanced. error is returned if: rows == nil,
+// columns == nil, rows >= 1, columns >= 1 or if single *bit.Int generation
+// fails.
 func (this *SGenerator) Matrix(rows, columns *big.Int) ([][]*big.Int, error) {
 	if err := util.IsNilOrLessThenOne(rows, "Matrix rows"); err != nil {
 		return nil, err
@@ -105,18 +103,17 @@ func (this *SGenerator) Matrix(rows, columns *big.Int) ([][]*big.Int, error) {
 	return matrix, nil
 }
 
-// TODO check this comments
-// This function generate a slice of random structure.Bound.
-// min and max represents the lower and the upprer bounds of element's slice.
-// width is the fixed with of all the bounds.
-// amount is the number of bounds that will be generated.
+// This function generate a slice of random structures.Bound. width is the
+// fixed with of all the bounds. amount is the number of bounds that will be
+// generated. error is returned if: width == nil, width >= 1, width can not
+// be placed between min and max or if single *bit.Int generation fails.
 func (this *SGenerator) Bounds(width, amount *big.Int) ([]*structures.Bound, error) {
 	if err := util.IsNilOrLessThenOne(width, "Bound width"); err != nil {
 		return nil, err
 	}
 
-    err := util.IsWidthContainedInBounds(this.min, this.max, width)
-	if err!= nil {
+	err := util.IsWidthContainedInBounds(this.min, this.max, width)
+	if err != nil {
 		return nil, err
 	}
 
