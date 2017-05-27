@@ -27,39 +27,39 @@ func main() {
 		Value: "",
 		Usage: outUsage,
 	}
-	minFlag := cli.Int64Flag{
+	minFlag := cli.StringFlag{
 		Name:  minFlag,
-		Value: -922337203685477580,
+		Value: "-922337203685477580",
 		Usage: minUsage,
 	}
-	maxFlag := cli.Int64Flag{
+	maxFlag := cli.StringFlag{
 		Name:  maxFlag,
-		Value: 922337203685477580,
+		Value: "922337203685477580",
 		Usage: maxUsage,
 	}
-	columnFlag := cli.Int64Flag{
+	columnFlag := cli.StringFlag{
 		Name:  colsFlag,
-		Value: 1,
+		Value: "1",
 		Usage: colsUsage,
 	}
-	rowsFlag := cli.Int64Flag{
+	rowsFlag := cli.StringFlag{
 		Name:  rowsFlag,
-		Value: 1,
+		Value: "1",
 		Usage: rowsUsage,
 	}
-	lengthFlag := cli.Int64Flag{
+	lengthFlag := cli.StringFlag{
 		Name:  lengthFlag,
-		Value: 1,
+		Value: "1",
 		Usage: lengthUsage,
 	}
-	widthFlag := cli.Int64Flag{
+	widthFlag := cli.StringFlag{
 		Name:  widthFlag,
-		Value: 1,
+		Value: "1",
 		Usage: widthUsage,
 	}
-	amountFlag := cli.Int64Flag{
+	amountFlag := cli.StringFlag{
 		Name:  amountFlag,
-		Value: 1,
+		Value: "1",
 		Usage: amountUsage,
 	}
 
@@ -96,79 +96,92 @@ func main() {
 	app.Run(os.Args)
 }
 
+// call back on rslice command
 func generateRSlice(c *cli.Context) error {
-	output := c.String("out")
-	l := c.Int64("length")
-	min := c.Int64("min")
-	max := c.Int64("max")
-
-	p, err := out.NewPrinter(output)
+	dto, err := NewCliArgsDTO(c)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
 	}
 
-	gen := samples.NewGenerator()
-	slice, err := gen.Slice(l, min, max)
+	printer, err := out.NewSecurePrinter(dto.OutPath)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
 	}
 
-	return p.WriteSlice(slice)
+	gen, err := samples.NewSecureGenerator(dto.Min, dto.Max)
+	if err != nil {
+		os.Stderr.WriteString(err.Error())
+		return err
+	}
+	slice, err := gen.Slice(dto.Length)
+	if err != nil {
+		os.Stderr.WriteString(err.Error())
+		return err
+	}
+
+	return printer.WriteSlice(slice)
 }
 
+// call back on oslice command
 func generateOSlice(c *cli.Context) error {
 	fmt.Printf("TODO")
 	return nil
 }
 
+// call back on matrix command
 func generateMatrix(c *cli.Context) error {
-	output := c.String("out")
-	min := c.Int64("min")
-	max := c.Int64("max")
-	rows := c.Int64("rows")
-	cols := c.Int64("columns")
-
-	p, err := out.NewPrinter(output)
+	cliArgsDTO, err := NewCliArgsDTO(c)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
 	}
 
-	gen := samples.NewGenerator()
-	matrix, err := gen.Matrix(rows, cols, min, max)
+	printer, err := out.NewSecurePrinter(cliArgsDTO.OutPath)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
 	}
 
-	return p.WriteMatrix(matrix)
+	gen, err := samples.NewSecureGenerator(cliArgsDTO.Min, cliArgsDTO.Max)
+	if err != nil {
+		os.Stderr.WriteString(err.Error())
+		return err
+	}
+	matrix, err := gen.Matrix(cliArgsDTO.Rows, cliArgsDTO.Columns)
+	if err != nil {
+		os.Stderr.WriteString(err.Error())
+		return err
+	}
+
+	return printer.WriteMatrix(matrix)
 }
 
+// call back on bound command
 func generateBound(c *cli.Context) error {
-	output := c.String("out")
-	min := c.Int64("min")
-	max := c.Int64("max")
-	width := c.Int64("width")
-	amount := c.Int64("amount")
-
-	p, err := out.NewPrinter(output)
+	cliArgsDTO, err := NewCliArgsDTO(c)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
 	}
 
-	gen := samples.NewGenerator()
-	bounds := make([]samples.Bound, amount)
-	for i := range bounds {
-		if bound, err := gen.Bound(min, max, width); err != nil {
-			os.Stderr.WriteString(err.Error())
-			return err
-		} else {
-			bounds[i] = *bound
-		}
+	printer, err := out.NewSecurePrinter(cliArgsDTO.OutPath)
+	if err != nil {
+		os.Stderr.WriteString(err.Error())
+		return err
 	}
 
-	return p.WriteBounds(bounds)
+	gen, err := samples.NewSecureGenerator(cliArgsDTO.Min, cliArgsDTO.Max)
+	if err != nil {
+		os.Stderr.WriteString(err.Error())
+		return err
+	}
+	bounds, err := gen.Bounds(cliArgsDTO.Width, cliArgsDTO.Amount)
+	if err != nil {
+		os.Stderr.WriteString(err.Error())
+		return err
+	}
+
+	return printer.WriteBounds(bounds)
 }
