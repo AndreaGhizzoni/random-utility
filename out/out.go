@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/AndreaGhizzoni/zenium/samples"
 	"github.com/AndreaGhizzoni/zenium/structures"
+	"github.com/AndreaGhizzoni/zenium/util"
 	"math/big"
 	"os"
 )
@@ -17,7 +18,7 @@ type Printer struct {
 }
 
 // TODO add doc
-type SPrinter struct{
+type SPrinter struct {
 	file *os.File
 }
 
@@ -124,7 +125,12 @@ func (p *SPrinter) WriteSlice(slice []*big.Int) error {
 		return errors.New("Given slice can not be nil.")
 	}
 
-	sliceHeader := fmt.Sprintf("%d\n", len(slice))
+	lenSlice, err := util.CountSliceIfNotNil(slice)
+	if err != nil {
+		return err
+	}
+
+	sliceHeader := fmt.Sprintf("%v\n", lenSlice)
 	if _, err := p.file.WriteString(sliceHeader); err != nil {
 		return err
 	}
@@ -170,15 +176,19 @@ func (p *SPrinter) WriteMatrix(matrix [][]*big.Int) error {
 		return errors.New("Given matrix can not be nil.")
 	}
 
-	if rows := len(matrix); rows != 0 {
-		matrixHeader := fmt.Sprintf("%d %d\n", rows, len(matrix[0]))
-		if _, err := p.file.WriteString(matrixHeader); err != nil {
-			return err
-		}
-	} else {
+	rows, columns, err := util.CountMatrixIfNotNil(matrix)
+	if err != nil {
+		return err
+	}
+
+	if rows.Cmp(big.NewInt(0)) == 0 {
 		return errors.New("Given matrix has zero rows.")
 	}
 
+	matrixHeader := fmt.Sprintf("%v %v\n", rows, columns)
+	if _, err := p.file.WriteString(matrixHeader); err != nil {
+		return err
+	}
 	for _, rows := range matrix {
 		if err := p.writeSingleSlice(rows); err != nil {
 			return err
@@ -229,7 +239,12 @@ func (p *SPrinter) WriteBounds(bounds []*structures.Bound) error {
 		return errors.New("Given bound can not be nil")
 	}
 
-	boundHeader := fmt.Sprintf("%d\n", len(bounds))
+	lenBounds, err := util.CountBoundsIfNotNil(bounds)
+	if err != nil {
+		return err
+	}
+
+	boundHeader := fmt.Sprintf("%v\n", lenBounds)
 	if _, err := p.file.WriteString(boundHeader); err != nil {
 		return err
 	}

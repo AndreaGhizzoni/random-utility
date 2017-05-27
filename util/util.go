@@ -3,6 +3,7 @@ package util
 import (
 	"errors"
 	"math/big"
+	"github.com/AndreaGhizzoni/zenium/structures"
 )
 
 // One represents the integer 1 as *big.Int
@@ -66,4 +67,48 @@ func FromStringToBigInt(aString string, prefixError string) (*big.Int, error) {
 			"string.")
 	}
 	return bigInt, nil
+}
+
+// TODO add description
+func CountSliceIfNotNil(slice []*big.Int) (*big.Int, error) {
+	var count = big.NewInt(0)
+	for _, element := range slice {
+		if element == nil {
+			return nil, errors.New("Nil found in slice")
+		} else {
+			count.Add(count, One)
+		}
+	}
+	return count, nil
+}
+
+// TODO add description
+func CountBoundsIfNotNil(bounds []*structures.Bound) (*big.Int, error) {
+	var count = big.NewInt(0)
+	for _, element := range bounds {
+		if element == nil {
+			return nil, errors.New("Nil found in slice")
+		} else {
+			count.Add(count, One)
+		}
+	}
+	return count, nil
+}
+
+// TODO add description
+func CountMatrixIfNotNil(matrix [][]*big.Int) (*big.Int, *big.Int, error) {
+	var rows = big.NewInt(0)
+    var maxColumns = big.NewInt(0)
+	for _, row := range matrix {
+		rowLength, err := CountSliceIfNotNil(row)
+		if err != nil {
+			return nil, nil, err
+		}else{
+			if rowLength.Cmp(maxColumns) == 1{ // rowLength > maxColumns
+				maxColumns = rowLength
+			}
+			rows.Add(rows, One)
+		}
+	}
+	return rows, maxColumns, nil
 }
