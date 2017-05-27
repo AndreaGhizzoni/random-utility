@@ -110,7 +110,7 @@ func generateRSlice(c *cli.Context) error {
 		return err
 	}
 
-	gen, err := samples.NewSecureGenerator(dto.Min, dto.Max)
+	gen, err := samples.NewGenerator(dto.Min, dto.Max)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
@@ -144,7 +144,7 @@ func generateMatrix(c *cli.Context) error {
 		return err
 	}
 
-	gen, err := samples.NewSecureGenerator(cliArgsDTO.Min, cliArgsDTO.Max)
+	gen, err := samples.NewGenerator(cliArgsDTO.Min, cliArgsDTO.Max)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
@@ -172,7 +172,7 @@ func generateBound(c *cli.Context) error {
 		return err
 	}
 
-	gen, err := samples.NewSecureGenerator(cliArgsDTO.Min, cliArgsDTO.Max)
+	gen, err := samples.NewGenerator(cliArgsDTO.Min, cliArgsDTO.Max)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err

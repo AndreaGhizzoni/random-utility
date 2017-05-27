@@ -37,7 +37,7 @@ func logFullPath(t *testing.T, p string) {
 }
 
 func createSlice(t *testing.T) []*big.Int {
-	generator, err := samples.NewSecureGenerator(min, max)
+	generator, err := samples.NewGenerator(min, max)
 	fatalIfErrorNotNil(t, err)
 	slice, err := generator.Slice(length)
 	fatalIfErrorNotNil(t, err)
@@ -45,7 +45,7 @@ func createSlice(t *testing.T) []*big.Int {
 }
 
 func createMatrix(t *testing.T) [][]*big.Int {
-	generator, err := samples.NewSecureGenerator(min, max)
+	generator, err := samples.NewGenerator(min, max)
 	fatalIfErrorNotNil(t, err)
 	matrix, err := generator.Matrix(rows, columns)
 	fatalIfErrorNotNil(t, err)
@@ -53,7 +53,7 @@ func createMatrix(t *testing.T) [][]*big.Int {
 }
 
 func createBounds(t *testing.T) []*structures.Bound {
-	generator, err := samples.NewSecureGenerator(min, max)
+	generator, err := samples.NewGenerator(min, max)
 	fatalIfErrorNotNil(t, err)
 	bounds, err := generator.Bounds(width, amount)
 	fatalIfErrorNotNil(t, err)

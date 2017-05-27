@@ -27,7 +27,7 @@ func TestNewSecureGenerator(t *testing.T) {
 		min = big.NewInt(2).Exp(two, power, modZero)
 		min.Neg(min)
 
-		if _, err = samples.NewSecureGenerator(min, max); err != nil {
+		if _, err = samples.NewGenerator(min, max); err != nil {
 			t.Fatal(err.Error())
 		}
 	}
@@ -42,14 +42,14 @@ func Test_SGenerator_Int(t *testing.T) {
 	var power = big.NewInt(1)
 	var max_power = big.NewInt(64)
 
-	var generate *samples.SGenerator
+	var generate *samples.Generator
 	var err error
 	for ; power.Cmp(max_power) == -1; power.Add(power, one) {
 		max = big.NewInt(2).Exp(two, power, modZero)
 		min = big.NewInt(2).Exp(two, power, modZero)
 		min.Neg(min)
 
-		generate, err = samples.NewSecureGenerator(min, max)
+		generate, err = samples.NewGenerator(min, max)
 		if err != nil {
 			t.Fatal(err.Error())
 		}
@@ -89,7 +89,7 @@ func TestSGenerator_Slice(t *testing.T) {
 	var power *big.Int = nil
 	var max_power = big.NewInt(64)
 
-	var generate *samples.SGenerator
+	var generate *samples.Generator
 	var err error
 	for _, length := range lengths {
 		power = big.NewInt(1)
@@ -98,7 +98,7 @@ func TestSGenerator_Slice(t *testing.T) {
 			min = big.NewInt(2).Exp(two, power, modZero)
 			min.Neg(min)
 
-			generate, err = samples.NewSecureGenerator(min, max)
+			generate, err = samples.NewGenerator(min, max)
 			if err != nil {
 				t.Fatal(err.Error())
 			}
@@ -147,7 +147,7 @@ func TestSGenerator_Matrix(t *testing.T) {
 	var power *big.Int = nil
 	var max_power = big.NewInt(64)
 
-	var generate *samples.SGenerator
+	var generate *samples.Generator
 	var err error
 	for _, dimension := range matrixDimensions {
 		power = big.NewInt(1)
@@ -156,7 +156,7 @@ func TestSGenerator_Matrix(t *testing.T) {
 			min = big.NewInt(2).Exp(two, power, modZero)
 			min.Neg(min)
 
-			generate, err = samples.NewSecureGenerator(min, max)
+			generate, err = samples.NewGenerator(min, max)
 			if err != nil {
 				t.Fatal(err.Error())
 			}
@@ -213,7 +213,7 @@ func TestSGenerator_Bound(t *testing.T) {
 	var power *big.Int = nil
 	var max_power = big.NewInt(64)
 
-	var generate *samples.SGenerator
+	var generate *samples.Generator
 	var err error
 	for _, amount := range numberOfBounds {
 		// It starts at 10 because of fixed boundWidth
@@ -223,7 +223,7 @@ func TestSGenerator_Bound(t *testing.T) {
 			min = big.NewInt(2).Exp(two, power, modZero)
 			min.Neg(min)
 
-			generate, err = samples.NewSecureGenerator(min, max)
+			generate, err = samples.NewGenerator(min, max)
 			if err != nil {
 				t.Fatal(err.Error())
 			}

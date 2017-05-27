@@ -10,7 +10,7 @@ var min, max = big.NewInt(-1000), big.NewInt(1000)
 var length = big.NewInt(1000)
 var width, amount = big.NewInt(50), big.NewInt(10000)
 var rows, columns = big.NewInt(50), big.NewInt(50)
-var generator, _ = samples.NewSecureGenerator(min, max)
+var generator, _ = samples.NewGenerator(min, max)
 
 func BenchmarkSGenerator_Int(b *testing.B) {
 	for i := 0; i < b.N; i++ {
