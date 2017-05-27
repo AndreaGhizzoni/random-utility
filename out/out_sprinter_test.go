@@ -60,7 +60,7 @@ func createBounds(t *testing.T) []*structures.Bound {
 	return bounds
 }
 
-// this function tests the correct behavior of out.NewSecurePrinter method with
+// this function tests the correct behavior of out.NewPrinter method with
 // correct inputs
 func TestNewSecurePrinter(t *testing.T) {
 	tD := "_test/"
@@ -76,15 +76,15 @@ func TestNewSecurePrinter(t *testing.T) {
 	for _, path := range paths {
 		logFullPath(t, path)
 
-		if _, err := out.NewSecurePrinter(path); err != nil {
-			t.Fatalf("out.NewSecurePrinter(%s) must not fail.", path)
+		if _, err := out.NewPrinter(path); err != nil {
+			t.Fatalf("out.NewPrinter(%s) must not fail.", path)
 		}
 
 		t.Logf("Ok, can open %s", path)
 	}
 }
 
-// this function tests the correct behavior of out.NewSecurePrinter method with
+// this function tests the correct behavior of out.NewPrinter method with
 // wrong inputs
 func TestNewSecurePrinter_Arguments(t *testing.T) {
 	var paths = []string{
@@ -97,7 +97,7 @@ func TestNewSecurePrinter_Arguments(t *testing.T) {
 	for _, path := range paths {
 		logFullPath(t, path)
 
-		if _, err := out.NewSecurePrinter(path); err == nil {
+		if _, err := out.NewPrinter(path); err == nil {
 			t.Fatalf("out.NewPrinter(%s) must fail.", path)
 		}
 
@@ -105,7 +105,7 @@ func TestNewSecurePrinter_Arguments(t *testing.T) {
 	}
 }
 
-// this function tests the correct behavior of out.SPrinter.WriteSlice method
+// this function tests the correct behavior of out.Printer.WriteSlice method
 // with correct inputs
 func TestSPrinter_WriteSlice(t *testing.T) {
 	tD := "_test/"
@@ -142,7 +142,7 @@ func TestSPrinter_WriteSlice(t *testing.T) {
 		test.path += "." + strconv.Itoa(index)
 		logFullPath(t, test.path)
 
-		printer, err := out.NewSecurePrinter(test.path)
+		printer, err := out.NewPrinter(test.path)
 		fatalIfErrorNotNil(t, err)
 		if err := printer.WriteSlice(test.slice); err != nil {
 			t.Fatalf(err.Error())
@@ -210,7 +210,7 @@ func TestSPrinter_WriteSlice(t *testing.T) {
 	}
 }
 
-// this function tests the correct behavior of out.SPrinter.WriteSlice method
+// this function tests the correct behavior of out.Printer.WriteSlice method
 // with wrong inputs
 func TestSPrinter_WriteSlice_Arguments(t *testing.T) {
 	tD := "_test/"
@@ -230,16 +230,16 @@ func TestSPrinter_WriteSlice_Arguments(t *testing.T) {
 	for _, test := range tableTest {
 		logFullPath(t, test.path)
 
-		printer, err := out.NewSecurePrinter(test.path)
+		printer, err := out.NewPrinter(test.path)
 		fatalIfErrorNotNil(t, err)
 
 		if err := printer.WriteSlice(test.slice); err == nil {
-			t.Fatalf("SPrinter.WriteSlice(%v) must fail", test.slice)
+			t.Fatalf("Printer.WriteSlice(%v) must fail", test.slice)
 		}
 	}
 }
 
-// this function tests the correct behavior of out.SPrinter.WriteMatrix method
+// this function tests the correct behavior of out.Printer.WriteMatrix method
 // with correct inputs
 func TestSPrinter_WriteMatrix(t *testing.T) {
 	tD := "_test/"
@@ -276,7 +276,7 @@ func TestSPrinter_WriteMatrix(t *testing.T) {
 		test.path += "." + strconv.Itoa(index)
 		logFullPath(t, test.path)
 
-		printer, err := out.NewSecurePrinter(test.path)
+		printer, err := out.NewPrinter(test.path)
 		fatalIfErrorNotNil(t, err)
 		if err := printer.WriteMatrix(test.matrix); err != nil {
 			t.Fatalf(err.Error())
@@ -360,7 +360,7 @@ func TestSPrinter_WriteMatrix(t *testing.T) {
 	}
 }
 
-// this function tests the correct behavior of out.SPrinter.WriteMatrix method
+// this function tests the correct behavior of out.Printer.WriteMatrix method
 // with wrong inputs
 func TestSPrinter_WriteMatrix_Arguments(t *testing.T) {
 	tD := "_test/"
@@ -387,16 +387,16 @@ func TestSPrinter_WriteMatrix_Arguments(t *testing.T) {
 	for _, test := range tableTest {
 		logFullPath(t, test.path)
 
-		printer, err := out.NewSecurePrinter(test.path)
+		printer, err := out.NewPrinter(test.path)
 		fatalIfErrorNotNil(t, err)
 
 		if err := printer.WriteMatrix(test.matrix); err == nil {
-			t.Fatalf("SPrinter.WriteMatrix(%v) must fail", test.matrix)
+			t.Fatalf("Printer.WriteMatrix(%v) must fail", test.matrix)
 		}
 	}
 }
 
-// this function tests the correct behavior of out.SPrinter.WriteBounds method
+// this function tests the correct behavior of out.Printer.WriteBounds method
 // with correct inputs
 func TestSPrinter_WriteBounds(t *testing.T) {
 	tD := "_test/"
@@ -421,7 +421,7 @@ func TestSPrinter_WriteBounds(t *testing.T) {
 		test.path += "." + strconv.Itoa(index)
 		logFullPath(t, test.path)
 
-		printer, err := out.NewSecurePrinter(test.path)
+		printer, err := out.NewPrinter(test.path)
 		fatalIfErrorNotNil(t, err)
 		if err := printer.WriteBounds(test.bounds); err != nil {
 			t.Fatalf(err.Error())
@@ -495,7 +495,7 @@ func TestSPrinter_WriteBounds(t *testing.T) {
 	}
 }
 
-// this function tests the correct behavior of out.SPrinter.WriteBounds method
+// this function tests the correct behavior of out.Printer.WriteBounds method
 // with wrong inputs
 func TestSPrinter_WriteBounds_Arguments(t *testing.T) {
 	tD := "_test/"
@@ -514,14 +514,14 @@ func TestSPrinter_WriteBounds_Arguments(t *testing.T) {
 		test.path += "." + strconv.Itoa(index)
 		logFullPath(t, test.path)
 
-		printer, err := out.NewSecurePrinter(test.path)
+		printer, err := out.NewPrinter(test.path)
 		fatalIfErrorNotNil(t, err)
 
 		// try to write
 		if err := printer.WriteBounds(test.bounds); err == nil {
-			t.Fatalf("With bound: %v SPrinter.WriteBounds must fail",
+			t.Fatalf("With bound: %v Printer.WriteBounds must fail",
 				test.bounds)
 		}
-		t.Logf("SPrinter.WriteBounds(%v) failed -> OK.", test.bounds)
+		t.Logf("Printer.WriteBounds(%v) failed -> OK.", test.bounds)
 	}
 }

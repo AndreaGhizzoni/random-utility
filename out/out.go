@@ -9,18 +9,18 @@ import (
 	"os"
 )
 
-// SPrinter is responsible to know how to write custom structure to file or
-// console. Every SPrinter.WriteX method, where X is a structure, produce
+// Printer is responsible to know how to write custom structure to file or
+// console. Every Printer.WriteX method, where X is a structure, produce
 // representation of X in format specified in README.md.
-type SPrinter struct {
+type Printer struct {
 	file *os.File
 }
 
-// NewSecurePrinter instance a new SPrinter. Argument path must be a file path
+// NewPrinter instance a new Printer. Argument path must be a file path
 // (relative/absolute) or empty string to print on standard out.
 // error is returned if: path leads to a non-readable/non-writable file or
 // leads to a directory
-func NewSecurePrinter(path string) (*SPrinter, error) {
+func NewPrinter(path string) (*Printer, error) {
 	if path != "" {
 		dir, file, errS := sanitizePath(path)
 		if errS != nil {
@@ -30,13 +30,13 @@ func NewSecurePrinter(path string) (*SPrinter, error) {
 		if errF != nil {
 			return nil, errF
 		}
-		return &SPrinter{oFile}, nil
+		return &Printer{oFile}, nil
 	}
-	return &SPrinter{os.Stdout}, nil
+	return &Printer{os.Stdout}, nil
 }
 
 // reusable method to write a single slice
-func (p *SPrinter) writeSingleSlice(slice []*big.Int) error {
+func (p *Printer) writeSingleSlice(slice []*big.Int) error {
 	var stringOfElement string
 	for _, element := range slice {
 		stringOfElement = fmt.Sprintf("%v ", element)
@@ -49,7 +49,7 @@ func (p *SPrinter) writeSingleSlice(slice []*big.Int) error {
 }
 
 // reusable method to check write synchronization.
-func (p *SPrinter) synchronizeFileWrite() error {
+func (p *Printer) synchronizeFileWrite() error {
 	if err := p.file.Sync(); err != nil {
 		return err
 	}
@@ -57,9 +57,9 @@ func (p *SPrinter) synchronizeFileWrite() error {
 }
 
 // WriteSlice write the given slice in specified format according to instanced
-// out.SPrinter. error is returned if: slice == nil, contain a nil pointer or
+// out.Printer. error is returned if: slice == nil, contain a nil pointer or
 // there is an i/o error.
-func (p *SPrinter) WriteSlice(slice []*big.Int) error {
+func (p *Printer) WriteSlice(slice []*big.Int) error {
 	if slice == nil {
 		return errors.New("Given slice can not be nil.")
 	}
@@ -82,9 +82,9 @@ func (p *SPrinter) WriteSlice(slice []*big.Int) error {
 }
 
 // WriteMatrix write a given matrix in specified format according to instanced
-// out.SPrinter. error is returned if: matrix == nil, contain a nil pointer,
+// out.Printer. error is returned if: matrix == nil, contain a nil pointer,
 // not contain any row or there is an i/o error.
-func (p *SPrinter) WriteMatrix(matrix [][]*big.Int) error {
+func (p *Printer) WriteMatrix(matrix [][]*big.Int) error {
 	if matrix == nil {
 		return errors.New("Given matrix can not be nil.")
 	}
@@ -112,15 +112,15 @@ func (p *SPrinter) WriteMatrix(matrix [][]*big.Int) error {
 }
 
 // WriteBound writes a single structures.Bound in specified format according to
-// instanced out.SPrinter. error is returned if there is a i/o error.
-func (p *SPrinter) WriteBound(bound *structures.Bound) error {
+// instanced out.Printer. error is returned if there is a i/o error.
+func (p *Printer) WriteBound(bound *structures.Bound) error {
 	return p.WriteBounds([]*structures.Bound{bound})
 }
 
 // WriteBounds writes a slice of structures.Bound in specified format according
-// to instanced out.SPrinter. error is returned if: slice is nil, contain a nil
+// to instanced out.Printer. error is returned if: slice is nil, contain a nil
 // pointer or there is a i/o error.
-func (p *SPrinter) WriteBounds(bounds []*structures.Bound) error {
+func (p *Printer) WriteBounds(bounds []*structures.Bound) error {
 	if bounds == nil {
 		return errors.New("Given bound can not be nil")
 	}

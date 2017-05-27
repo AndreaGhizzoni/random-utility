@@ -104,7 +104,7 @@ func generateRSlice(c *cli.Context) error {
 		return err
 	}
 
-	printer, err := out.NewSecurePrinter(dto.OutPath)
+	printer, err := out.NewPrinter(dto.OutPath)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
@@ -138,7 +138,7 @@ func generateMatrix(c *cli.Context) error {
 		return err
 	}
 
-	printer, err := out.NewSecurePrinter(cliArgsDTO.OutPath)
+	printer, err := out.NewPrinter(cliArgsDTO.OutPath)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
@@ -166,7 +166,7 @@ func generateBound(c *cli.Context) error {
 		return err
 	}
 
-	printer, err := out.NewSecurePrinter(cliArgsDTO.OutPath)
+	printer, err := out.NewPrinter(cliArgsDTO.OutPath)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
