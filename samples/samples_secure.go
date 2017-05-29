@@ -22,20 +22,20 @@ func NewGenerator(min, max *big.Int) (*Generator, error) {
 	return &Generator{min, max}, nil
 }
 
-func (this *Generator) generateInt() (*big.Int, error) {
-	width := big.NewInt(0).Sub(this.max, this.min)
+func (g *Generator) generateInt() (*big.Int, error) {
+	width := big.NewInt(0).Sub(g.max, g.min)
 	randomInWidth, err := rand.Int(rand.Reader, width)
 	if err != nil {
 		return nil, err
 	}
 
-	return randomInWidth.Add(randomInWidth, this.min), nil
+	return randomInWidth.Add(randomInWidth, g.min), nil
 }
 
-func (this *Generator) generateSlice(len *big.Int) ([]*big.Int, error) {
+func (g *Generator) generateSlice(len *big.Int) ([]*big.Int, error) {
 	randomSlice := []*big.Int{}
 	for i := big.NewInt(0); i.Cmp(len) == -1; i.Add(i, util.One) {
-		if random, err := this.generateInt(); err != nil {
+		if random, err := g.generateInt(); err != nil {
 			return nil, err
 		} else {
 			randomSlice = append(randomSlice, random)
@@ -45,16 +45,16 @@ func (this *Generator) generateSlice(len *big.Int) ([]*big.Int, error) {
 	return randomSlice, nil
 }
 
-func (this *Generator) generateBound(width *big.Int) (*structures.Bound, error) {
-	lowerBound, err := this.generateInt()
+func (g *Generator) generateBound(width *big.Int) (*structures.Bound, error) {
+	lowerBound, err := g.generateInt()
 	if err != nil {
 		return nil, err
 	}
 	upperBound := big.NewInt(0)
 
 	lowerBoundPlusWidth := big.NewInt(0).Add(lowerBound, width)
-	if lowerBoundPlusWidth.Cmp(this.max) == 1 { // lowerBound + width > max
-		upperBound = this.max
+	if lowerBoundPlusWidth.Cmp(g.max) == 1 { // lowerBound + width > max
+		upperBound = g.max
 		lowerBound.Sub(upperBound, width) // lowerBound = upperBound - width
 	} else {
 		upperBound.Add(lowerBound, width) // upperBound = lowerBound + width
@@ -64,25 +64,25 @@ func (this *Generator) generateBound(width *big.Int) (*structures.Bound, error) 
 
 // Int generate a random *big.Int according to samples.Generator instanced.
 // error is returned if generation fails.
-func (this *Generator) Int() (*big.Int, error) {
-	return this.generateInt()
+func (g *Generator) Int() (*big.Int, error) {
+	return g.generateInt()
 }
 
 // Slice generate a slice of length len. error is returned if len == nil or
 // if single *big.Int generation fails.
-func (this *Generator) Slice(len *big.Int) ([]*big.Int, error) {
+func (g *Generator) Slice(len *big.Int) ([]*big.Int, error) {
 	if err := util.IsNilOrLessThenOne(len, "Slice length"); err != nil {
 		return nil, err
 	}
 
-	return this.generateSlice(len)
+	return g.generateSlice(len)
 }
 
 // Matrix generate a matrix with rows and columns given according to
 // samples.Generator instanced. error is returned if: rows == nil,
 // columns == nil, rows >= 1, columns >= 1 or if single *bit.Int generation
 // fails.
-func (this *Generator) Matrix(rows, columns *big.Int) ([][]*big.Int, error) {
+func (g *Generator) Matrix(rows, columns *big.Int) ([][]*big.Int, error) {
 	if err := util.IsNilOrLessThenOne(rows, "Matrix rows"); err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func (this *Generator) Matrix(rows, columns *big.Int) ([][]*big.Int, error) {
 
 	matrix := [][]*big.Int{}
 	for i := big.NewInt(0); i.Cmp(rows) == -1; i.Add(i, util.One) {
-		random, err := this.generateSlice(columns)
+		random, err := g.generateSlice(columns)
 		if err != nil {
 			return nil, err
 		}
@@ -107,19 +107,19 @@ func (this *Generator) Matrix(rows, columns *big.Int) ([][]*big.Int, error) {
 // fixed with of all the bounds. amount is the number of bounds that will be
 // generated. error is returned if: width == nil, width >= 1, width can not
 // be placed between min and max or if single *bit.Int generation fails.
-func (this *Generator) Bounds(width, amount *big.Int) ([]*structures.Bound, error) {
+func (g *Generator) Bounds(width, amount *big.Int) ([]*structures.Bound, error) {
 	if err := util.IsNilOrLessThenOne(width, "Bound width"); err != nil {
 		return nil, err
 	}
 
-	err := util.IsWidthContainedInBounds(this.min, this.max, width)
+	err := util.IsWidthContainedInBounds(g.min, g.max, width)
 	if err != nil {
 		return nil, err
 	}
 
 	bounds := []*structures.Bound{}
 	for i := big.NewInt(0); i.Cmp(amount) == -1; i.Add(i, util.One) {
-		if bound, err := this.generateBound(width); err != nil {
+		if bound, err := g.generateBound(width); err != nil {
 			return nil, err
 		} else {
 			bounds = append(bounds, bound)
