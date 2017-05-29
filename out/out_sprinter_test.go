@@ -476,7 +476,7 @@ func TestSPrinter_WriteBounds(t *testing.T) {
 		// because is build using a big.Int
 		lenBounds := big.NewInt(int64(len(test.bounds)))
 		if numberOfBounds.Cmp(lenBounds) != 0 {
-			t.Fatalf("Number of bounds into file != writen bounds: %v != %v",
+			t.Fatalf("Number of bounds into file != written bounds: %v != %v",
 				numberOfBounds, lenBounds,
 			)
 		}
