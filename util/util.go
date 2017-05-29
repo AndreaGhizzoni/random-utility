@@ -84,9 +84,9 @@ func CountSliceIfNotNil(slice []*big.Int) (*big.Int, error) {
 	return counter, nil
 }
 
-// CountSliceIfNotNil counts the *structure.Bound the slice given and returns it
-// as big.Int. Counts goes well if every *big.Int in slice is not nil, otherwise
-// returns an error.
+// CountBoundsIfNotNil counts the *structure.Bound the slice given and returns
+// it as big.Int. Counts goes well if every *big.Int in slice is not nil,
+// otherwise returns an error.
 func CountBoundsIfNotNil(bounds []*structures.Bound) (*big.Int, error) {
 	counter := big.NewInt(0)
 	for _, element := range bounds {
