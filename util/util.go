@@ -2,8 +2,8 @@ package util
 
 import (
 	"errors"
-	"math/big"
 	"github.com/AndreaGhizzoni/zenium/structures"
+	"math/big"
 )
 
 // One represents the integer 1 as *big.Int
@@ -98,13 +98,13 @@ func CountBoundsIfNotNil(bounds []*structures.Bound) (*big.Int, error) {
 // TODO add description
 func CountMatrixIfNotNil(matrix [][]*big.Int) (*big.Int, *big.Int, error) {
 	var rows = big.NewInt(0)
-    var maxColumns = big.NewInt(0)
+	var maxColumns = big.NewInt(0)
 	for _, row := range matrix {
 		rowLength, err := CountSliceIfNotNil(row)
 		if err != nil {
 			return nil, nil, err
-		}else{
-			if rowLength.Cmp(maxColumns) == 1{ // rowLength > maxColumns
+		} else {
+			if rowLength.Cmp(maxColumns) == 1 { // rowLength > maxColumns
 				maxColumns = rowLength
 			}
 			rows.Add(rows, One)
