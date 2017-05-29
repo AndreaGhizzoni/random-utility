@@ -105,14 +105,14 @@ func CountMatrixIfNotNil(matrix [][]*big.Int) (rows, columns *big.Int, err error
 	rows = big.NewInt(0)
 	columns = big.NewInt(0)
 	for _, row := range matrix {
-		if rowLength, err := CountSliceIfNotNil(row); err != nil {
+		rowLength, err := CountSliceIfNotNil(row)
+		if err != nil {
 			return nil, nil, err
-		} else {
-			if rowLength.Cmp(columns) == 1 { // rowLength > maxColumns
-				columns = rowLength
-			}
-			rows.Add(rows, One)
 		}
+		if rowLength.Cmp(columns) == 1 { // rowLength > maxColumns
+			columns = rowLength
+		}
+		rows.Add(rows, One)
 	}
 	return rows, columns, nil
 }
