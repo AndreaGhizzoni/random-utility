@@ -7,7 +7,7 @@ import (
 	"math/big"
 )
 
-// Generatore is responsable to generate random structures.
+// Generator is responsible to generate random structures.
 type Generator struct {
 	min, max *big.Int
 }
