@@ -56,59 +56,64 @@ func IsWidthContainedInBounds(min, max, width *big.Int) error {
 	return nil
 }
 
-// TODO add description
+// FromStringToBigInt converts aString given into the corresponding *big.Int
+// in base 10. error is return if: aString is not a valid number.
 func FromStringToBigInt(aString string, prefixError string) (*big.Int, error) {
-	bigInt := big.NewInt(1)
-	if aString == "" {
-		return bigInt, nil
+	stringIntoBigInt := big.NewInt(1)
+	if aString == "" { // safe condition
+		return stringIntoBigInt, nil
 	}
-	if _, success := bigInt.SetString(aString, baseTen); !success {
-		return nil, errors.New(prefixError + ": Fail to cast to big.Int from " +
-			"string.")
+	if _, success := stringIntoBigInt.SetString(aString, baseTen); !success {
+		return nil, errors.New(prefixError + ": Fail to cast from string to " +
+			"big.Int.")
 	}
-	return bigInt, nil
+	return stringIntoBigInt, nil
 }
 
-// TODO add description
+// CountSliceIfNotNil counts the *big.Int in the slice given and returns it
+// as big.Int. Counts goes well if every *big.Int in slice is not nil, otherwise
+// returns an error.
 func CountSliceIfNotNil(slice []*big.Int) (*big.Int, error) {
-	var count = big.NewInt(0)
+	counter := big.NewInt(0)
 	for _, element := range slice {
 		if element == nil {
-			return nil, errors.New("Nil found in slice")
-		} else {
-			count.Add(count, One)
+			return nil, errors.New("Nil element found in slice.")
 		}
+		counter.Add(counter, One)
 	}
-	return count, nil
+	return counter, nil
 }
 
-// TODO add description
+// CountSliceIfNotNil counts the *structure.Bound the slice given and returns it
+// as big.Int. Counts goes well if every *big.Int in slice is not nil, otherwise
+// returns an error.
 func CountBoundsIfNotNil(bounds []*structures.Bound) (*big.Int, error) {
-	var count = big.NewInt(0)
+	counter := big.NewInt(0)
 	for _, element := range bounds {
 		if element == nil {
-			return nil, errors.New("Nil found in slice")
-		} else {
-			count.Add(count, One)
+			return nil, errors.New("Nil element found in slice.")
 		}
+		counter.Add(counter, One)
 	}
-	return count, nil
+	return counter, nil
 }
 
-// TODO add description
-func CountMatrixIfNotNil(matrix [][]*big.Int) (*big.Int, *big.Int, error) {
-	var rows = big.NewInt(0)
-	var maxColumns = big.NewInt(0)
+// CountMatrixIfNotNil return the rows and columns of given matrix of *big.Int
+// as *big.Int. Counts goes well if every *big.Int in matrix is not nil,
+// otherwise return an error.
+func CountMatrixIfNotNil(matrix [][]*big.Int) (rows, columns *big.Int, err error) {
+	rows = big.NewInt(0)
+	columns = big.NewInt(0)
 	for _, row := range matrix {
 		rowLength, err := CountSliceIfNotNil(row)
 		if err != nil {
 			return nil, nil, err
 		} else {
-			if rowLength.Cmp(maxColumns) == 1 { // rowLength > maxColumns
-				maxColumns = rowLength
+			if rowLength.Cmp(columns) == 1 { // rowLength > maxColumns
+				columns = rowLength
 			}
 			rows.Add(rows, One)
 		}
 	}
-	return rows, maxColumns, nil
+	return rows, columns, nil
 }
