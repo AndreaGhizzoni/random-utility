@@ -7,7 +7,7 @@ import (
 	"math/big"
 )
 
-// This is the generator of random numbers.
+// Generatore is responsable to generate random structures.
 type Generator struct {
 	min, max *big.Int
 }
@@ -63,9 +63,9 @@ func (g *Generator) Matrix(rows, columns *big.Int) ([][]*big.Int, error) {
 	return matrix, nil
 }
 
-// This function generate a slice of random structures.Bound. width is the
-// fixed with of all the bounds. amount is the number of bounds that will be
-// generated. error is returned if: width == nil, width >= 1, width can not
+// Bounds generate a slice of random *structures.Bound. width is the fixed with
+// of all the bounds. amount is the number of bounds that will be generated.
+// error is returned if: width == nil, width >= 1, width can not
 // be placed between min and max or if single *bit.Int generation fails.
 func (g *Generator) Bounds(width, amount *big.Int) ([]*structures.Bound, error) {
 	if err := util.IsNilOrLessThenOne(width, "Bound width"); err != nil {
@@ -79,11 +79,11 @@ func (g *Generator) Bounds(width, amount *big.Int) ([]*structures.Bound, error) 
 
 	bounds := []*structures.Bound{}
 	for i := big.NewInt(0); i.Cmp(amount) == -1; i.Add(i, util.One) {
-		if bound, err := g.generateBound(width); err != nil {
+		bound, err := g.generateBound(width)
+		if err != nil {
 			return nil, err
-		} else {
-			bounds = append(bounds, bound)
 		}
+		bounds = append(bounds, bound)
 	}
 	return bounds, nil
 }
@@ -101,11 +101,11 @@ func (g *Generator) generateInt() (*big.Int, error) {
 func (g *Generator) generateSlice(len *big.Int) ([]*big.Int, error) {
 	randomSlice := []*big.Int{}
 	for i := big.NewInt(0); i.Cmp(len) == -1; i.Add(i, util.One) {
-		if random, err := g.generateInt(); err != nil {
+		random, err := g.generateInt()
+		if err != nil {
 			return nil, err
-		} else {
-			randomSlice = append(randomSlice, random)
 		}
+		randomSlice = append(randomSlice, random)
 	}
 
 	return randomSlice, nil
