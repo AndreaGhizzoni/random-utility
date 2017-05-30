@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/AndreaGhizzoni/zenium/util"
 	"github.com/urfave/cli"
 	"math/big"
@@ -17,8 +16,8 @@ type cliArgsDTO struct {
 func NewCliArgsDTO(context *cli.Context) (*cliArgsDTO, error) {
 	dto := new(cliArgsDTO)
 	for _, flagName := range context.FlagNames() {
-		if flagName == "out" {
-			dto.OutPath = context.String("out")
+		if flagName == outFlagLong {
+			dto.OutPath = context.String(outFlagLong)
 		} else {
 			bigIntOfString, err := util.FromStringToBigInt(
 				context.String(flagName),
@@ -35,19 +34,19 @@ func NewCliArgsDTO(context *cli.Context) (*cliArgsDTO, error) {
 
 func (dto *cliArgsDTO) placeInCorrectField(fieldName string, value *big.Int) {
 	switch fieldName {
-	case "length":
+	case lengthFlagLong:
 		dto.Length = value
-	case "min":
+	case minFlagLong:
 		dto.Min = value
-	case "max":
+	case maxFlagLong:
 		dto.Max = value
-	case "rows":
+	case rowsFlagLong:
 		dto.Rows = value
-	case "columns":
+	case colsFlagLong:
 		dto.Columns = value
-	case "width":
+	case widthFlagLong:
 		dto.Width = value
-	case "amount":
+	case amountFlagLong:
 		dto.Amount = value
 	}
 }
