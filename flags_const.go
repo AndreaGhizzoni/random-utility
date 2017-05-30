@@ -10,31 +10,47 @@ const (
 	usageText = " [rslice|oslice|matrix|bound] [OPTIONS]"
 
 	// flag usage
-	outFlag  = "out, o"
-	outUsage = "`FILE` to output the generate sample. stdout is the default."
+	outFlagShort = "o"
+	outFlagLong  = "out"
+	outFlag      = outFlagLong + ", " + outFlagShort
+	outUsage     = "`FILE` to output the generate sample. stdout is the default."
 
-	minFlag  = "min, m"
-	minUsage = "`m` is a integer number to set the minimum value of random " +
+	minFlagShort = "m"
+	minFlagLong  = "min"
+	minFlag      = minFlagLong + ", " + minFlagShort
+	minUsage     = "`m` is a integer number to set the minimum value of random " +
 		"generator."
 
-	maxFlag  = "max, M"
-	maxUsage = "`M` is a integer number to set the maximum value of random " +
+	maxFlagShort = "M"
+	maxFlagLong  = "max"
+	maxFlag      = maxFlagLong + ", " + maxFlagShort
+	maxUsage     = "`M` is a integer number to set the maximum value of random " +
 		"generator. "
 
-	colsFlag  = "columns, c"
-	colsUsage = "`c` is a integer number to set the matrix columns."
+	colsFlagShort = "c"
+	colsFlagLong  = "columns"
+	colsFlag      = colsFlagLong + ", " + colsFlagShort
+	colsUsage     = "`c` is a integer number to set the matrix columns."
 
-	rowsFlag  = "rows, r"
-	rowsUsage = "`r` is a integer number to set the matrix rows."
+	rowsFlagShort = "r"
+	rowsFlagLong  = "rows"
+	rowsFlag      = rowsFlagLong + ", " + rowsFlagShort
+	rowsUsage     = "`r` is a integer number to set the matrix rows."
 
-	lengthFlag  = "length, l"
-	lengthUsage = "`l` is a integer number to set the slice length."
+	lengthFlagShort = "l"
+	lengthFlagLong  = "length"
+	lengthFlag      = lengthFlagLong + ", " + lengthFlagShort
+	lengthUsage     = "`l` is a integer number to set the slice length."
 
-	widthFlag  = "width, w"
-	widthUsage = "`w` is a integer number to set the bound width."
+	widthFlagShort = "w"
+	widthFlagLong  = "width"
+	widthFlag      = widthFlagLong + ", " + widthFlagShort
+	widthUsage     = "`w` is a integer number to set the bound width."
 
-	amountFlag  = "amount, a"
-	amountUsage = "`a` is the amount of bounds to generate."
+	amountFlagShort = "a"
+	amountFlagLong  = "amount"
+	amountFlag      = amountFlagLong + ", " + amountFlagShort
+	amountUsage     = "`a` is the amount of bounds to generate."
 
 	// command usage
 	rsliceCommand = "rslice"
