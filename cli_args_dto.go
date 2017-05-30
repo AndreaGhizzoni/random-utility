@@ -13,7 +13,7 @@ type cliArgsDTO struct {
 	Amount                       *big.Int
 }
 
-func NewCliArgsDTO(context *cli.Context) (*cliArgsDTO, error) {
+func newCliArgsDTO(context *cli.Context) (*cliArgsDTO, error) {
 	dto := new(cliArgsDTO)
 	for _, flagName := range context.FlagNames() {
 		if flagName == outFlagLong {

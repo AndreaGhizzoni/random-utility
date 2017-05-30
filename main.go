@@ -98,7 +98,7 @@ func main() {
 
 // call back on rslice command
 func generateRSlice(c *cli.Context) error {
-	dto, err := NewCliArgsDTO(c)
+	dto, err := newCliArgsDTO(c)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
@@ -132,7 +132,7 @@ func generateOSlice(c *cli.Context) error {
 
 // call back on matrix command
 func generateMatrix(c *cli.Context) error {
-	cliArgsDTO, err := NewCliArgsDTO(c)
+	cliArgsDTO, err := newCliArgsDTO(c)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
@@ -160,7 +160,7 @@ func generateMatrix(c *cli.Context) error {
 
 // call back on bound command
 func generateBound(c *cli.Context) error {
-	cliArgsDTO, err := NewCliArgsDTO(c)
+	cliArgsDTO, err := newCliArgsDTO(c)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		return err
