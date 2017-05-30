@@ -87,7 +87,7 @@ is expressed as lower bound `x` and upper bound `y`, where `m <= x < y <= M`.
 - [x] Matrix
 - [x] Complete -output|-o flag
 - [x] Bound
-- [ ] Using math/big instead of all int64
-- [ ] Using crypto/rand in certain cases
+- [x] Using math/big instead of all int64
+- [x] Using crypto/rand in certain cases
 - [ ] Ordered Slice
 - [ ] Multiple generation with a single command
